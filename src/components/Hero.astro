@@ -1,0 +1,133 @@
+---
+---
+
+<section class="relative min-h-screen flex items-center overflow-hidden pt-20">
+  <!-- Background accent -->
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-1/4 right-0 w-96 h-96 bg-cin-red/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/3 left-1/4 w-64 h-64 bg-deep-red/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Vertical label -->
+  <div class="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-3">
+    <span class="text-muted text-xs tracking-[0.3em] uppercase rotate-[-90deg] whitespace-nowrap origin-center">Backend Developer Jr.</span>
+    <div class="w-px h-16 bg-cin-red/40"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6 lg:px-16 w-full">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Text content -->
+      <div class="space-y-8">
+        <!-- Eyebrow -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-px bg-cin-red"></div>
+          <span class="text-cin-red text-xs font-medium tracking-[0.2em] uppercase">Disponible para proyectos</span>
+        </div>
+
+        <!-- Headline -->
+        <div class="space-y-2">
+          <h1 class="font-headline font-bold text-5xl md:text-6xl lg:text-7xl tracking-tighter text-offwhite leading-[0.95]">
+            Hola, soy<br />
+            <span class="text-cin-red">Mario</span>
+          </h1>
+          <p class="text-xl md:text-2xl text-muted font-body mt-4 leading-relaxed max-w-lg">
+            Desarrollador apasionado por la <span class="text-offwhite">eficiencia y automatización</span> y aprendizaje continuo.
+          </p>
+        </div>
+
+        <!-- CTA -->
+        <div class="flex flex-wrap gap-4">
+          <a
+            href="#proyectos"
+            class="group inline-flex items-center gap-2 px-6 py-3 bg-cin-red text-white font-medium text-sm rounded hover:bg-deep-red transition-all duration-300 ease-smooth"
+          >
+            Ver proyectos
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+          <a
+            href="#contacto"
+            class="inline-flex items-center gap-2 px-6 py-3 text-offwhite font-medium text-sm border border-surface hover:border-cin-red/50 rounded transition-all duration-300"
+          >
+            Contactar
+          </a>
+          <a
+            href="/cv.pdf"
+            download
+            class="inline-flex items-center gap-2 px-6 py-3 text-muted font-medium text-sm hover:text-offwhite transition-all duration-300"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+            Descargar CV
+          </a>
+        </div>
+
+        <!-- Stats row -->
+        <div class="flex gap-8 pt-4 border-t border-surface">
+          <div>
+            <p class="font-headline font-bold text-2xl text-cin-red">+2</p>
+            <p class="text-xs text-muted mt-0.5">Años de experiencia</p>
+          </div>
+          <div>
+            <p class="font-headline font-bold text-2xl text-cin-red">10+</p>
+            <p class="text-xs text-muted mt-0.5">Proyectos desarrollados</p>
+          </div>
+          <div>
+            <p class="font-headline font-bold text-2xl text-cin-red"></p>
+            <p class="text-xs text-muted mt-0.5"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo / Visual -->
+      <div class="relative flex justify-center lg:justify-end">
+        <div class="relative w-72 h-72 md:w-80 md:h-80">
+          <!-- Rotating dashed ring -->
+          <div class="absolute inset-0 rounded-full animate-spin" style="animation-duration: 20s;">
+            <svg class="w-full h-full" viewBox="0 0 320 320">
+              <circle cx="160" cy="160" r="155" fill="none" stroke="#D84040" stroke-width="1" stroke-dasharray="6 10" opacity="0.4" />
+            </svg>
+          </div>
+
+          <!-- Second ring (counter-rotating) -->
+          <div class="absolute inset-4 rounded-full animate-spin" style="animation-duration: 30s; animation-direction: reverse;">
+            <svg class="w-full h-full" viewBox="0 0 256 256">
+              <circle cx="128" cy="128" r="123" fill="none" stroke="#8E1616" stroke-width="1" stroke-dasharray="3 14" opacity="0.3" />
+            </svg>
+          </div>
+
+          <!-- Glow -->
+          <div class="absolute inset-8 rounded-full bg-cin-red/10 blur-xl"></div>
+
+          <!-- Photo -->
+          <div class="absolute inset-8 rounded-full bg-surface overflow-hidden border border-cin-red/20">
+            <img
+              src="/foto.jpg"
+              alt="Foto de Mario"
+              class="w-full h-full object-cover"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <!-- Fallback si no hay foto -->
+            <div class="w-full h-full items-center justify-center bg-gradient-to-br from-surface to-obsidian hidden">
+              <span class="font-headline font-bold text-4xl text-cin-red">M</span>
+            </div>
+          </div>
+
+          <!-- Corner accent -->
+          <div class="absolute -bottom-4 -right-4 w-16 h-16 border border-cin-red/20 rounded"></div>
+          <div class="absolute -top-4 -left-4 w-8 h-8 border border-cin-red/30 rounded"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+    <span class="text-xs text-muted tracking-widest uppercase">Scroll</span>
+    <div class="w-px h-8 bg-gradient-to-b from-cin-red to-transparent"></div>
+  </div>
+</section>

@@ -1,0 +1,99 @@
+---
+const jobs = [
+  {
+    company: 'Corporativo Emeth',
+    role: 'Desarrollador Backend',
+    period: ' Jul 2025 — Feb 2026', // [cite: 24]
+    description: 'Desarrollo y mantenimiento de servicios backend con Java, enfocados en la eficiencia y escalabilidad.',
+    achievements: [
+      'Implementación de APIs REST y automatización de procesos internos.',
+      'Optimización de consultas SQL y elaboración de documentación técnica.',
+      'Control de versiones mediante Git para garantizar la integridad del código.',
+    ],
+  },
+  {
+    company: 'Brandin',
+    role: 'Becario de Soporte Odoo (ERP)',
+    period: 'Mar 2025 — Feb 2026', // [cite: 22]
+    description: 'Becario encargado de la contención y ayuda a usuarios.',
+    achievements: [
+      'Migración y carga masiva de datos mediante scripts básicos y herramientas de Odoo.',
+      'Ajustes técnicos y configuración avanzada de módulos estándar y personalizados.',
+      'Capacitación y soporte funcional directo a usuarios finales.',
+    ],
+  },
+  {
+    company: 'Brandin',
+    role: 'Aux. Soporte Odoo',
+    period: 'Feb 2026 — Presente',
+    description: 'Auxiliar encargado del soporte, la configuracion perosnalización y despliegue de módulos en el ecosistema Odoo.',
+    achievements: [
+      'Ajustes técnicos y configuración avanzada de módulos estándar y personalizados.',
+      'Integración de Sistemas & Middleware: Desarrollo de conectores robustos entre microservicios Java (Quarkus) y sistemas ERP mediante protocolos XML-RPC.',
+      'Gestión de persistencia de datos con PostgreSQL .',
+    ],
+  },
+];
+---
+
+<section id="experiencia" class="py-24 lg:py-32 bg-black text-white">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="space-y-3 mb-16">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-px bg-red-600"></div>
+        <span class="text-red-600 text-xs font-medium tracking-[0.2em] uppercase">Trayectoria</span>
+      </div>
+      <h2 class="font-bold text-4xl md:text-5xl tracking-tighter text-white">
+        Experiencia<br /><span class="opacity-50">Profesional</span>
+      </h2>
+    </div>
+
+    <div class="relative">
+      <div class="absolute left-0 md:left-[220px] top-0 bottom-0 w-px bg-gray-800"></div>
+
+      <div class="space-y-12">
+        {jobs.map((job) => (
+          <div class="group relative grid md:grid-cols-[220px_1fr] gap-8">
+            <div class="md:text-right md:pr-8 space-y-1">
+              <p class="text-xs font-mono text-red-500">{job.period}</p>
+              <p class="text-sm font-medium text-gray-400">{job.company}</p>
+            </div>
+
+            <div class="hidden md:block absolute left-[220px] top-1 w-3 h-3 rounded-full bg-gray-900 border-2 border-red-500/50 group-hover:border-red-500 transition-colors duration-300 -translate-x-1.5"></div>
+
+            <div class="pl-0 md:pl-8 space-y-4">
+              <h3 class="font-bold text-xl text-white">{job.role}</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">{job.description}</p>
+              <ul class="space-y-2">
+                {job.achievements.map((item) => (
+                  <li class="flex items-start gap-3 text-sm text-gray-400">
+                    <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-500/60 flex-shrink-0"></span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mt-16 pt-10 border-t border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <p class="text-sm font-medium text-white">Ingeniería en Informática </p>
+        <p class="text-xs text-gray-500 mt-1">Instituto Politécnico Nacional - UPIICSA </p>
+      </div>
+      <a
+        href="/MARIO_YAEL_CV.pdf"
+        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-500 border border-red-500/30 rounded hover:bg-red-500/10 transition-all duration-300 self-start sm:self-auto"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        </svg>
+        Descargar CV Completo
+      </a>
+    </div>
+
+  </div>
+</section>

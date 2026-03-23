@@ -1,0 +1,102 @@
+---
+const categories = [
+  {
+    name: 'Backend Development',
+    skills: [
+      { name: 'Java (Quarkus / Spring)', level: 85 }, //
+      { name: 'Python (FastAPI / Scripts)', level: 80 }, //
+      { name: 'PostgreSQL & MySQL', level: 85 }, // [cite: 34]
+    ],
+  },
+  {
+    name: 'Frontend & Web',
+    skills: [
+      { name: 'HTML/CSS & Tailwind', level: 75 }, // [cite: 29]
+      { name: 'JavaScript & Astro', level: 70 }, // [cite: 30]
+      { name: 'React & Frameworks', level: 65 },        
+    ],
+  },
+  {
+    name: 'Infrastructure & DevOps',
+    skills: [
+      { name: 'Docker & Containerization', level: 80 }, //
+      { name: 'Git / GitHub Workflow', level: 90 }, // [cite: 28, 35]
+      { name: 'Linux Server Management', level: 80 }, // [cite: 36]
+    ],
+  },
+];
+
+const tools = [
+  { name: 'Odoo', icon: 'odoo' }, // [cite: 37]
+  { name: 'IntelliJ IDEA', icon: 'intellijidea' },
+  { name: 'Docker', icon: 'docker' }, // [cite: 37]
+  { name: 'Postman', icon: 'postman' },
+  { name: 'Notion', icon: 'notion' }, //
+  { name: 'Linux', icon: 'linux' }, // [cite: 36]
+  { name: 'GitHub', icon: 'github' }, // [cite: 35]
+];
+---
+
+<section id="stack" class="py-24 lg:py-32 bg-surface/30">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="space-y-3 mb-16">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-px bg-cin-red"></div>
+        <span class="text-cin-red text-xs font-medium tracking-[0.2em] uppercase">Habilidades</span>
+      </div>
+      <h2 class="font-headline font-bold text-4xl md:text-5xl tracking-tighter text-offwhite">
+        Stack<br /><span class="text-muted">& Tecnologías Backend</span>
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-16">
+      {categories.map((cat) => (
+        <div class="space-y-6">
+          <h3 class="font-headline font-bold text-sm tracking-wider text-cin-red uppercase">{cat.name}</h3>
+          <div class="space-y-4">
+            {cat.skills.map((skill) => (
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-offwhite">{skill.name}</span>
+                  <span class="text-xs text-muted font-mono">{skill.level}%</span>
+                </div>
+                <div class="h-1 bg-obsidian rounded-full overflow-hidden">
+                  <div
+                    class="h-full bg-gradient-to-r from-cin-red to-deep-red rounded-full skill-bar"
+                    style={`width: ${skill.level}%`}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="border-t border-surface pt-10">
+      <p class="text-xs text-muted tracking-widest uppercase mb-6">También uso</p>
+      <div class="flex flex-wrap gap-3">
+        {tools.map((tool) => (
+          <div class="px-4 py-2 bg-surface border border-surface rounded-xl flex items-center gap-3 group hover:border-cin-red/50 transition-all duration-300 cursor-default">
+            <img 
+              src={`https://cdn.simpleicons.org/${tool.icon}/white`} 
+              alt={tool.name}
+              class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity"
+            />
+            <span class="text-sm font-mono text-muted group-hover:text-offwhite">
+              {tool.name}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .skill-bar {
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+</style>
