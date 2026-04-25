@@ -1,133 +1,182 @@
 ---
 ---
 
-<section class="relative min-h-screen flex items-center overflow-hidden pt-20">
-  <!-- Background accent -->
-  <div class="absolute inset-0 pointer-events-none">
-    <div class="absolute top-1/4 right-0 w-96 h-96 bg-cin-red/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-1/3 left-1/4 w-64 h-64 bg-deep-red/10 rounded-full blur-3xl"></div>
-  </div>
+<section class="relative min-h-screen overflow-hidden md:grid md:grid-cols-[55fr_45fr]">
 
-  <!-- Vertical label -->
-  <div class="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-3">
-    <span class="text-muted text-xs tracking-[0.3em] uppercase rotate-[-90deg] whitespace-nowrap origin-center">Backend Developer Jr.</span>
-    <div class="w-px h-16 bg-cin-red/40"></div>
-  </div>
+  <!-- ── Ambient glow (left side) ── -->
+  <div
+    class="absolute top-0 left-0 w-[50vw] h-[70vh] rounded-full blur-[160px] pointer-events-none"
+    style="background: radial-gradient(ellipse at 30% 40%, rgba(216,64,64,0.09) 0%, transparent 65%); animation: pulse-ambient 7s ease-in-out infinite;"
+    aria-hidden="true"
+  ></div>
 
-  <div class="max-w-6xl mx-auto px-6 lg:px-16 w-full">
-    <div class="grid lg:grid-cols-2 gap-16 items-center">
+  <!-- ══════════════════════════════════════
+       LEFT COLUMN — Content
+  ══════════════════════════════════════ -->
+  <div class="relative z-10 flex flex-col justify-center px-8 md:px-10 xl:px-16 pt-28 pb-12 min-h-screen md:min-h-0">
 
-      <!-- Text content -->
-      <div class="space-y-8">
-        <!-- Eyebrow -->
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-px bg-cin-red"></div>
-          <span class="text-cin-red text-xs font-medium tracking-[0.2em] uppercase">Disponible para proyectos</span>
-        </div>
+    <!-- Status indicator -->
+    <div
+      class="flex items-center gap-3 mb-12"
+      style="animation: hero-fade 0.5s 0.05s ease-out both;"
+    >
+      <span class="relative flex h-1.5 w-1.5 shrink-0">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cin-red opacity-60"></span>
+        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-cin-red"></span>
+      </span>
+      <span class="font-body text-cin-red/75 text-[10px] tracking-[0.35em] uppercase">Disponible para proyectos</span>
+    </div>
 
-        <!-- Headline -->
-        <div class="space-y-2">
-          <h1 class="font-headline font-bold text-5xl md:text-6xl lg:text-7xl tracking-tighter text-offwhite leading-[0.95]">
-            Hola, soy<br />
-            <span class="text-cin-red">Mario</span>
-          </h1>
-          <p class="text-xl md:text-2xl text-muted font-body mt-4 leading-relaxed max-w-lg">
-            Desarrollador apasionado por la <span class="text-offwhite">eficiencia y automatización</span> y aprendizaje continuo.
-          </p>
-        </div>
+    <!-- Hero headline -->
+    <h1
+      class="font-headline font-bold text-offwhite uppercase leading-[0.85] tracking-[0.03em] text-[clamp(3.8rem,9vw,8rem)] mb-4"
+      style="animation: hero-emerge 1.1s 0.15s cubic-bezier(0.16,1,0.3,1) both;"
+    >
+      MARIO
+    </h1>
 
-        <!-- CTA -->
-        <div class="flex flex-wrap gap-4">
-          <a
-            href="#proyectos"
-            class="group inline-flex items-center gap-2 px-6 py-3 bg-cin-red text-white font-medium text-sm rounded hover:bg-deep-red transition-all duration-300 ease-smooth"
-          >
-            Ver proyectos
-            <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-          <a
-            href="#contacto"
-            class="inline-flex items-center gap-2 px-6 py-3 text-offwhite font-medium text-sm border border-surface hover:border-cin-red/50 rounded transition-all duration-300"
-          >
-            Contactar
-          </a>
-          <a
-            href="/cv.pdf"
-            download
-            class="inline-flex items-center gap-2 px-6 py-3 text-muted font-medium text-sm hover:text-offwhite transition-all duration-300"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-            </svg>
-            Descargar CV
-          </a>
-        </div>
+    <!-- Role -->
+    <div
+      class="flex items-center gap-4 mb-8"
+      style="animation: hero-fade-up 0.7s 0.38s cubic-bezier(0.16,1,0.3,1) both;"
+    >
+      <div class="h-px w-10 bg-cin-red shrink-0"></div>
+      <span class="font-headline font-bold text-cin-red tracking-[0.18em] uppercase text-[clamp(0.7rem,1.6vw,1.1rem)]">
+        Desarrollador Full Stack
+      </span>
+    </div>
 
-        <!-- Stats row -->
-        <div class="flex gap-8 pt-4 border-t border-surface">
-          <div>
-            <p class="font-headline font-bold text-2xl text-cin-red">+2</p>
-            <p class="text-xs text-muted mt-0.5">Años de experiencia</p>
-          </div>
-          <div>
-            <p class="font-headline font-bold text-2xl text-cin-red">10+</p>
-            <p class="text-xs text-muted mt-0.5">Proyectos desarrollados</p>
-          </div>
-          <div>
-            <p class="font-headline font-bold text-2xl text-cin-red"></p>
-            <p class="text-xs text-muted mt-0.5"></p>
-          </div>
-        </div>
+    <!-- Description -->
+    <p
+      class="font-body text-muted text-[0.9rem] leading-[1.8] max-w-[32ch] mb-8"
+      style="animation: hero-fade-up 0.65s 0.5s cubic-bezier(0.16,1,0.3,1) both;"
+    >
+      Creo soluciones robustas y escalables mediante arquitecturas sólidas, utilizando
+      <span class="text-offwhite/90">Java, Python y PostgreSQL</span>.
+    </p>
+
+    <!-- CTAs -->
+    <div
+      class="flex flex-wrap items-center gap-3 mb-14"
+      style="animation: hero-fade-up 0.6s 0.6s cubic-bezier(0.16,1,0.3,1) both;"
+    >
+      <a
+        href="#proyectos"
+        class="group inline-flex items-center gap-3 px-7 py-3.5 bg-cin-red text-white text-xs font-body font-semibold tracking-[0.14em] uppercase hover:bg-deep-red transition-colors duration-200 cursor-pointer"
+      >
+        Ver proyectos
+        <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+      <a
+        href="#contacto"
+        class="inline-flex items-center px-7 py-3.5 text-offwhite/80 text-xs font-body font-medium tracking-[0.14em] uppercase border border-surface hover:border-cin-red/40 hover:text-offwhite transition-colors duration-200 cursor-pointer"
+      >
+        Contactar
+      </a>
+      <a
+        href="/MARIO_YAEL_CV.pdf"
+        download
+        class="inline-flex items-center gap-2 px-3 py-3.5 text-muted/45 text-xs font-body hover:text-muted/70 transition-colors duration-200 cursor-pointer"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        </svg>
+        CV
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div
+      class="flex items-stretch border-t border-surface/50 pt-7"
+      style="animation: hero-fade-up 0.6s 0.72s cubic-bezier(0.16,1,0.3,1) both;"
+    >
+      <div class="pr-7">
+        <p class="font-headline font-bold text-[2.1rem] text-cin-red leading-none">+2</p>
+        <p class="font-body text-[9px] text-muted/40 mt-2 tracking-[0.22em] uppercase">Años exp.</p>
       </div>
+      <div class="w-px bg-surface/50 shrink-0"></div>
+      <div class="px-7">
+        <p class="font-headline font-bold text-[2.1rem] text-cin-red leading-none">10+</p>
+        <p class="font-body text-[9px] text-muted/40 mt-2 tracking-[0.22em] uppercase">Proyectos</p>
+      </div>
+      <div class="w-px bg-surface/50 shrink-0"></div>
+      <div class="pl-7">
+        <p class="font-headline font-bold text-[2.1rem] text-cin-red leading-none">100%</p>
+        <p class="font-body text-[9px] text-muted/40 mt-2 tracking-[0.22em] uppercase">Compromiso</p>
+      </div>
+    </div>
 
-      <!-- Photo / Visual -->
-      <div class="relative flex justify-center lg:justify-end">
-        <div class="relative w-72 h-72 md:w-80 md:h-80">
-          <!-- Rotating dashed ring -->
-          <div class="absolute inset-0 rounded-full animate-spin" style="animation-duration: 20s;">
-            <svg class="w-full h-full" viewBox="0 0 320 320">
-              <circle cx="160" cy="160" r="155" fill="none" stroke="#D84040" stroke-width="1" stroke-dasharray="6 10" opacity="0.4" />
-            </svg>
-          </div>
+    <!-- Scroll indicator -->
+    <div
+      class="absolute bottom-8 left-8 md:left-14 xl:left-20 flex items-center gap-3"
+      aria-hidden="true"
+      style="animation: hero-fade 0.5s 1.1s ease-out both;"
+    >
+      <div class="w-6 h-px bg-cin-red/30"></div>
+      <span class="font-body text-[8px] text-muted/20 tracking-[0.4em] uppercase">Scroll</span>
+    </div>
+  </div>
 
-          <!-- Second ring (counter-rotating) -->
-          <div class="absolute inset-4 rounded-full animate-spin" style="animation-duration: 30s; animation-direction: reverse;">
-            <svg class="w-full h-full" viewBox="0 0 256 256">
-              <circle cx="128" cy="128" r="123" fill="none" stroke="#8E1616" stroke-width="1" stroke-dasharray="3 14" opacity="0.3" />
-            </svg>
-          </div>
+  <!-- ══════════════════════════════════════
+       RIGHT COLUMN — Planet portrait
+  ══════════════════════════════════════ -->
+  <div
+    class="hidden md:flex items-center justify-center relative"
+    aria-hidden="true"
+    style="animation: hero-fade 1.4s 0.3s ease-out both;"
+  >
+    <div class="relative flex items-center justify-center" style="width:340px; height:340px;">
 
-          <!-- Glow -->
-          <div class="absolute inset-8 rounded-full bg-cin-red/10 blur-xl"></div>
+      <!-- Atmosphere glow -->
+      <div class="absolute rounded-full pointer-events-none" style="
+        width: 110%; height: 110%;
+        background: radial-gradient(circle at 38% 38%, rgba(216,64,64,0.28) 0%, rgba(216,64,64,0.06) 50%, transparent 72%);
+        filter: blur(22px);
+      "></div>
 
-          <!-- Photo -->
-          <div class="absolute inset-8 rounded-full bg-surface overflow-hidden border border-cin-red/20">
-            <img
-              src="/foto.jpg"
-              alt="Foto de Mario"
-              class="w-full h-full object-cover"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-            />
-            <!-- Fallback si no hay foto -->
-            <div class="w-full h-full items-center justify-center bg-gradient-to-br from-surface to-obsidian hidden">
-              <span class="font-headline font-bold text-4xl text-cin-red">M</span>
-            </div>
-          </div>
+      <!-- Orbital ring 1 -->
+      <div class="absolute pointer-events-none" style="
+        width: 460px; height: 110px;
+        border: 1px solid rgba(216,64,64,0.30);
+        border-radius: 50%;
+        transform: perspective(700px) rotateX(73deg);
+        animation: spin-slow 24s linear infinite;
+      "></div>
 
-          <!-- Corner accent -->
-          <div class="absolute -bottom-4 -right-4 w-16 h-16 border border-cin-red/20 rounded"></div>
-          <div class="absolute -top-4 -left-4 w-8 h-8 border border-cin-red/30 rounded"></div>
+      <!-- Orbital ring 2 — outer dashed -->
+      <div class="absolute pointer-events-none" style="
+        width: 510px; height: 90px;
+        border: 1px dashed rgba(216,64,64,0.14);
+        border-radius: 50%;
+        transform: perspective(700px) rotateX(73deg);
+        animation: spin-slow 38s linear infinite reverse;
+      "></div>
+
+      <!-- Planet (photo) -->
+      <div class="rounded-full overflow-hidden relative flex-shrink-0" style="width:250px; height:250px; z-index:10;">
+        <img
+          src="/foto.jpg"
+          alt="Mario Gordillo"
+          class="w-full h-full object-cover object-top"
+          style="filter: contrast(1.06) brightness(0.88) saturate(0.95);"
+          loading="eager"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <!-- Fallback -->
+        <div class="w-full h-full bg-surface absolute inset-0 items-center justify-center" style="display:none;">
+          <span class="font-headline font-bold text-cin-red/30 select-none" style="font-size:5rem;">M</span>
         </div>
+        <!-- Sphere shading — depth illusion -->
+        <div class="absolute inset-0 rounded-full pointer-events-none" style="
+          box-shadow:
+            inset -28px -20px 65px rgba(0,0,0,0.60),
+            inset  8px  8px 28px rgba(216,64,64,0.14);
+        "></div>
       </div>
 
     </div>
   </div>
 
-  <!-- Scroll indicator -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-    <span class="text-xs text-muted tracking-widest uppercase">Scroll</span>
-    <div class="w-px h-8 bg-gradient-to-b from-cin-red to-transparent"></div>
-  </div>
 </section>

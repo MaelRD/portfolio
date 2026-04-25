@@ -1,0 +1,211 @@
+---
+---
+
+<!-- Stars live behind everything via z-index: 0 -->
+<div class="stars-root" aria-hidden="true">
+  <!-- Nebula ambient layers -->
+  <div class="nebula-a"></div>
+  <div class="nebula-b"></div>
+
+  <!-- Star particle layers -->
+  <div class="star-layer" id="st-sm-a"></div>
+  <div class="star-layer" id="st-sm-b"></div>
+  <div class="star-layer" id="st-md"></div>
+  <div class="star-layer" id="st-lg"></div>
+
+  <!-- Shooting star -->
+  <div class="shooter" id="shooter"></div>
+</div>
+
+<style>
+  .stars-root {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  /* Nebula gradients — red ambient light sources */
+  .nebula-a {
+    position: absolute;
+    top: -15%;
+    right: -5%;
+    width: 65vw;
+    height: 65vw;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(216, 64, 64, 0.07) 0%,
+      rgba(142, 22, 22, 0.03) 40%,
+      transparent 70%
+    );
+    animation: nebula-drift-a 25s ease-in-out infinite alternate;
+  }
+
+  .nebula-b {
+    position: absolute;
+    bottom: 5%;
+    left: -10%;
+    width: 55vw;
+    height: 55vw;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(180, 40, 40, 0.05) 0%,
+      rgba(100, 20, 20, 0.02) 45%,
+      transparent 70%
+    );
+    animation: nebula-drift-b 32s ease-in-out infinite alternate;
+  }
+
+  @keyframes nebula-drift-a {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(-3vw, 3vh) scale(1.08); }
+  }
+
+  @keyframes nebula-drift-b {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(2vw, -4vh) scale(1.06); }
+  }
+
+  /* Star layers */
+  .star-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .star-layer::before,
+  .star-layer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    background: transparent;
+    /* box-shadow values injected by JS */
+  }
+
+  /* Medium stars: slightly larger element */
+  #st-md::before {
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+  }
+
+  /* Large accent stars: soft glow */
+  #st-lg::before {
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    filter: blur(0.4px);
+  }
+
+  /* Twinkling — each group has its own rhythm */
+  @keyframes twinkle-a {
+    0%   { opacity: 0.9; }
+    35%  { opacity: 0.15; }
+    60%  { opacity: 0.85; }
+    100% { opacity: 0.7; }
+  }
+  @keyframes twinkle-b {
+    0%   { opacity: 0.5; }
+    40%  { opacity: 1; }
+    70%  { opacity: 0.1; }
+    100% { opacity: 0.8; }
+  }
+  @keyframes twinkle-c {
+    0%   { opacity: 0.8; }
+    50%  { opacity: 0.25; }
+    100% { opacity: 0.95; }
+  }
+  @keyframes twinkle-d {
+    0%   { opacity: 1; }
+    30%  { opacity: 0.5; }
+    65%  { opacity: 0.9; }
+    100% { opacity: 0.6; }
+  }
+
+  #st-sm-a::before { animation: twinkle-a 4.2s ease-in-out infinite; }
+  #st-sm-a::after  { animation: twinkle-b 6.8s ease-in-out 1.5s infinite; }
+  #st-sm-b::before { animation: twinkle-a 5.5s ease-in-out 0.8s infinite; }
+  #st-sm-b::after  { animation: twinkle-c 7.1s ease-in-out 3s  infinite; }
+  #st-md::before   { animation: twinkle-c 5.0s ease-in-out 2s  infinite; }
+  #st-lg::before   { animation: twinkle-d 8.5s ease-in-out 1s  infinite; }
+
+  /* Shooting star */
+  .shooter {
+    position: absolute;
+    top: 18%;
+    left: -5%;
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(216, 64, 64, 0.85),
+      rgba(255, 210, 210, 0.9),
+      transparent
+    );
+    transform: rotate(18deg);
+    opacity: 0;
+    animation: shoot 1.8s cubic-bezier(0.16, 1, 0.3, 1) 9s infinite;
+  }
+
+  @keyframes shoot {
+    0%   { opacity: 0;   transform: translate(-50px, -30px)  rotate(18deg); }
+    6%   { opacity: 1; }
+    90%  { opacity: 0.4; }
+    100% { opacity: 0;   transform: translate(700px, 280px) rotate(18deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star-layer::before,
+    .star-layer::after,
+    .nebula-a,
+    .nebula-b,
+    .shooter {
+      animation: none !important;
+      opacity: 0.5 !important;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    function genShadow(count, maxX, maxY, redBias) {
+      var arr = [];
+      for (var i = 0; i < count; i++) {
+        var x = Math.floor(Math.random() * maxX);
+        var y = Math.floor(Math.random() * maxY);
+        var a = (0.2 + Math.random() * 0.8).toFixed(2);
+        var isRed = Math.random() < redBias;
+        var color;
+        if (isRed) {
+          var r = 180 + Math.floor(Math.random() * 66);
+          var g = 45  + Math.floor(Math.random() * 70);
+          var b = 45  + Math.floor(Math.random() * 70);
+          color = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+        } else {
+          var v = 215 + Math.floor(Math.random() * 40);
+          var w = v - 12;
+          color = 'rgba(' + v + ',' + w + ',' + w + ',' + a + ')';
+        }
+        arr.push(x + 'px ' + y + 'px ' + color);
+      }
+      return arr.join(',');
+    }
+
+    var W = Math.max(window.innerWidth  + 200, 1600);
+    var H = Math.max(window.innerHeight + 200, 1000);
+
+    var s = document.createElement('style');
+    s.textContent =
+      '#st-sm-a::before{box-shadow:' + genShadow(160, W, H, 0.45) + '}' +
+      '#st-sm-a::after {box-shadow:' + genShadow(120, W, H, 0.40) + '}' +
+      '#st-sm-b::before{box-shadow:' + genShadow(140, W, H, 0.50) + '}' +
+      '#st-sm-b::after {box-shadow:' + genShadow(100, W, H, 0.35) + '}' +
+      '#st-md::before  {box-shadow:' + genShadow(70,  W, H, 0.55) + '}' +
+      '#st-lg::before  {box-shadow:' + genShadow(28,  W, H, 0.65) + '}';
+    document.head.appendChild(s);
+  })();
+</script>

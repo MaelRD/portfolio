@@ -4,16 +4,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        obsidian: '#1D1616',
+        obsidian: '#0F0A0A',
         'deep-red': '#8E1616',
         'cin-red': '#D84040',
         offwhite: '#EEEEEE',
         muted: '#A3A3A3',
-        surface: '#2A2A2A',
+        surface: '#1E1414',
       },
       fontFamily: {
-        headline: ['Manrope', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
+        headline: ['Chakra Petch', 'sans-serif'],
+        body: ['Jost', 'sans-serif'],
+        orbit: ['Orbitron', 'monospace'],
       },
       transitionTimingFunction: {
         smooth: 'cubic-bezier(0.4,0,0.2,1)',

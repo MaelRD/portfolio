@@ -4,7 +4,11 @@
       "Bash(npx astro:*)",
       "Bash(npm install:*)",
       "Bash(npm run:*)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(sed -i '' 's/tracking-tighter/tracking-wide/g' /Users/mario/Proyectos/portfolio/src/components/Experience.astro /Users/mario/Proyectos/portfolio/src/components/Stack.astro /Users/mario/Proyectos/portfolio/src/components/Contact.astro /Users/mario/Proyectos/portfolio/src/components/Projects.astro)",
+      "Bash(sed -i '' 's/tracking-tighter/tracking-normal/g' /Users/mario/Proyectos/portfolio/src/components/Navbar.astro)"
     ]
   }
 }
