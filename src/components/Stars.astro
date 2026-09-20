@@ -1,20 +1,47 @@
 ---
+// Decorative background: nebula gradients, a starfield and shooting stars.
+// Purely presentational — no language dependency, so it stays outside the
+// React island and never re-renders.
+const shooters = [
+  { top: "6%", left: "-12%", len: "180px", angle: "24deg", dur: "17s", delay: "2s" },
+  { top: "-4%", left: "24%", len: "140px", angle: "34deg", dur: "23s", delay: "9s" },
+  { top: "18%", left: "-6%", len: "220px", angle: "18deg", dur: "31s", delay: "16s" },
+  { top: "2%", left: "52%", len: "160px", angle: "40deg", dur: "43s", delay: "27s" },
+  { top: "30%", left: "8%", len: "120px", angle: "28deg", dur: "37s", delay: "34s" },
+  // Rare, brighter/longer streak — a once-in-a-while flourish (the "delight"
+  // tier: infrequent enough not to compete with the four steady ones above)
+  // rather than a sixth copy of the same intensity.
+  { top: "12%", left: "40%", len: "260px", angle: "31deg", dur: "51s", delay: "44s", bright: true },
+];
 ---
 
-<!-- Stars live behind everything via z-index: 0 -->
 <div class="stars-root" aria-hidden="true">
-  <!-- Nebula ambient layers -->
-  <div class="nebula-a"></div>
-  <div class="nebula-b"></div>
+  <!-- base nebula field -->
+  <div class="l3-field"></div>
+  <!-- milky band -->
+  <div class="milky-band"></div>
+  <!-- drifting nebula clouds -->
+  <div class="nebula nebula-a"></div>
+  <div class="nebula nebula-b"></div>
+  <div class="nebula nebula-c"></div>
+  <!-- vignette -->
+  <div class="vignette"></div>
 
-  <!-- Star particle layers -->
-  <div class="star-layer" id="st-sm-a"></div>
-  <div class="star-layer" id="st-sm-b"></div>
-  <div class="star-layer" id="st-md"></div>
-  <div class="star-layer" id="st-lg"></div>
+  <!-- shooting stars -->
+  <div class="shooters">
+    {shooters.map((sh) => (
+      <span
+        class={sh.bright ? "shooter shooter-bright" : "shooter"}
+        style={`top:${sh.top}; left:${sh.left}; width:${sh.len}; rotate:${sh.angle}; animation-duration:${sh.dur}; animation-delay:${sh.delay};`}
+      />
+    ))}
+  </div>
 
-  <!-- Shooting star -->
-  <div class="shooter" id="shooter"></div>
+  <!-- star particle layers -->
+  <div class="star-layer" id="st-dust"></div>
+  <div class="star-layer" id="st-mid"></div>
+  <div class="star-layer" id="st-bright"></div>
+  <div class="star-layer" id="st-blue"></div>
 </div>
 
 <style>
@@ -24,188 +51,249 @@
     pointer-events: none;
     z-index: 0;
     overflow: hidden;
+    background: linear-gradient(#05050C, #050509 46%, #06060F);
+    /* --scroll-y itself is now declared on :root (see global.css) and written
+       there by the script below, so it also reaches the Hero React island
+       for its own scroll-parallax tie-in. Layers below just read it through
+       the independent `translate` property so it composites alongside their
+       existing `transform` keyframes instead of fighting them. */
   }
 
-  /* Nebula gradients — red ambient light sources */
-  .nebula-a {
-    position: absolute;
-    top: -15%;
-    right: -5%;
-    width: 65vw;
-    height: 65vw;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(216, 64, 64, 0.07) 0%,
-      rgba(142, 22, 22, 0.03) 40%,
-      transparent 70%
-    );
-    animation: nebula-drift-a 25s ease-in-out infinite alternate;
-  }
-
-  .nebula-b {
-    position: absolute;
-    bottom: 5%;
-    left: -10%;
-    width: 55vw;
-    height: 55vw;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(180, 40, 40, 0.05) 0%,
-      rgba(100, 20, 20, 0.02) 45%,
-      transparent 70%
-    );
-    animation: nebula-drift-b 32s ease-in-out infinite alternate;
-  }
-
-  @keyframes nebula-drift-a {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(-3vw, 3vh) scale(1.08); }
-  }
-
-  @keyframes nebula-drift-b {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(2vw, -4vh) scale(1.06); }
-  }
-
-  /* Star layers */
-  .star-layer {
+  .l3-field {
     position: absolute;
     inset: 0;
+    background:
+      radial-gradient(1300px 760px at 84% -8%, rgba(124,58,237,.27), transparent 62%),
+      radial-gradient(900px 560px at 2% 18%, rgba(59,130,246,.16), transparent 60%),
+      radial-gradient(760px 620px at 18% 88%, rgba(139,92,246,.18), transparent 62%),
+      radial-gradient(900px 560px at 92% 92%, rgba(236,72,153,.09), transparent 62%),
+      radial-gradient(1000px 520px at 96% 66%, rgba(34,211,238,.09), transparent 58%);
   }
 
+  .milky-band {
+    position: absolute;
+    top: -14%;
+    left: -24%;
+    width: 148%;
+    height: 128%;
+    transform: rotate(-19deg);
+    /* Farthest layer: barely drifts as you scroll. Clamped so the offset
+       settles instead of growing unbounded on a long page. */
+    translate: 0 clamp(-14px, calc(var(--scroll-y, 0) * -0.008px), 0px);
+    opacity: .5;
+    filter: blur(26px);
+    background: linear-gradient(to bottom, transparent 40%, rgba(196,181,253,.07) 47%, rgba(233,213,255,.11) 50%, rgba(147,197,253,.07) 53%, transparent 60%);
+  }
+
+  .nebula {
+    position: absolute;
+    border-radius: 50%;
+    animation: mael-nebula 110s ease-in-out infinite;
+  }
+  .nebula-a {
+    top: -12%; right: -8%; width: 640px; height: 640px;
+    filter: blur(70px);
+    background: radial-gradient(circle at 42% 38%, rgba(124,58,237,.30), rgba(76,29,149,.14) 52%, transparent 72%);
+    animation-duration: 90s;
+    translate: 0 clamp(-40px, calc(var(--scroll-y, 0) * -0.018px), 0px);
+  }
+  .nebula-b {
+    bottom: -16%; left: -10%; width: 560px; height: 560px;
+    filter: blur(80px);
+    background: radial-gradient(circle at 56% 44%, rgba(59,130,246,.20), rgba(30,58,138,.10) 54%, transparent 74%);
+    animation-duration: 130s;
+    animation-direction: reverse;
+    translate: 0 clamp(-32px, calc(var(--scroll-y, 0) * -0.014px), 0px);
+  }
+  .nebula-c {
+    top: 38%; left: 46%; width: 420px; height: 420px;
+    filter: blur(90px);
+    background: radial-gradient(circle at 50% 50%, rgba(167,139,250,.14), transparent 70%);
+    animation-duration: 110s;
+    translate: 0 clamp(-48px, calc(var(--scroll-y, 0) * -0.022px), 0px);
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(130% 100% at 50% 40%, transparent 42%, rgba(5,5,9,.45) 100%);
+  }
+
+  .shooters { position: absolute; inset: 0; overflow: hidden; }
+  .shooter {
+    position: absolute;
+    height: 1px;
+    transform-origin: 0 50%;
+    background: linear-gradient(90deg, transparent, rgba(233,213,255,.9) 62%, #FFFFFF);
+    box-shadow: 0 0 6px 1px rgba(196,181,253,.5);
+    opacity: 0;
+    animation-name: mael-shoot;
+    animation-timing-function: cubic-bezier(.22,.7,.2,1);
+    animation-iteration-count: infinite;
+  }
+  /* One rare, brighter/thicker streak for depth variety among otherwise
+     uniform shooters — same keyframe and cost, just a stronger paint. */
+  .shooter-bright {
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(224,242,254,.95) 58%, #FFFFFF);
+    box-shadow: 0 0 10px 2px rgba(191,219,254,.65);
+  }
+
+  .star-layer {
+    position: absolute;
+    inset: -80px;
+    overflow: hidden;
+  }
+  /* Each layer is one generated dot-field duplicated onto ::before/::after,
+     stacked exactly one canvas-height apart (see --star-loop-h below), then
+     both looped in the same direction via `mael-flight` — a real, continuous
+     "flying through the field" motion instead of the few-px wobble a single
+     alternating layer gives. Near/bright layers loop faster than far/dust
+     ones, so the different speeds themselves read as depth (parallax),
+     exactly like looking out at stars while moving. */
   .star-layer::before,
   .star-layer::after {
     content: '';
     position: absolute;
-    top: 0;
     left: 0;
-    width: 1px;
-    height: 1px;
-    background: transparent;
-    /* box-shadow values injected by JS */
-  }
-
-  /* Medium stars: slightly larger element */
-  #st-md::before {
-    width: 2px;
-    height: 2px;
     border-radius: 50%;
   }
+  .star-layer::before { top: 0; }
+  .star-layer::after { top: var(--star-loop-h, 1000px); }
 
-  /* Large accent stars: soft glow */
-  #st-lg::before {
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    filter: blur(0.4px);
-  }
+  /* Depth parallax on scroll: the outer .star-layer div carries the
+     scroll-linked `translate` (cheap, one custom-property read), while its
+     ::before/::after keep animating `transform` for flight/twinkle
+     independently — the two properties composite without either restarting
+     the other's keyframes. Each offset is clamped well inside the layer's
+     -80px overflow buffer (see `.star-layer { inset: -80px }` above) so a
+     long page can never translate the generated star field far enough to
+     expose its edge. */
+  #st-dust { translate: 0 clamp(-24px, calc(var(--scroll-y, 0) * -0.01px), 0px); }
+  #st-mid { translate: 0 clamp(-36px, calc(var(--scroll-y, 0) * -0.02px), 0px); }
+  #st-bright { translate: 0 clamp(-48px, calc(var(--scroll-y, 0) * -0.03px), 0px); }
+  #st-blue { translate: 0 clamp(-42px, calc(var(--scroll-y, 0) * -0.026px), 0px); }
 
-  /* Twinkling — each group has its own rhythm */
-  @keyframes twinkle-a {
-    0%   { opacity: 0.9; }
-    35%  { opacity: 0.15; }
-    60%  { opacity: 0.85; }
-    100% { opacity: 0.7; }
+  #st-dust::before, #st-dust::after {
+    width: 1px; height: 1px; background: #F8FAFC;
+    animation: mael-flight 260s linear infinite, mael-twinkle-soft 15s ease-in-out infinite;
   }
-  @keyframes twinkle-b {
-    0%   { opacity: 0.5; }
-    40%  { opacity: 1; }
-    70%  { opacity: 0.1; }
-    100% { opacity: 0.8; }
-  }
-  @keyframes twinkle-c {
-    0%   { opacity: 0.8; }
-    50%  { opacity: 0.25; }
-    100% { opacity: 0.95; }
-  }
-  @keyframes twinkle-d {
-    0%   { opacity: 1; }
-    30%  { opacity: 0.5; }
-    65%  { opacity: 0.9; }
-    100% { opacity: 0.6; }
-  }
+  #st-dust::after { animation-delay: 0s, 7.5s; }
 
-  #st-sm-a::before { animation: twinkle-a 4.2s ease-in-out infinite; }
-  #st-sm-a::after  { animation: twinkle-b 6.8s ease-in-out 1.5s infinite; }
-  #st-sm-b::before { animation: twinkle-a 5.5s ease-in-out 0.8s infinite; }
-  #st-sm-b::after  { animation: twinkle-c 7.1s ease-in-out 3s  infinite; }
-  #st-md::before   { animation: twinkle-c 5.0s ease-in-out 2s  infinite; }
-  #st-lg::before   { animation: twinkle-d 8.5s ease-in-out 1s  infinite; }
-
-  /* Shooting star */
-  .shooter {
-    position: absolute;
-    top: 18%;
-    left: -5%;
-    width: 160px;
-    height: 1px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(216, 64, 64, 0.85),
-      rgba(255, 210, 210, 0.9),
-      transparent
-    );
-    transform: rotate(18deg);
-    opacity: 0;
-    animation: shoot 1.8s cubic-bezier(0.16, 1, 0.3, 1) 9s infinite;
+  #st-mid::before, #st-mid::after {
+    width: 1.5px; height: 1.5px; background: #F8FAFC;
+    animation: mael-flight 150s linear infinite, mael-twinkle 9.5s ease-in-out infinite;
   }
+  #st-mid::before { animation-delay: 0s, 1.5s; }
+  #st-mid::after { animation-delay: 0s, 5.7s; }
 
-  @keyframes shoot {
-    0%   { opacity: 0;   transform: translate(-50px, -30px)  rotate(18deg); }
-    6%   { opacity: 1; }
-    90%  { opacity: 0.4; }
-    100% { opacity: 0;   transform: translate(700px, 280px) rotate(18deg); }
+  #st-bright::before, #st-bright::after {
+    width: 2.5px; height: 2.5px; background: #E9D5FF;
+    animation: mael-flight 70s linear infinite, mael-twinkle 7s ease-in-out infinite;
   }
+  #st-bright::before { animation-delay: 0s, 0s; }
+  #st-bright::after { animation-delay: 0s, 3.4s; }
+
+  #st-blue::before, #st-blue::after {
+    width: 2px; height: 2px; background: #BFDBFE;
+    animation: mael-flight 95s linear infinite, mael-twinkle 12.5s ease-in-out infinite;
+  }
+  #st-blue::before { animation-delay: 0s, 4s; }
+  #st-blue::after { animation-delay: 0s, 9.8s; }
 
   @media (prefers-reduced-motion: reduce) {
-    .star-layer::before,
-    .star-layer::after,
-    .nebula-a,
-    .nebula-b,
-    .shooter {
+    .nebula, .shooter, .star-layer::before, .star-layer::after {
       animation: none !important;
-      opacity: 0.5 !important;
+      opacity: .6 !important;
+    }
+    .milky-band, .nebula, .star-layer {
+      translate: none !important;
     }
   }
 </style>
 
 <script>
   (function () {
-    function genShadow(count, maxX, maxY, redBias) {
-      var arr = [];
-      for (var i = 0; i < count; i++) {
-        var x = Math.floor(Math.random() * maxX);
-        var y = Math.floor(Math.random() * maxY);
-        var a = (0.2 + Math.random() * 0.8).toFixed(2);
-        var isRed = Math.random() < redBias;
-        var color;
-        if (isRed) {
-          var r = 180 + Math.floor(Math.random() * 66);
-          var g = 45  + Math.floor(Math.random() * 70);
-          var b = 45  + Math.floor(Math.random() * 70);
-          color = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-        } else {
-          var v = 215 + Math.floor(Math.random() * 40);
-          var w = v - 12;
-          color = 'rgba(' + v + ',' + w + ',' + w + ',' + a + ')';
-        }
-        arr.push(x + 'px ' + y + 'px ' + color);
+    function genShadow(count: number, w: number, h: number, rgb: string, aMin: number, aMax: number) {
+      const out: string[] = [];
+      for (let i = 0; i < count; i++) {
+        const x = Math.round(Math.random() * w);
+        const y = Math.round(Math.random() * h);
+        const a = (aMin + Math.random() * (aMax - aMin)).toFixed(2);
+        out.push(`${x}px ${y}px rgba(${rgb},${a})`);
       }
-      return arr.join(',');
+      return out.join(',');
     }
 
-    var W = Math.max(window.innerWidth  + 200, 1600);
-    var H = Math.max(window.innerHeight + 200, 1000);
+    const w = Math.max(window.innerWidth + 160, 1600);
+    const h = Math.max(window.innerHeight + 160, 1000);
 
-    var s = document.createElement('style');
-    s.textContent =
-      '#st-sm-a::before{box-shadow:' + genShadow(160, W, H, 0.45) + '}' +
-      '#st-sm-a::after {box-shadow:' + genShadow(120, W, H, 0.40) + '}' +
-      '#st-sm-b::before{box-shadow:' + genShadow(140, W, H, 0.50) + '}' +
-      '#st-sm-b::after {box-shadow:' + genShadow(100, W, H, 0.35) + '}' +
-      '#st-md::before  {box-shadow:' + genShadow(70,  W, H, 0.55) + '}' +
-      '#st-lg::before  {box-shadow:' + genShadow(28,  W, H, 0.65) + '}';
-    document.head.appendChild(s);
+    // ::before and ::after get their OWN random field (not the same pattern
+    // twice) — the continuous `mael-flight` loop only needs the two tiles to
+    // share a height to be seamless, not identical content, so this removes
+    // any "déjà vu" repeat without costing anything extra.
+    const rules = [
+      ['#st-dust::before', genShadow(900, w, h, '248,250,252', 0.10, 0.36)],
+      ['#st-dust::after', genShadow(900, w, h, '248,250,252', 0.10, 0.36)],
+      ['#st-mid::before', genShadow(320, w, h, '248,250,252', 0.36, 0.72)],
+      ['#st-mid::after', genShadow(320, w, h, '248,250,252', 0.36, 0.72)],
+      ['#st-bright::before', genShadow(46, w, h, '233,213,255', 0.7, 1)],
+      ['#st-bright::after', genShadow(46, w, h, '233,213,255', 0.7, 1)],
+      ['#st-blue::before', genShadow(34, w, h, '191,219,254', 0.5, 0.85)],
+      ['#st-blue::after', genShadow(34, w, h, '191,219,254', 0.5, 0.85)],
+    ] as const;
+
+    const style = document.createElement('style');
+    style.textContent = rules.map(([sel, sh]) => `${sel}{box-shadow:${sh}}`).join('');
+    document.head.appendChild(style);
+
+    // Loop distance for `mael-flight` (see global.css) must match the canvas
+    // height the dots were scattered across, or the ::before/::after tiles
+    // won't line up edge-to-edge and the loop will show a seam.
+    document.documentElement.style.setProperty('--star-loop-h', `${h}px`);
+  })();
+
+  // Scroll-linked depth parallax for the background layers (see the `translate`
+  // rules above) and for the Hero orbit system (`.mael-orbit-wrap` in
+  // global.css). One passive scroll listener that only *schedules* a single
+  // rAF write per frame — never reads layout (`window.scrollY` is a cheap
+  // scroll-position read, not a `getBoundingClientRect`-style forced reflow)
+  // and never touches individual elements: everything downstream reads the
+  // one `--scroll-y` custom property through CSS. The rAF only runs while a
+  // scroll is actually in flight, not as a perpetual per-frame loop. Written
+  // on :root (not `.stars-root`) so both the fixed background and the Hero
+  // React island — a separate DOM subtree — inherit the same value from one
+  // listener instead of running a second one.
+  (function () {
+    let reduce = false;
+    try {
+      reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch {
+      /* matchMedia unavailable */
+    }
+    if (reduce) return;
+
+    const root = document.documentElement;
+
+    let ticking = false;
+    let lastY = -1;
+
+    function applyScroll() {
+      const y = window.scrollY || 0;
+      if (y !== lastY) {
+        root.style.setProperty('--scroll-y', y.toFixed(1));
+        lastY = y;
+      }
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(applyScroll);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
   })();
 </script>
