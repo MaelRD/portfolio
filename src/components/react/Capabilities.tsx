@@ -4,9 +4,10 @@ import Reveal from "./Reveal";
 // Ring size/rotation and planet size/shadow vary slightly per column, matching
 // the source design's hand-tuned values rather than one repeated shape.
 const RINGS: { ringW: number; ringH: number; rotate: number; planet: number; shadow: string; dotDelay: number }[] = [
-  { ringW: 150, ringH: 64, rotate: -16, planet: 104, shadow: "0 0 60px -8px rgba(37,99,235,.85)", dotDelay: 6 },
   { ringW: 168, ringH: 70, rotate: 12, planet: 92, shadow: "0 0 58px -10px rgba(56,189,248,.8)", dotDelay: 7 },
+  { ringW: 150, ringH: 64, rotate: -16, planet: 104, shadow: "0 0 60px -8px rgba(37,99,235,.85)", dotDelay: 6 },
   { ringW: 158, ringH: 60, rotate: -8, planet: 98, shadow: "0 0 60px -8px rgba(139,92,246,.85)", dotDelay: 9 },
+  { ringW: 152, ringH: 66, rotate: 8, planet: 90, shadow: "0 0 58px -9px rgba(59,130,246,.8)", dotDelay: 8 },
   { ringW: 146, ringH: 74, rotate: 20, planet: 86, shadow: "0 0 56px -10px rgba(192,38,211,.7)", dotDelay: 6.5 },
 ];
 
@@ -36,7 +37,7 @@ export default function Capabilities({ lang }: { lang: Lang }) {
         {CAPABILITIES.map((col, i) => {
           const r = RINGS[i];
           return (
-            <Reveal key={col.title} delay={Math.min(i, 4) * 70}>
+            <Reveal key={col.title.en} delay={Math.min(i, 4) * 70}>
               <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                 <div aria-hidden="true" style={{ position: "relative", height: 150, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <span
@@ -76,7 +77,7 @@ export default function Capabilities({ lang }: { lang: Lang }) {
                   <span aria-hidden="true" style={{ color: col.accent, fontSize: 16 }}>
                     {col.icon}
                   </span>
-                  <h3 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 500, color: "#F8FAFC" }}>{col.title}</h3>
+                  <h3 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 500, color: "#F8FAFC" }}>{col.title[lang]}</h3>
                 </div>
                 <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 9, fontSize: 13.5, color: "#94A3B8" }}>
                   {col.items.map((item) => (

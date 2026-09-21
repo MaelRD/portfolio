@@ -15,49 +15,6 @@ const mockShellStyle: CSSProperties = {
 
 const monoTiny: CSSProperties = { fontFamily: "'Geist Mono',monospace", fontSize: 8.5, color: "#94A3B8" };
 
-function GbsMock({ lang }: { lang: Lang }) {
-  const bars = [30, 55, 40, 72, 48, 88, 62];
-  return (
-    <div style={{ ...mockShellStyle, display: "grid", gridTemplateColumns: "96px 1fr" }}>
-      <div
-        style={{
-          borderRight: "1px solid rgba(148,163,184,.10)",
-          padding: "12px 10px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 11,
-          ...monoTiny,
-        }}
-      >
-        <span>▤ Projects</span>
-        <span>▤ Quotations</span>
-        <span>▤ Clients</span>
-        <span>▤ Products</span>
-        <span>▤ Reports</span>
-      </div>
-      <div style={{ padding: "14px 14px 0", display: "flex", flexDirection: "column", gap: 6 }}>
-        <strong style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 13.5, fontWeight: 500, color: "#F8FAFC", lineHeight: 1.35 }}>
-          {lang === "en" ? "From opportunity to quotation, faster." : "De la oportunidad a la cotización, más rápido."}
-        </strong>
-        <span style={{ fontSize: 10, color: "#64748B" }}>Configure · Calculate · Deliver</span>
-        <div style={{ marginTop: "auto", display: "flex", alignItems: "flex-end", gap: 4, height: 62 }}>
-          {bars.map((h, i) => (
-            <span
-              key={i}
-              style={{
-                flex: 1,
-                height: `${h}%`,
-                background: i % 3 === 2 ? "linear-gradient(180deg,#A78BFA,#7042F8)" : i % 2 === 0 ? "linear-gradient(180deg,#38BDF8,#2563EB)" : "linear-gradient(180deg,#8B5CF6,#4F46E5)",
-                borderRadius: "2px 2px 0 0",
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function LayoutMock() {
   const nodes = [
     { label: "Web App", active: false },
@@ -189,7 +146,6 @@ function CrisolMock({ lang }: { lang: Lang }) {
 }
 
 function ProjectMock({ project, lang }: { project: Project; lang: Lang }) {
-  if (project.visual === "gbs") return <GbsMock lang={lang} />;
   if (project.visual === "layout") return <LayoutMock />;
   return <CrisolMock lang={lang} />;
 }
@@ -248,10 +204,10 @@ function ProjectCard({ project, lang, delay }: { project: Project; lang: Lang; d
   );
 }
 
-export default function Work({ lang }: { lang: Lang }) {
+export default function OtherProjects({ lang }: { lang: Lang }) {
   const h = SECTION_HEADERS.work;
   return (
-    <section id="work" style={{ scrollMarginTop: 100, padding: "clamp(50px,7vh,90px) clamp(20px,5vw,80px) clamp(60px,9vh,110px)" }}>
+    <section id="work-other" style={{ scrollMarginTop: 100, padding: "0 clamp(20px,5vw,80px) clamp(60px,9vh,110px)" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 18, marginBottom: 40 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <h2 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: "clamp(20px,2.2vw,26px)", fontWeight: 500, letterSpacing: ".22em", color: "#F8FAFC" }}>
