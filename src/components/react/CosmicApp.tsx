@@ -1,34 +1,44 @@
 import { useEffect, useState } from "react";
-import type { Lang } from "../../data/content";
+import { META, type Lang } from "../../data/content";
 import Header from "./Header";
 import Hero from "./Hero";
-import FeaturedProject from "./FeaturedProject";
-import OtherProjects from "./OtherProjects";
-import Experience from "./Experience";
+import Projects from "./Projects";
 import Process from "./Process";
-import Capabilities from "./Capabilities";
+import Experience from "./Experience";
+import { SoftSkills, TechnicalSkills } from "./Skills";
 import About from "./About";
-import ContactFooter from "./ContactFooter";
+import ContactFooter, { Footer } from "./ContactFooter";
 
-const SECTION_IDS = ["hero", "work", "work-other", "experience", "process", "capabilities", "about", "contact"];
+// Sections observed for the active nav item. Soft skills live under the
+// "Skills" nav entry, so they report as `skills`.
+const SECTION_IDS = ["hero", "projects", "process", "experience", "skills", "soft-skills", "about", "contact"];
+const NAV_ALIAS: Record<string, string> = { "soft-skills": "skills" };
 
 export default function CosmicApp() {
   const [lang, setLangState] = useState<Lang>("en");
   const [active, setActive] = useState("hero");
 
-  // Resolve a persisted language choice after mount so the server-rendered
-  // and first client render always match (avoids a hydration mismatch).
+  // Resolve the language after mount so the server-rendered and first client
+  // render always match (avoids a hydration mismatch): a saved choice wins,
+  // otherwise follow the browser's language.
   useEffect(() => {
+    let next: Lang | null = null;
     try {
       const saved = window.localStorage.getItem("mael.lang");
-      if (saved === "es" || saved === "en") setLangState(saved);
+      if (saved === "es" || saved === "en") next = saved;
     } catch {
       /* localStorage unavailable */
     }
+    if (!next && navigator.language?.toLowerCase().startsWith("es")) next = "es";
+    if (next) setLangState(next);
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = lang;
+    document.title = META.title;
+    document.querySelector('meta[name="description"]')?.setAttribute("content", META.description[lang]);
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", META.description[lang]);
+    document.querySelector('meta[property="og:locale"]')?.setAttribute("content", lang === "es" ? "es_MX" : "en_US");
   }, [lang]);
 
   const setLang = (l: Lang) => {
@@ -44,31 +54,41 @@ export default function CosmicApp() {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
+          if (entry.isIntersecting) setActive(NAV_ALIAS[entry.target.id] ?? entry.target.id);
         });
       },
-      { rootMargin: "-45% 0px -50% 0px" }
+      { rootMargin: "-40% 0px -55% 0px" },
     );
     SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
       if (el) io.observe(el);
     });
-    return () => io.disconnect();
+    // The contact section is short and sits at the very bottom, so it may
+    // never cross the observer band — mark it active once the page bottoms out.
+    const onScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) setActive("contact");
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   return (
     <>
       <Header lang={lang} setLang={setLang} active={active} />
-      <main id="top" style={{ position: "relative", zIndex: 10 }}>
+      <main id="main" tabIndex={-1} style={{ position: "relative", zIndex: 10 }}>
         <Hero lang={lang} />
-        <FeaturedProject lang={lang} />
-        <OtherProjects lang={lang} />
-        <Experience lang={lang} />
+        <Projects lang={lang} />
         <Process lang={lang} />
-        <Capabilities lang={lang} />
+        <Experience lang={lang} />
+        <TechnicalSkills lang={lang} />
+        <SoftSkills lang={lang} />
         <About lang={lang} />
         <ContactFooter lang={lang} />
       </main>
+      <Footer lang={lang} />
     </>
   );
 }

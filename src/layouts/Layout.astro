@@ -2,17 +2,34 @@
 import "../styles/global.css";
 import Stars from "../components/Stars.astro";
 import CosmicBackdrop from "../components/CosmicBackdrop.astro";
-import Boot from "../components/Boot.astro";
+import { CONTACT, META } from "../data/content";
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const {
-  title = "Mario Yael Gordillo — Software Engineer",
-  description = "Software engineer building backend systems, business apps and ERP integrations with Java, Quarkus, Angular and Odoo.",
-} = Astro.props;
+// The page is server-rendered in English; CosmicApp switches <html lang>,
+// the description and og:locale on the client when Spanish is active.
+const { title = META.title, description = META.description.en } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? CONTACT.site).href;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  url: canonical,
+  mainEntity: {
+    "@type": "Person",
+    name: "Mario Yael Gordillo García",
+    alternateName: "MAEL",
+    jobTitle: "Full Stack Developer",
+    url: CONTACT.site,
+    email: `mailto:${CONTACT.email}`,
+    sameAs: [CONTACT.github],
+    affiliation: { "@type": "CollegeOrUniversity", name: "UPIICSA — Instituto Politécnico Nacional" },
+    knowsAbout: ["Full Stack Development", "Backend Development", "Databases", "System Integration", "Java", "Quarkus", "Python", "Angular", "React", "PostgreSQL"],
+  },
+};
 ---
 
 <!doctype html>
@@ -20,64 +37,96 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content="Mario Yael Gordillo García" />
+    <meta name="theme-color" content="#030014" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content="MAEL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="es_MX" />
+    <meta property="profile:first_name" content="Mario Yael" />
+    <meta property="profile:last_name" content="Gordillo García" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body class="bg-bg text-ink">
     <!-- Starfield renders below everything -->
     <Stars />
     <!-- Grid/noise/glow texture layer, above the starfield -->
     <CosmicBackdrop />
-    <!-- Boot splash, shown once per session -->
-    <Boot />
     <!-- Content sits above the background -->
     <div class="relative" style="z-index: 1;">
       <slot />
     </div>
 
-    <!-- Lenis smooth scroll, optional enhancement — never blocks native scroll -->
     <script>
       import Lenis from 'lenis';
 
+      // Lenis smooth scroll is an optional enhancement: skipped entirely for
+      // visitors who prefer reduced motion, and native scroll keeps working
+      // if it fails to start.
+      let reduce = false;
       try {
-        // lerp 0.1 is Lenis's own documented default — the previous 0.07 over-smoothed
-        // the wheel/touch response, making scroll feel laggy/disconnected from input
-        // (each frame only closes 7% of the remaining distance instead of 10%).
-        const lenis = new Lenis({ lerp: 0.1, smoothWheel: true, touchMultiplier: 1.4 });
-
-        function raf(time: number) {
-          lenis.raf(time);
-          requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-
-        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-          anchor.addEventListener('click', (e) => {
-            const id = (anchor as HTMLAnchorElement).getAttribute('href')!;
-            if (!id || id === '#') return;
-            const target = document.querySelector(id);
-            if (!target) return;
-            e.preventDefault();
-            const header = document.getElementById('site-nav');
-            const offset = -(header?.getBoundingClientRect().height ?? 60);
-            try {
-              lenis.scrollTo(target as HTMLElement, { offset, duration: 1.2 });
-            } catch {}
-          });
-        });
-      } catch (err) {
-        console.warn('Lenis init failed, using native scroll', err);
-        // Only reach for CSS smooth-scroll as a fallback when Lenis isn't driving
-        // scroll — with Lenis active it already applies `behavior: "instant"` on
-        // every frame internally, so leaving `scroll-behavior: smooth` on <html>
-        // globally just adds a second, uncoordinated smoothing pass for anything
-        // Lenis doesn't intercept (keyboard scroll, scrollIntoView, etc).
-        document.documentElement.style.scrollBehavior = 'smooth';
+        reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch {
+        /* matchMedia unavailable */
       }
+
+      let lenis: Lenis | null = null;
+      if (!reduce) {
+        try {
+          lenis = new Lenis({ lerp: 0.1, smoothWheel: true, touchMultiplier: 1.4 });
+          const raf = (time: number) => {
+            lenis!.raf(time);
+            requestAnimationFrame(raf);
+          };
+          requestAnimationFrame(raf);
+        } catch (err) {
+          console.warn('Lenis init failed, using native scroll', err);
+          lenis = null;
+        }
+      }
+
+      // In-page links, delegated so links rendered later by React (mobile
+      // menu, language switch re-renders) are covered too. After scrolling,
+      // focus moves to the target so keyboard and screen-reader users
+      // continue from the section they jumped to.
+      document.addEventListener('click', (e) => {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        const anchor = (e.target as Element | null)?.closest?.('a[href^="#"]') as HTMLAnchorElement | null;
+        if (!anchor) return;
+        const hash = anchor.getAttribute('href') ?? '';
+        const target = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+        if (!target) return;
+        e.preventDefault();
+
+        const header = document.getElementById('site-nav');
+        const offset = -((header?.getBoundingClientRect().height ?? 64) + 12);
+        if (lenis) {
+          lenis.scrollTo(target, { offset, duration: 1.1 });
+        } else {
+          const top = target.getBoundingClientRect().top + window.scrollY + offset;
+          window.scrollTo({ top, behavior: reduce ? 'auto' : 'smooth' });
+        }
+
+        if (history.replaceState) history.replaceState(null, '', hash);
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
+      });
     </script>
   </body>
 </html>

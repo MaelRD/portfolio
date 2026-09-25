@@ -1,124 +1,76 @@
-import { CONTACT, FOOTER, type Lang } from "../../data/content";
+import { CONTACT, CV_PATH, FOOTER, SECTIONS, type Lang } from "../../data/content";
 import { useMagnetic } from "./hooks";
 import Reveal from "./Reveal";
+import SectionHeader from "./SectionHeader";
 
 export default function ContactFooter({ lang }: { lang: Lang }) {
   const primaryRef = useMagnetic<HTMLAnchorElement>();
-  const secondaryRef = useMagnetic<HTMLAnchorElement>();
+  const newTab = CONTACT.newTab[lang];
+
+  const links: { label: string; value: string; href: string; external?: boolean; download?: boolean }[] = [
+    { label: CONTACT.links.email[lang], value: CONTACT.email, href: `mailto:${CONTACT.email}` },
+    { label: CONTACT.links.github[lang], value: "github.com/MaelRD", href: CONTACT.github, external: true },
+    { label: CONTACT.links.site[lang], value: "maeldev.netlify.app", href: CONTACT.site, external: true },
+    { label: CONTACT.links.cv[lang], value: "cv.pdf", href: CV_PATH, download: true },
+  ];
 
   return (
-    <>
-      <section
-        id="contact"
-        style={{
-          scrollMarginTop: 100,
-          padding: "clamp(70px,12vh,150px) clamp(20px,5vw,80px) clamp(50px,7vh,90px)",
-          borderTop: "1px solid rgba(148,163,184,.08)",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 34,
-        }}
-      >
-        <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 10, letterSpacing: ".3em", color: "#64748B" }}>{CONTACT.eyebrow[lang]}</span>
-        <Reveal>
-          <h2
-            style={{
-              margin: 0,
-              maxWidth: "19ch",
-              fontFamily: "'Space Grotesk',sans-serif",
-              fontSize: "clamp(32px,5vw,64px)",
-              fontWeight: 500,
-              lineHeight: 1.1,
-              letterSpacing: "-.02em",
-              color: "#F8FAFC",
-            }}
-          >
-            {CONTACT.headline[lang]}
-          </h2>
-        </Reveal>
-        <p style={{ margin: 0, maxWidth: "52ch", fontSize: 16, lineHeight: 1.7, color: "#94A3B8" }}>{CONTACT.body[lang]}</p>
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
-          <a
-            ref={primaryRef}
-            href={`mailto:${CONTACT.email}`}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 12,
-              minHeight: 48,
-              padding: "15px 28px",
-              borderRadius: 6,
-              background: "linear-gradient(120deg,#5B32E0,#7042F8)",
-              color: "#F8FAFC",
-              fontFamily: "'Geist Mono',monospace",
-              fontSize: 11.5,
-              letterSpacing: ".18em",
-              boxShadow: "0 14px 44px -14px rgba(112,66,248,.95)",
-              transition: "transform .25s ease",
-            }}
-          >
-            {CONTACT.ctaPrimary[lang]} <span aria-hidden="true">→</span>
-          </a>
-          <a
-            ref={secondaryRef}
-            href="/cv.pdf"
-            target="_blank"
-            rel="noopener"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 12,
-              minHeight: 48,
-              padding: "15px 28px",
-              borderRadius: 6,
-              border: "1px solid rgba(148,163,184,.26)",
-              color: "#F8FAFC",
-              fontFamily: "'Geist Mono',monospace",
-              fontSize: 11.5,
-              letterSpacing: ".18em",
-              transition: "transform .25s ease, border-color .25s ease",
-            }}
-          >
-            {CONTACT.ctaSecondary[lang]} <span aria-hidden="true">↓</span>
-          </a>
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "10px 34px", marginTop: 8, fontFamily: "'Geist Mono',monospace", fontSize: 11.5, letterSpacing: ".1em" }}>
-          <a href={`mailto:${CONTACT.email}`} style={{ color: "#CBD5E1" }}>
-            {CONTACT.email}
-          </a>
-          <a href={CONTACT.github} target="_blank" rel="noopener" style={{ color: "#CBD5E1" }}>
-            {CONTACT.githubLabel}
-          </a>
-          <a href={CONTACT.site} target="_blank" rel="noopener" style={{ color: "#CBD5E1" }}>
-            {CONTACT.siteLabel}
-          </a>
-        </div>
-      </section>
+    <section
+      id="contact"
+      aria-labelledby="contact-title"
+      className="mael-section"
+      style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", paddingBottom: "clamp(60px,9vh,100px)" }}
+    >
+      {/* A faint ring behind the heading, echoing the hero orbit. */}
+      <div aria-hidden="true" className="contact-orbit" />
+      <SectionHeader header={SECTIONS.contact} lang={lang} id="contact-title" align="center" size="lg" accent="#38BDF8" />
+      <Reveal>
+        <a ref={primaryRef} href={`mailto:${CONTACT.email}`} className="mael-btn mael-btn--primary">
+          {CONTACT.ctaPrimary[lang]} <span aria-hidden="true">→</span>
+        </a>
+      </Reveal>
+      <ul className="contact-links">
+        {links.map((link) => (
+          <li key={link.href}>
+            <a
+              href={link.href}
+              className="contact-link"
+              {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              {...(link.download ? { download: "Mario-Yael-Gordillo-CV.pdf" } : {})}
+            >
+              <span className="contact-link__label">{link.label}</span>
+              <span className="contact-link__value">{link.value}</span>
+              {link.external && <span className="sr-only"> {newTab}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
-      <footer
-        style={{
-          padding: "34px clamp(20px,5vw,80px) 46px",
-          borderTop: "1px solid rgba(148,163,184,.10)",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "16px 30px",
-          alignItems: "center",
-          justifyContent: "space-between",
-          fontFamily: "'Geist Mono',monospace",
-          fontSize: 10,
-          letterSpacing: ".2em",
-          color: "#64748B",
-        }}
-      >
-        <span>{FOOTER.name}</span>
-        <span style={{ display: "flex", flexWrap: "wrap", gap: "8px 22px", alignItems: "center" }}>
-          <span>{FOOTER.based[lang]}</span>
-          <span aria-hidden="true">⊕</span>
-          <span>{FOOTER.available[lang]}</span>
-        </span>
-      </footer>
-    </>
+export function Footer({ lang }: { lang: Lang }) {
+  return (
+    <footer
+      style={{
+        position: "relative",
+        padding: "28px clamp(20px,5vw,80px) 36px",
+        borderTop: "1px solid rgba(148,163,184,.12)",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "10px 30px",
+        alignItems: "center",
+        justifyContent: "space-between",
+        fontFamily: "'Geist Mono',monospace",
+        fontSize: 12,
+        letterSpacing: ".08em",
+        color: "#94A3B8",
+      }}
+    >
+      <span>
+        © {new Date().getFullYear()} {FOOTER.name}
+      </span>
+      <span>{FOOTER.based[lang]}</span>
+    </footer>
   );
 }

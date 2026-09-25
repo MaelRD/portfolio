@@ -6,19 +6,23 @@
 
 @layer base {
   html {
-    /* Lenis (see Layout.astro) drives smooth scrolling and writes every frame
-       with `behavior: "instant"`, so a global `scroll-behavior: smooth` here
-       would only add an uncoordinated second smoothing pass for whatever Lenis
-       doesn't intercept (keyboard scroll, scrollIntoView). Layout.astro turns
-       this back on as a fallback only if Lenis fails to initialize. */
+    /* Smooth scrolling is driven by Lenis (Layout.astro), which adds the
+       `lenis` class to <html>. Native smooth scroll is only a fallback when
+       Lenis isn't running and the visitor hasn't asked for reduced motion —
+       see the media query below. */
     scroll-behavior: auto;
+    scroll-padding-top: 84px;
     -webkit-font-smoothing: antialiased;
     /* Written once per animation frame (only while actively scrolling) by the
-       script in Stars.astro. Declared on :root — not on `.stars-root` — so it
-       cascades to every subtree, including the Hero React island, without a
-       second scroll listener. Consumed through the independent `translate`
-       property so it composes with each layer's own `transform` keyframes. */
+       script in Stars.astro. Declared on :root so it cascades to every
+       subtree, including the React island, without a second scroll listener. */
     --scroll-y: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html:not(.lenis) {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
@@ -40,10 +44,16 @@
     outline: 2px solid #38BDF8;
     outline-offset: 3px;
   }
+
+  /* Sections and <main> receive programmatic focus after in-page navigation
+     (so keyboard and screen-reader users land where they jumped); they don't
+     need a visible ring for that. */
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
 }
 
 /* ── Decorative keyframes ported from the source design ── */
-@keyframes mael-online { 0%, 100% { opacity: .4 } 50% { opacity: 1 } }
 /* Continuous one-directional starfield "flight": a star layer is duplicated
    into ::before/::after, stacked exactly one generated-canvas-height (--star-
    loop-h, written once by Stars.astro's script) apart, then both are
@@ -57,7 +67,6 @@
    across 900 points at once would read as the whole sky flashing rather than
    a shimmer. */
 @keyframes mael-twinkle-soft { 0%, 100% { opacity: .85 } 50% { opacity: .55 } }
-@keyframes mael-boot-out { 0% { opacity: 1 } 70% { opacity: 1 } 100% { opacity: 0; visibility: hidden } }
 @keyframes mael-rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
 @keyframes mael-twinkle { 0%, 100% { opacity: 1 } 50% { opacity: .45 } }
 @keyframes mael-shoot {
@@ -81,36 +90,15 @@
    carries its own `offset-path` in markup and just animates progress along
    it, so one keyframe covers every orbit regardless of its path shape. */
 @keyframes cosmic-orbit { to { offset-distance: 100%; } }
-/* Capabilities' moon: in front of the planet on the near (bottom) half of
+/* Planet.tsx moon: in front of the planet on the near (bottom) half of
    its orbit, behind and dimmed on the far half. Runs in lockstep with
    `cosmic-orbit` on the moon itself (same duration, linear). */
 @keyframes planet-moon-depth {
   0%, 49.9% { z-index: 4; opacity: 1; }
   50%, 100% { z-index: 1; opacity: .4; }
 }
-/* Capabilities' small satellite dots and the hero halo's outer ring. */
-@keyframes cosmic-pulse { 0%, 100% { opacity: .35; transform: scale(1); } 50% { opacity: 1; transform: scale(1.25); } }
+/* Hero halo. */
 @keyframes cosmic-breathe { 0%, 100% { opacity: .5; } 50% { opacity: .95; } }
-/* "How I Build" auto-playing flow: the beam sweeps left-to-right, holds full
-   width briefly, then snaps back to restart — a self-running progress line
-   rather than one tied to scroll position. Must run with `linear` timing
-   (set in Process.tsx) — width has to grow at a constant rate for the
-   per-step delays computed there to land in sync with the beam's position. */
-@keyframes cosmic-flow-sweep {
-  0% { width: 0%; }
-  88% { width: 100%; }
-  100% { width: 100%; }
-}
-/* Each step icon shares this one keyframe, peaking at its own 0% — a
-   positive `animation-delay` (see Process.tsx, computed from the icon's
-   actual position along the track) is what phase-shifts it, so the "lit up"
-   moment lands exactly when the linear sweep above reaches that icon.
-   `currentColor` picks up each icon's own accent color for the glow. */
-@keyframes cosmic-step-pulse {
-  0% { transform: scale(1.18); box-shadow: 0 0 22px currentColor; }
-  10%, 100% { transform: scale(1); box-shadow: none; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -130,4 +118,585 @@
   .text-pretty {
     text-wrap: pretty;
   }
+}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+
+.mael-section {
+  position: relative;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding: clamp(56px, 8vh, 96px) clamp(16px, 5vw, 80px);
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  scroll-margin-top: 84px;
+}
+/* Soft skills continue the Skills section, so no divider and less air. */
+.mael-section--tight {
+  padding-top: clamp(16px, 3vh, 32px);
+  border-top: 0;
+}
+
+.mael-grid-2,
+.mael-grid-3 {
+  display: grid;
+  gap: clamp(14px, 2vw, 22px);
+}
+/* `min(100%, …)` keeps a single column from overflowing narrow phones. */
+.mael-grid-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+.mael-grid-3 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.soft-constellation { gap: 22px 36px; }
+
+/* ── Header & navigation ─────────────────────────────────────────────────── */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px clamp(16px, 4vw, 56px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(3, 0, 20, 0.9), rgba(3, 0, 20, 0.6));
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -80px;
+  z-index: 60;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #F8FAFC;
+  color: #030014;
+  font-weight: 500;
+}
+.skip-link:focus { top: 12px; }
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0;
+  white-space: nowrap;
+}
+/* On narrow phones the role line would wrap and double the header height. */
+@media (max-width: 479px) {
+  .brand__role { display: none; }
+}
+
+.nav-desktop { display: none; }
+.nav-desktop ul,
+.nav-mobile ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-desktop ul {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 26px);
+}
+
+.nav-link {
+  position: relative;
+  display: inline-block;
+  padding: 8px 2px;
+  font-size: 14.5px;
+  color: #CBD5E1;
+  transition: color 0.25s ease;
+}
+.nav-link:hover,
+.nav-link[aria-current] { color: #F8FAFC; }
+.nav-link[aria-current]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
+  transform: translateX(-50%);
+}
+
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 10px;
+  background: rgba(5, 8, 22, 0.6);
+  color: #F8FAFC;
+  cursor: pointer;
+}
+.nav-toggle__icon,
+.nav-toggle__icon::before,
+.nav-toggle__icon::after {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.nav-toggle__icon { position: relative; }
+.nav-toggle__icon::before,
+.nav-toggle__icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+.nav-toggle__icon::before { top: -6px; }
+.nav-toggle__icon::after { top: 6px; }
+.nav-toggle__icon.is-open { background: transparent; }
+.nav-toggle__icon.is-open::before { transform: translateY(6px) rotate(45deg); }
+.nav-toggle__icon.is-open::after { transform: translateY(-6px) rotate(-45deg); }
+
+.nav-mobile {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 6px clamp(16px, 4vw, 56px) 18px;
+  background: rgba(3, 0, 20, 0.97);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+.nav-mobile .nav-link {
+  display: block;
+  padding: 14px 4px;
+  font-size: 17px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+.nav-mobile .nav-link[aria-current]::after {
+  left: auto;
+  right: 6px;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+@media (min-width: 1024px) {
+  .nav-desktop { display: block; }
+  .nav-toggle,
+  .nav-mobile { display: none !important; }
+}
+
+.lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.lang-switch__btn {
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #CBD5E1;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.lang-switch__btn:hover { color: #F8FAFC; }
+.lang-switch__btn[aria-pressed="true"] {
+  background: rgba(112, 66, 248, 0.9);
+  color: #FFFFFF;
+}
+
+/* ── Buttons & links ─────────────────────────────────────────────────────── */
+
+.mael-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 13px 24px;
+  border-radius: 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #F8FAFC;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+.mael-btn--primary {
+  background: linear-gradient(120deg, #5B32E0, #7042F8);
+  box-shadow: 0 12px 40px -14px rgba(112, 66, 248, 0.9);
+}
+.mael-btn--primary:hover { box-shadow: 0 14px 46px -12px rgba(139, 92, 246, 1); }
+.mael-btn--ghost {
+  background: rgba(248, 250, 252, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+}
+.mael-btn--ghost:hover {
+  border-color: #A78BFA;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.mael-link {
+  text-decoration: underline;
+  text-decoration-color: rgba(167, 139, 250, 0.5);
+  text-underline-offset: 4px;
+}
+.mael-link:hover { text-decoration-color: #A78BFA; }
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+
+.hero {
+  max-width: 1360px;
+  margin-inline: auto;
+  display: grid;
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(104px, 14vh, 150px) clamp(16px, 5vw, 80px) clamp(32px, 5vh, 56px);
+  scroll-margin-top: 84px;
+}
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 680px;
+}
+.hero-orbit { display: none; }
+/* Near-full-screen where the orbit sits beside the copy; on phones the hero
+   is only as tall as its text so the projects start right after it. */
+@media (min-width: 900px) {
+  .hero {
+    min-height: min(88vh, 880px);
+    min-height: min(88svh, 880px);
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+  .hero-orbit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* ── Projects ────────────────────────────────────────────────────────────── */
+
+.project-card {
+  height: 100%;
+  display: grid;
+  align-content: start;
+  gap: clamp(24px, 3.5vw, 44px);
+  padding: clamp(22px, 4vw, 44px);
+  border-radius: 16px;
+}
+@media (min-width: 960px) {
+  .project-card { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+}
+
+/* Carousel: a native scroll-snap track (swipe/trackpad work without JS)
+   plus project tabs, arrows and a counter. */
+.carousel__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.carousel__tabs {
+  position: relative; /* offsetParent for scrolling the active tab into view */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.carousel__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+  background: rgba(5, 8, 22, 0.6);
+  color: #CBD5E1;
+  font: 500 14.5px/1 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+.carousel__tab:hover { color: #F8FAFC; border-color: rgba(148, 163, 184, 0.45); }
+.carousel__tab[aria-current="true"] {
+  color: #F8FAFC;
+  border-color: var(--tab-accent);
+  background: color-mix(in srgb, var(--tab-accent) 16%, transparent);
+}
+.carousel__tab-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tab-accent);
+  opacity: 0.5;
+  transition: opacity 0.25s ease, box-shadow 0.25s ease;
+}
+.carousel__tab[aria-current="true"] .carousel__tab-dot {
+  opacity: 1;
+  box-shadow: 0 0 10px var(--tab-accent);
+}
+.carousel__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.carousel__count {
+  margin-right: 6px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: #CBD5E1;
+}
+.carousel__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 50%;
+  background: rgba(5, 8, 22, 0.6);
+  color: #F8FAFC;
+  font-size: 17px;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+}
+.carousel__arrow:hover:not(:disabled) { border-color: #A78BFA; background: rgba(139, 92, 246, 0.12); }
+.carousel__arrow:disabled { opacity: 0.35; cursor: default; }
+
+.carousel__track {
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Slides carry 8px side padding for a gap while swiping; pull the track
+     out by the same amount so cards still align with the section edges. */
+  margin-inline: -8px;
+  border-radius: 16px;
+}
+.carousel__track::-webkit-scrollbar { display: none; }
+/* Phones: one row — tabs scroll sideways, arrows stay put, the counter
+   hides (the highlighted tab already says where you are). */
+@media (max-width: 639px) {
+  .carousel__bar { flex-wrap: nowrap; }
+  .carousel__tabs {
+    flex: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* room for the focus ring inside the scroller */
+    padding: 4px;
+    margin: -4px;
+  }
+  .carousel__tabs::-webkit-scrollbar { display: none; }
+  .carousel__tab { padding: 8px 13px; font-size: 14px; white-space: nowrap; }
+  .carousel__count { display: none; }
+}
+.carousel__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  padding-inline: 8px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* ── Process ─────────────────────────────────────────────────────────────── */
+/* Mobile/tablet: vertical cards. Desktop: five columns. In both, the track
+   and beam are positioned by Process.tsx from the icons' measured centers
+   (the values below are only the no-JS fallback), and one JS clock moves the
+   beam and sets each icon's `data-state` as the beam reaches it. */
+
+.process-wrap { position: relative; }
+.process-list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.process-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  column-gap: 16px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 12px;
+  background: rgba(5, 8, 22, 0.88);
+}
+.process-icon {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  /* Solid black disc: nothing behind it (track, stars) shows through. */
+  background: #000;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+}
+/* Steps the beam hasn't reached dim only their symbol, never the disc. */
+.process-icon__glyph {
+  opacity: 0.55;
+  transition: opacity 0.35s ease;
+}
+.process-icon[data-state="done"] .process-icon__glyph,
+.process-icon[data-state="active"] .process-icon__glyph { opacity: 1; }
+.process-icon[data-state="done"] {
+  box-shadow: 0 0 12px -4px currentColor;
+}
+.process-icon[data-state="active"] {
+  transform: scale(1.14);
+  box-shadow: 0 0 24px -2px currentColor;
+}
+.process-track {
+  position: absolute;
+  z-index: 1;
+  left: 42px;
+  top: 42px;
+  bottom: 42px;
+  width: 1px;
+  background: rgba(148, 163, 184, 0.22);
+  pointer-events: none;
+}
+.process-beam {
+  position: absolute;
+  inset: 0;
+  transform: scaleY(0);
+  transform-origin: center top;
+  background: linear-gradient(180deg, #7042F8, #38BDF8);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+  will-change: transform;
+}
+
+@media (min-width: 1024px) {
+  .process-list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .process-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: center;
+  }
+  .process-track {
+    left: 10%;
+    right: 10%;
+    top: 26px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+  }
+  .process-beam {
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: linear-gradient(90deg, #7042F8, #38BDF8);
+  }
+}
+
+/* ── Experience ──────────────────────────────────────────────────────────── */
+
+.exp-company {
+  display: grid;
+  gap: 20px 40px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 14px;
+  background: linear-gradient(140deg, rgba(148, 163, 184, 0.05), rgba(5, 8, 22, 0.7));
+}
+@media (min-width: 860px) {
+  .exp-company { grid-template-columns: 230px minmax(0, 1fr); }
+}
+
+/* ── About ───────────────────────────────────────────────────────────────── */
+
+.about-grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+}
+@media (min-width: 960px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+    align-items: start;
+  }
+}
+
+/* ── Contact ─────────────────────────────────────────────────────────────── */
+
+.contact-orbit {
+  position: absolute;
+  top: clamp(30px, 6vh, 60px);
+  left: 50%;
+  width: min(760px, 92%);
+  aspect-ratio: 2.8;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 50%;
+  transform: translateX(-50%) rotate(-7deg);
+  pointer-events: none;
+}
+.contact-links {
+  list-style: none;
+  width: 100%;
+  max-width: 940px;
+  margin: 36px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+}
+.contact-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 10px;
+  background: rgba(5, 8, 22, 0.65);
+  text-align: left;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.contact-link:hover {
+  border-color: #A78BFA;
+  background: rgba(139, 92, 246, 0.08);
+}
+.contact-link__label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #94A3B8;
+}
+.contact-link__value {
+  font-size: 15px;
+  color: #F8FAFC;
+  overflow-wrap: anywhere;
 }

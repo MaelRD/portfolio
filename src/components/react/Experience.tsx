@@ -1,88 +1,95 @@
-import { EXPERIENCE, SECTION_HEADERS, type Lang } from "../../data/content";
-import { useScrollFill, useTiltHover } from "./hooks";
+import { CURRENT_LABEL, EXPERIENCE, SECTIONS, type Lang } from "../../data/content";
+import { useScrollFill } from "./hooks";
 import Reveal from "./Reveal";
+import SectionHeader from "./SectionHeader";
 
-function ExperienceCard({ item, lang, delay }: { item: (typeof EXPERIENCE)[number]; lang: Lang; delay: number }) {
-  const ref = useTiltHover<HTMLElement>();
+function Company({ item, lang, index }: { item: (typeof EXPERIENCE)[number]; lang: Lang; index: number }) {
+  const beamRef = useScrollFill<HTMLDivElement>("height");
+  const titleId = `company-${index}`;
+
   return (
-    <Reveal delay={delay}>
-      <article
-        ref={ref}
-        style={{
-          position: "relative",
-          padding: "24px 26px",
-          border: "1px solid rgba(148,163,184,.12)",
-          borderRadius: 10,
-          background: "linear-gradient(140deg, rgba(148,163,184,.05), rgba(5,8,22,.65))",
-          transition: "border-color .3s ease, transform .3s ease",
-        }}
-      >
-        <span
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            left: "calc(-1 * clamp(22px,3vw,40px) + 2px)",
-            top: 32,
-            width: 9,
-            height: 9,
-            borderRadius: "50%",
-            background: item.dotColor,
-            boxShadow: `0 0 14px ${item.dotColor}E6`,
-          }}
-        />
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px 18px", alignItems: "baseline", justifyContent: "space-between" }}>
-          <h3 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 20, fontWeight: 500, color: "#F8FAFC" }}>{item.title[lang]}</h3>
-          <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 10.5, letterSpacing: ".14em", color: "#38BDF8" }}>{item.date[lang]}</span>
+    <Reveal>
+      <article aria-labelledby={titleId} className="exp-company">
+        <header>
+          <h3 id={titleId} style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 24, fontWeight: 500, color: "#F8FAFC" }}>
+            {item.company}
+          </h3>
+          <p style={{ margin: "6px 0 0", fontFamily: "'Geist Mono',monospace", fontSize: 12, letterSpacing: ".08em", color: "#94A3B8" }}>{item.span[lang]}</p>
+        </header>
+
+        {/* Roles newest-first along one orbit line, so the progression inside a company is visible. */}
+        <div style={{ position: "relative", paddingLeft: 28 }}>
+          <div aria-hidden="true" style={{ position: "absolute", left: 4, top: 10, bottom: 10, width: 1, background: "rgba(148,163,184,.2)" }} />
+          <div
+            ref={beamRef}
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: 4,
+              top: 10,
+              width: 1,
+              height: "0%",
+              maxHeight: "calc(100% - 20px)",
+              background: `linear-gradient(180deg,${item.accent},#38BDF8)`,
+              boxShadow: `0 0 10px ${item.accent}`,
+              transition: "height .2s linear",
+            }}
+          />
+          <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 26 }}>
+            {item.roles.map((role) => (
+              <li key={role.title} style={{ position: "relative" }}>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    left: -28,
+                    top: 7,
+                    width: 9,
+                    height: 9,
+                    borderRadius: "50%",
+                    background: role.current ? item.accent : "#0A0818",
+                    border: `1px solid ${item.accent}`,
+                    boxShadow: role.current ? `0 0 12px ${item.accent}` : undefined,
+                  }}
+                />
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "6px 14px" }}>
+                  <h4 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 500, color: "#F8FAFC" }}>{role.title}</h4>
+                  {role.current && (
+                    <span
+                      style={{
+                        padding: "2px 9px",
+                        borderRadius: 999,
+                        border: "1px solid rgba(56,189,248,.45)",
+                        fontFamily: "'Geist Mono',monospace",
+                        fontSize: 11,
+                        letterSpacing: ".08em",
+                        color: "#E0F2FE",
+                      }}
+                    >
+                      {CURRENT_LABEL[lang]}
+                    </span>
+                  )}
+                </div>
+                <p style={{ margin: "5px 0 10px", fontFamily: "'Geist Mono',monospace", fontSize: 12.5, letterSpacing: ".04em", color: "#7DD3FC" }}>
+                  {role.period[lang]}
+                </p>
+                <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.7, color: "#CBD5E1", maxWidth: "68ch" }}>{role.body[lang]}</p>
+              </li>
+            ))}
+          </ol>
         </div>
-        <p style={{ margin: "8px 0 14px", fontSize: 13, fontFamily: "'Geist Mono',monospace", letterSpacing: ".1em", color: "#94A3B8" }}>{item.company}</p>
-        <p style={{ margin: "0 0 14px", fontSize: 14.5, lineHeight: 1.65, color: "#CBD5E1", maxWidth: "70ch" }}>{item.body[lang]}</p>
-        <p style={{ margin: 0, fontFamily: "'Geist Mono',monospace", fontSize: 10, letterSpacing: ".14em", color: "#64748B" }}>{item.stack}</p>
       </article>
     </Reveal>
   );
 }
 
 export default function Experience({ lang }: { lang: Lang }) {
-  const h = SECTION_HEADERS.experience;
-  const beamRef = useScrollFill<HTMLDivElement>("height");
-
   return (
-    <section
-      id="experience"
-      style={{
-        scrollMarginTop: 100,
-        padding: "clamp(50px,7vh,90px) clamp(20px,5vw,80px) clamp(60px,9vh,110px)",
-        borderTop: "1px solid rgba(148,163,184,.08)",
-      }}
-    >
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 18, marginBottom: 46 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <h2 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: "clamp(20px,2.2vw,26px)", fontWeight: 500, letterSpacing: ".22em", color: "#F8FAFC" }}>
-            {h.title[lang]}
-          </h2>
-          <span aria-hidden="true" style={{ display: "block", width: "clamp(30px,6vw,80px)", height: 1, background: `linear-gradient(90deg,${h.accent}, transparent)` }} />
-        </div>
-        <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 10, letterSpacing: ".26em", color: "#64748B" }}>{h.tag}</span>
-      </div>
-
-      <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 30, paddingLeft: "clamp(22px,3vw,40px)" }}>
-        <div aria-hidden="true" style={{ position: "absolute", left: 6, top: 8, bottom: 8, width: 1, background: "rgba(148,163,184,.16)" }} />
-        <div
-          ref={beamRef}
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            left: 6,
-            top: 8,
-            width: 1,
-            height: "0%",
-            background: "linear-gradient(180deg,#7042F8,#38BDF8)",
-            boxShadow: "0 0 12px rgba(112,66,248,.9)",
-            transition: "height .2s linear",
-          }}
-        />
+    <section id="experience" aria-labelledby="experience-title" className="mael-section">
+      <SectionHeader header={SECTIONS.experience} lang={lang} id="experience-title" />
+      <div style={{ display: "flex", flexDirection: "column", gap: "clamp(18px,2.4vw,26px)" }}>
         {EXPERIENCE.map((item, i) => (
-          <ExperienceCard key={item.title.en} item={item} lang={lang} delay={Math.min(i, 4) * 70} />
+          <Company key={item.company} item={item} lang={lang} index={i} />
         ))}
       </div>
     </section>

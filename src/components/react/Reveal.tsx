@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type ReactNode, type CSSProperties, type ElementType } from "react";
 
 interface RevealProps {
   children: ReactNode;
   className?: string;
   /** Stagger delay in ms, applied only while the entrance animation plays. */
   delay?: number;
+  /** Element to render, so a reveal can be a list item inside `<ol>`/`<ul>`. */
+  as?: ElementType;
+  style?: CSSProperties;
 }
 
 type RevealState = "skip" | "hidden" | "visible";
@@ -20,8 +23,8 @@ type RevealState = "skip" | "hidden" | "visible";
  * above-the-fold content never flashes), does it arm the hide + reveal cycle.
  * No-ops entirely under `prefers-reduced-motion: reduce`.
  */
-export default function Reveal({ children, className = "", delay = 0 }: RevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
+export default function Reveal({ children, className = "", delay = 0, as: Tag = "div", style: extraStyle }: RevealProps) {
+  const ref = useRef<HTMLElement>(null);
   const [state, setState] = useState<RevealState>("skip");
 
   useEffect(() => {
@@ -50,28 +53,21 @@ export default function Reveal({ children, className = "", delay = 0 }: RevealPr
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const style: CSSProperties | undefined =
-    state === "visible" && delay ? { animationDelay: `${delay}ms` } : undefined;
+  const style: CSSProperties | undefined = state === "visible" && delay ? { ...extraStyle, animationDelay: `${delay}ms` } : extraStyle;
 
   return (
-    <div
+    <Tag
       ref={ref}
-      className={`${className} ${
-        state === "hidden"
-          ? "opacity-0"
-          : state === "visible"
-          ? "motion-safe:animate-[mael-rise_.6s_ease-out_both]"
-          : ""
-      }`.trim()}
+      className={`${className} ${state === "hidden" ? "opacity-0" : state === "visible" ? "motion-safe:animate-[mael-rise_.6s_ease-out_both]" : ""}`.trim()}
       style={style}
     >
       {children}
-    </div>
+    </Tag>
   );
 }

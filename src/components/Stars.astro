@@ -201,6 +201,13 @@ const shooters = [
   #st-blue::before { animation-delay: 0s, 4s; }
   #st-blue::after { animation-delay: 0s, 9.8s; }
 
+  /* Calmer sky on phones: fewer shooting stars and lighter blur work. */
+  @media (max-width: 640px) {
+    .shooter:nth-child(n + 3) { display: none; }
+    .nebula { filter: blur(48px); }
+    .milky-band { filter: blur(18px); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .nebula, .shooter, .star-layer::before, .star-layer::after {
       animation: none !important;
@@ -227,20 +234,23 @@ const shooters = [
 
     const w = Math.max(window.innerWidth + 160, 1600);
     const h = Math.max(window.innerHeight + 160, 1000);
+    // Phones get roughly half the stars: same look, much less to paint.
+    const k = window.innerWidth < 640 ? 0.5 : 1;
+    const n = (count: number) => Math.round(count * k);
 
     // ::before and ::after get their OWN random field (not the same pattern
     // twice) — the continuous `mael-flight` loop only needs the two tiles to
     // share a height to be seamless, not identical content, so this removes
     // any "déjà vu" repeat without costing anything extra.
     const rules = [
-      ['#st-dust::before', genShadow(900, w, h, '248,250,252', 0.10, 0.36)],
-      ['#st-dust::after', genShadow(900, w, h, '248,250,252', 0.10, 0.36)],
-      ['#st-mid::before', genShadow(320, w, h, '248,250,252', 0.36, 0.72)],
-      ['#st-mid::after', genShadow(320, w, h, '248,250,252', 0.36, 0.72)],
-      ['#st-bright::before', genShadow(46, w, h, '233,213,255', 0.7, 1)],
-      ['#st-bright::after', genShadow(46, w, h, '233,213,255', 0.7, 1)],
-      ['#st-blue::before', genShadow(34, w, h, '191,219,254', 0.5, 0.85)],
-      ['#st-blue::after', genShadow(34, w, h, '191,219,254', 0.5, 0.85)],
+      ['#st-dust::before', genShadow(n(900), w, h, '248,250,252', 0.10, 0.36)],
+      ['#st-dust::after', genShadow(n(900), w, h, '248,250,252', 0.10, 0.36)],
+      ['#st-mid::before', genShadow(n(320), w, h, '248,250,252', 0.36, 0.72)],
+      ['#st-mid::after', genShadow(n(320), w, h, '248,250,252', 0.36, 0.72)],
+      ['#st-bright::before', genShadow(n(46), w, h, '233,213,255', 0.7, 1)],
+      ['#st-bright::after', genShadow(n(46), w, h, '233,213,255', 0.7, 1)],
+      ['#st-blue::before', genShadow(n(34), w, h, '191,219,254', 0.5, 0.85)],
+      ['#st-blue::after', genShadow(n(34), w, h, '191,219,254', 0.5, 0.85)],
     ] as const;
 
     const style = document.createElement('style');
