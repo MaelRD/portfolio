@@ -1,18 +1,9 @@
 ---
-// Decorative background: nebula gradients, a starfield and shooting stars.
+// Decorative background: nebula gradients and a quiet starfield. (Shooting
+// stars were removed: motion on this site has to mean something.)
 // Purely presentational — no language dependency, so it stays outside the
 // React island and never re-renders.
-const shooters = [
-  { top: "6%", left: "-12%", len: "180px", angle: "24deg", dur: "17s", delay: "2s" },
-  { top: "-4%", left: "24%", len: "140px", angle: "34deg", dur: "23s", delay: "9s" },
-  { top: "18%", left: "-6%", len: "220px", angle: "18deg", dur: "31s", delay: "16s" },
-  { top: "2%", left: "52%", len: "160px", angle: "40deg", dur: "43s", delay: "27s" },
-  { top: "30%", left: "8%", len: "120px", angle: "28deg", dur: "37s", delay: "34s" },
-  // Rare, brighter/longer streak — a once-in-a-while flourish (the "delight"
-  // tier: infrequent enough not to compete with the four steady ones above)
-  // rather than a sixth copy of the same intensity.
-  { top: "12%", left: "40%", len: "260px", angle: "31deg", dur: "51s", delay: "44s", bright: true },
-];
+
 ---
 
 <div class="stars-root" aria-hidden="true">
@@ -26,16 +17,6 @@ const shooters = [
   <div class="nebula nebula-c"></div>
   <!-- vignette -->
   <div class="vignette"></div>
-
-  <!-- shooting stars -->
-  <div class="shooters">
-    {shooters.map((sh) => (
-      <span
-        class={sh.bright ? "shooter shooter-bright" : "shooter"}
-        style={`top:${sh.top}; left:${sh.left}; width:${sh.len}; rotate:${sh.angle}; animation-duration:${sh.dur}; animation-delay:${sh.delay};`}
-      />
-    ))}
-  </div>
 
   <!-- star particle layers -->
   <div class="star-layer" id="st-dust"></div>
@@ -119,26 +100,6 @@ const shooters = [
     background: radial-gradient(130% 100% at 50% 40%, transparent 42%, rgba(5,5,9,.45) 100%);
   }
 
-  .shooters { position: absolute; inset: 0; overflow: hidden; }
-  .shooter {
-    position: absolute;
-    height: 1px;
-    transform-origin: 0 50%;
-    background: linear-gradient(90deg, transparent, rgba(233,213,255,.9) 62%, #FFFFFF);
-    box-shadow: 0 0 6px 1px rgba(196,181,253,.5);
-    opacity: 0;
-    animation-name: mael-shoot;
-    animation-timing-function: cubic-bezier(.22,.7,.2,1);
-    animation-iteration-count: infinite;
-  }
-  /* One rare, brighter/thicker streak for depth variety among otherwise
-     uniform shooters — same keyframe and cost, just a stronger paint. */
-  .shooter-bright {
-    height: 1.5px;
-    background: linear-gradient(90deg, transparent, rgba(224,242,254,.95) 58%, #FFFFFF);
-    box-shadow: 0 0 10px 2px rgba(191,219,254,.65);
-  }
-
   .star-layer {
     position: absolute;
     inset: -80px;
@@ -201,15 +162,14 @@ const shooters = [
   #st-blue::before { animation-delay: 0s, 4s; }
   #st-blue::after { animation-delay: 0s, 9.8s; }
 
-  /* Calmer sky on phones: fewer shooting stars and lighter blur work. */
+  /* Calmer sky on phones: lighter blur work. */
   @media (max-width: 640px) {
-    .shooter:nth-child(n + 3) { display: none; }
     .nebula { filter: blur(48px); }
     .milky-band { filter: blur(18px); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .nebula, .shooter, .star-layer::before, .star-layer::after {
+    .nebula, .star-layer::before, .star-layer::after {
       animation: none !important;
       opacity: .6 !important;
     }
@@ -234,8 +194,8 @@ const shooters = [
 
     const w = Math.max(window.innerWidth + 160, 1600);
     const h = Math.max(window.innerHeight + 160, 1000);
-    // Phones get roughly half the stars: same look, much less to paint.
-    const k = window.innerWidth < 640 ? 0.5 : 1;
+    // A quieter sky than before (×0.6), and phones get half of that.
+    const k = (window.innerWidth < 640 ? 0.5 : 1) * 0.6;
     const n = (count: number) => Math.round(count * k);
 
     // ::before and ::after get their OWN random field (not the same pattern

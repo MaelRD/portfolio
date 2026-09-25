@@ -1,85 +1,87 @@
-import { CURRENT_LABEL, EXPERIENCE, SECTIONS, type Lang } from "../../data/content";
-import { useScrollFill } from "./hooks";
-import Reveal from "./Reveal";
+import { Fragment } from "react";
+import { EXPERIENCE, EXPERIENCE_LABELS as XL, SECTIONS, type Lang, type Role } from "../../data/content";
+import { useArmed, useInView, useScrollProgress } from "./motion";
+import { TechList } from "./Projects";
 import SectionHeader from "./SectionHeader";
 
-function Company({ item, lang, index }: { item: (typeof EXPERIENCE)[number]; lang: Lang; index: number }) {
-  const beamRef = useScrollFill<HTMLDivElement>("height");
-  const titleId = `company-${index}`;
+// "June 2026 – present" → "2026"; the current role reads NOW.
+const yearOf = (role: Role, lang: Lang) => (role.current ? XL.now[lang] : (role.period.en.match(/\d{4}/)?.[0] ?? ""));
 
+/** A role on the timeline: its node activates and its content rises in when it enters the viewport. */
+function RoleEntry({ role, lang, accent }: { role: Role; lang: Lang; accent: string }) {
+  const armed = useArmed();
+  const [ref, inView] = useInView<HTMLLIElement>({ threshold: 0.25 });
   return (
-    <Reveal>
-      <article aria-labelledby={titleId} className="exp-company">
-        <header>
-          <h3 id={titleId} style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 24, fontWeight: 500, color: "#F8FAFC" }}>
-            {item.company}
-          </h3>
-          <p style={{ margin: "6px 0 0", fontFamily: "'Geist Mono',monospace", fontSize: 12, letterSpacing: ".08em", color: "#94A3B8" }}>{item.span[lang]}</p>
-        </header>
-
-        {/* Roles newest-first along one orbit line, so the progression inside a company is visible. */}
-        <div style={{ position: "relative", paddingLeft: 28 }}>
-          <div aria-hidden="true" style={{ position: "absolute", left: 4, top: 10, bottom: 10, width: 1, background: "rgba(148,163,184,.2)" }} />
-          <div
-            ref={beamRef}
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              left: 4,
-              top: 10,
-              width: 1,
-              height: "0%",
-              maxHeight: "calc(100% - 20px)",
-              background: `linear-gradient(180deg,${item.accent},#38BDF8)`,
-              boxShadow: `0 0 10px ${item.accent}`,
-              transition: "height .2s linear",
-            }}
-          />
-          <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 26 }}>
-            {item.roles.map((role) => (
-              <li key={role.title} style={{ position: "relative" }}>
-                <span
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    left: -28,
-                    top: 7,
-                    width: 9,
-                    height: 9,
-                    borderRadius: "50%",
-                    background: role.current ? item.accent : "#0A0818",
-                    border: `1px solid ${item.accent}`,
-                    boxShadow: role.current ? `0 0 12px ${item.accent}` : undefined,
-                  }}
-                />
-                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "6px 14px" }}>
-                  <h4 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 500, color: "#F8FAFC" }}>{role.title}</h4>
-                  {role.current && (
-                    <span
-                      style={{
-                        padding: "2px 9px",
-                        borderRadius: 999,
-                        border: "1px solid rgba(56,189,248,.45)",
-                        fontFamily: "'Geist Mono',monospace",
-                        fontSize: 11,
-                        letterSpacing: ".08em",
-                        color: "#E0F2FE",
-                      }}
-                    >
-                      {CURRENT_LABEL[lang]}
-                    </span>
-                  )}
-                </div>
-                <p style={{ margin: "5px 0 10px", fontFamily: "'Geist Mono',monospace", fontSize: 12.5, letterSpacing: ".04em", color: "#7DD3FC" }}>
-                  {role.period[lang]}
-                </p>
-                <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.7, color: "#CBD5E1", maxWidth: "68ch" }}>{role.body[lang]}</p>
-              </li>
-            ))}
-          </ol>
+    <li
+      ref={ref}
+      className="tl-role"
+      data-in={!armed || inView ? "" : undefined}
+      data-current={role.current ? "" : undefined}
+      style={{ ["--accent" as string]: accent }}
+    >
+      <span className="tl-role__year">{yearOf(role, lang)}</span>
+      <span className="tl-role__node" aria-hidden="true" />
+      <div className="tl-role__body">
+        <div className="tl-role__head">
+          <h4 className="tl-role__title">{role.title}</h4>
+          {role.current && <span className="tl-role__badge">{XL.current[lang]}</span>}
         </div>
-      </article>
-    </Reveal>
+        <p className="exp-focus">{role.focus}</p>
+        <p className="tl-role__period">{role.period[lang]}</p>
+        <p className="body-text" style={{ maxWidth: "68ch" }}>
+          {role.context[lang]}
+        </p>
+        <ul className="exp-work">
+          {role.work.map((w) => (
+            <li key={w.en}>{w[lang]}</li>
+          ))}
+        </ul>
+        <span className="sr-only">{XL.tech[lang]}: </span>
+        <TechList items={role.tech} />
+      </div>
+    </li>
+  );
+}
+
+/**
+ * Experience as a vertical progression: inside each company the roles read
+ * oldest → newest (2025 → 2026 → NOW) so growth is visible, the line fills as
+ * you scroll, and each role's node activates as it enters. Official titles
+ * are shown unchanged; the trajectory strip only abbreviates them visually.
+ */
+function Company({ item, lang, index }: { item: (typeof EXPERIENCE)[number]; lang: Lang; index: number }) {
+  const lineRef = useScrollProgress<HTMLDivElement>("--progress", 0.6);
+  const roles = [...item.roles].reverse();
+  return (
+    <article aria-labelledby={`company-${index}`} className="tl-company" style={{ ["--accent" as string]: item.accent }}>
+      <header className="tl-company__head">
+        <h3 id={`company-${index}`} className="tl-company__name">
+          {item.company}
+        </h3>
+        <p className="tl-company__span">{item.span[lang]}</p>
+        {roles.length > 1 && (
+          <p className="tl-growth">
+            <span className="sr-only">{XL.growth[lang]}: </span>
+            {roles.map((r, i) => (
+              <Fragment key={r.title}>
+                <span data-current={r.current ? "" : undefined}>{r.short}</span>
+                {i < roles.length - 1 && <span aria-hidden="true"> → </span>}
+              </Fragment>
+            ))}
+          </p>
+        )}
+      </header>
+      <div ref={lineRef} className="tl-line-wrap">
+        <div className="tl-line" aria-hidden="true">
+          <div className="tl-line__fill" />
+        </div>
+        <ol className="tl-roles">
+          {roles.map((role) => (
+            <RoleEntry key={role.title} role={role} lang={lang} accent={item.accent} />
+          ))}
+        </ol>
+      </div>
+    </article>
   );
 }
 
@@ -87,7 +89,7 @@ export default function Experience({ lang }: { lang: Lang }) {
   return (
     <section id="experience" aria-labelledby="experience-title" className="mael-section">
       <SectionHeader header={SECTIONS.experience} lang={lang} id="experience-title" />
-      <div style={{ display: "flex", flexDirection: "column", gap: "clamp(18px,2.4vw,26px)" }}>
+      <div className="tl">
         {EXPERIENCE.map((item, i) => (
           <Company key={item.company} item={item} lang={lang} index={i} />
         ))}

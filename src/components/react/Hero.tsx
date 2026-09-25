@@ -1,157 +1,143 @@
-import { CV_PATH, HERO, type Lang } from "../../data/content";
+import { useEffect, useRef, useState } from "react";
+import { CV_FILENAME, CV_PATH, HERO, type Lang, type Topology } from "../../data/content";
+import ArchitectureDiagram from "./ArchitectureDiagram";
 import { useMagnetic } from "./hooks";
+import { MOTION, hasFinePointer, prefersReducedMotion, useScramble } from "./motion";
+import RevealText from "./RevealText";
 
-const ORBIT_PATHS = [
-  "M60.3,324.9 a210,100 -18 1,0 399.4,-129.8 a210,100 -18 1,0 -399.4,129.8",
-  "M107.8,309.4 a160,76 -18 1,0 304.3,-98.9 a160,76 -18 1,0 -304.3,98.9",
-  "M155.4,294 a110,52 -18 1,0 209.2,-68 a110,52 -18 1,0 -209.2,68",
-];
+// Compact horizontal version of the hero topology for phones.
+const MOBILE_TOPOLOGY: Topology = {
+  aspect: 4.2,
+  nodes: HERO.topology.nodes.map((n, i) => ({ id: n.id, label: n.label, x: 9 + i * 20.5, y: 50 })),
+  edges: HERO.topology.edges,
+};
 
-const ORBIT_DOTS: { path: number; r: number; fill: string; duration: number; delay: number }[] = [
-  { path: 0, r: 6, fill: "#A78BFA", duration: 46, delay: 0 },
-  { path: 0, r: 5, fill: "#38BDF8", duration: 46, delay: -19 },
-  { path: 1, r: 5.5, fill: "#60A5FA", duration: 34, delay: -8 },
-  { path: 1, r: 4, fill: "#C026D3", duration: 34, delay: -23 },
-  { path: 2, r: 4.5, fill: "#8B5CF6", duration: 24, delay: -11 },
-];
-
-// Text position for each orbit label.
-const NODE_POS: { x: number; y: number; anchor: "start" | "middle" | "end" }[] = [
-  { x: 272, y: 60, anchor: "middle" },
-  { x: 470, y: 238, anchor: "start" },
-  { x: 52, y: 186, anchor: "end" },
-  { x: 46, y: 432, anchor: "start" },
-  { x: 420, y: 452, anchor: "middle" },
-];
-
+/**
+ * WOW 1 — the system initializes. Sequence (all timings from MOTION):
+ *   intro overlay "MYG / SYSTEM INITIALIZING" (Layout, CSS-only, ~0.6s, once per session)
+ *   → name label → role → headline line by line (mask reveal)
+ *   → body, actions and stack, staggered
+ * while the USER → UI → API → LOGIC → DATA topology builds itself.
+ * Server render / no JS / reduced motion: everything visible, no motion.
+ */
 export default function Hero({ lang }: { lang: Lang }) {
-  const ctaPrimaryRef = useMagnetic<HTMLAnchorElement>();
-  const ctaSecondaryRef = useMagnetic<HTMLAnchorElement>();
-  const headline = HERO.headline[lang];
+  const primaryRef = useMagnetic<HTMLAnchorElement>();
+  const visualRef = useRef<HTMLDivElement>(null);
+  const [stage, setStage] = useState(-1); // -1 = not started (static render)
+
+  // Start the sequence once the intro overlay is on its way out.
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const introPlaying = document.documentElement.dataset.intro === "play";
+    const t0 = introPlaying ? 480 : 60;
+    setStage(0);
+    const timers = [1, 2, 3].map((s, i) => window.setTimeout(() => setStage(s), t0 + [0, MOTION.normal, MOTION.slow + MOTION.normal][i]));
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  // Tiny pointer parallax on the topology (desktop, motion allowed).
+  useEffect(() => {
+    const el = visualRef.current;
+    if (!el || prefersReducedMotion() || !hasFinePointer()) return;
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+    const onMove = (e: PointerEvent) => {
+      x = e.clientX / window.innerWidth - 0.5;
+      y = e.clientY / window.innerHeight - 0.5;
+      if (!raf)
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          el.style.setProperty("--px", x.toFixed(3));
+          el.style.setProperty("--py", y.toFixed(3));
+        });
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const started = stage >= 1;
+  const status = useScramble(HERO.status.value[lang], stage >= 3, MOTION.slow);
+  const seq = (i: number) => ({ "data-seq": stage === -1 ? "static" : stage >= 3 ? "in" : "out", style: { transitionDelay: `${i * MOTION.stagger}ms` } });
 
   return (
     <section id="hero" aria-labelledby="hero-title" className="hero">
-      <div className="hero-copy">
-        <p
-          style={{
-            margin: 0,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            fontFamily: "'Geist Mono',monospace",
-            fontSize: 12.5,
-            letterSpacing: ".26em",
-            color: "#CBD5E1",
-          }}
-        >
-          <span aria-hidden="true" style={{ display: "block", width: 26, height: 1, background: "#8B5CF6" }} />
-          {HERO.eyebrow[lang]}
-        </p>
+      {/* Technical background: coordinates and ticks, 3–12% opacity, never behind the text column's contrast. */}
+      <div className="hero-coords" aria-hidden="true">
+        <span style={{ left: "4%", top: "18%" }}>X 0120 · Y 0048</span>
+        <span style={{ left: "4%", bottom: "4%" }}>NODE 05 / 05</span>
+        <span style={{ left: "38%", bottom: "4%" }}>LAT 19.43 · LON −99.13</span>
+        <span style={{ right: "3%", bottom: "22%" }}>v2026.09</span>
+      </div>
 
-        <h1
-          id="hero-title"
-          style={{
-            margin: 0,
-            fontFamily: "'Space Grotesk',sans-serif",
-            fontWeight: 600,
-            fontSize: "clamp(36px,5vw,66px)",
-            lineHeight: 1.06,
-            letterSpacing: "-.025em",
-            color: "#F8FAFC",
-            textWrap: "balance",
-          }}
-        >
-          {headline.lead}{" "}
-          <span
-            style={{
-              background: "linear-gradient(100deg,#A78BFA 10%,#38BDF8 90%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
-            {headline.highlight}
+      <div className="hero-copy">
+        <h1 id="hero-title" className="hero-title">
+          <span className="hero-title__name" {...seq(0)} data-seq={stage === -1 ? "static" : stage >= 0 ? "in" : "out"}>
+            {HERO.name}
           </span>
+          <span className="sr-only">, </span>
+          <RevealText text={HERO.role} className="hero-title__role" play={stage === -1 ? undefined : started} delay={0} />
         </h1>
 
-        <p style={{ margin: 0, maxWidth: "46ch", fontSize: "clamp(16px,1.3vw,18.5px)", lineHeight: 1.65, color: "#CBD5E1" }}>{HERO.body[lang]}</p>
+        <RevealText as="p" text={HERO.headline[lang]} className="hero-headline" play={stage === -1 ? undefined : stage >= 2} />
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 4 }}>
-          <a ref={ctaPrimaryRef} href="#projects" className="mael-btn mael-btn--primary">
-            {HERO.ctaPrimary[lang]}
-            <span aria-hidden="true">→</span>
+        <p className="hero-body" {...seq(0)}>
+          {HERO.body[lang]}
+        </p>
+
+        <div className="hero-actions" {...seq(1)}>
+          <a ref={primaryRef} href="#work" className="mael-btn mael-btn--primary" data-cursor="link">
+            <span className="mael-btn__label">{HERO.ctaWork[lang]}</span>
+            <span className="mael-btn__arrow" aria-hidden="true">
+              →
+            </span>
           </a>
-          <a ref={ctaSecondaryRef} href={CV_PATH} download="Mario-Yael-Gordillo-CV.pdf" className="mael-btn mael-btn--ghost">
-            {HERO.ctaSecondary[lang]}
-            <span aria-hidden="true">↓</span>
+          <a href="#process" className="mael-btn mael-btn--ghost" data-cursor="link">
+            <span className="mael-btn__label">{HERO.ctaProcess[lang]}</span>
+            <span className="mael-btn__arrow" aria-hidden="true">
+              ↓
+            </span>
+          </a>
+          <a href={CV_PATH} download={CV_FILENAME} className="mael-btn mael-btn--text" data-cursor="link">
+            <span className="mael-btn__label">{HERO.ctaCv[lang]}</span>
+            <span className="mael-btn__arrow" aria-hidden="true">
+              ↓
+            </span>
           </a>
         </div>
 
-        <p style={{ margin: "6px 0 0", fontFamily: "'Geist Mono',monospace", fontSize: 13, letterSpacing: ".1em", color: "#94A3B8" }}>{HERO.areas[lang]}</p>
+        <p className="hero-stack" {...seq(2)}>
+          <span className="sr-only">{HERO.stackLabel[lang]}: </span>
+          {HERO.stack.join(" · ")}
+        </p>
+
+        <div className="hero-mobile-topology" {...seq(3)}>
+          <ArchitectureDiagram topology={MOBILE_TOPOLOGY} size="sm" play={stage === -1 || stage >= 2} label={HERO.topologyLabel[lang]} />
+        </div>
       </div>
 
-      {/* Orbit illustration: desktop/tablet only, so on phones the projects start right after the intro. */}
-      <div className="hero-orbit">
-        <svg viewBox="0 0 520 520" role="img" aria-label={HERO.orbitLabel[lang]} style={{ width: "100%", maxWidth: 560, overflow: "visible" }}>
-          <defs>
-            <radialGradient id="core">
-              <stop offset="0%" stopColor="#FFFFFF" />
-              <stop offset="35%" stopColor="#C4B5FD" />
-              <stop offset="100%" stopColor="#5B21B6" />
-            </radialGradient>
-            <radialGradient id="halo">
-              <stop offset="0%" stopColor="rgba(139,92,246,.45)" />
-              <stop offset="100%" stopColor="rgba(139,92,246,0)" />
-            </radialGradient>
-            <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
-              <feGaussianBlur stdDeviation="5" result="b" />
-              <feMerge>
-                <feMergeNode in="b" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          <circle cx="260" cy="260" r="140" fill="url(#halo)" opacity=".7" style={{ animation: "cosmic-breathe 7s ease-in-out infinite" }} />
-          {ORBIT_PATHS.map((d, i) => (
-            <path key={d} d={d} fill="none" stroke={`rgba(148,163,184,${0.28 - i * 0.05})`} strokeWidth={1} strokeDasharray={i === 2 ? "3 5" : undefined} />
-          ))}
-
-          {ORBIT_DOTS.map((dot, i) => (
-            <circle
-              key={i}
-              r={dot.r}
-              fill={dot.fill}
-              filter="url(#glow)"
-              style={{
-                offsetPath: `path('${ORBIT_PATHS[dot.path]}')`,
-                offsetRotate: "0deg",
-                animation: `cosmic-orbit ${dot.duration}s linear infinite`,
-                animationDelay: `${dot.delay}s`,
-              }}
-            />
-          ))}
-
-          <circle cx="260" cy="260" r="26" fill="url(#core)" filter="url(#glow)" />
-          <text x="260" y="324" textAnchor="middle" fontFamily="Geist Mono, monospace" fontSize="12.5" letterSpacing="2.6" fill="#F8FAFC">
-            {HERO.orbitCenter[lang]}
-          </text>
-
-          {HERO.orbitNodes.map((node, i) => (
-            <text
-              key={node.en}
-              x={NODE_POS[i].x}
-              y={NODE_POS[i].y}
-              textAnchor={NODE_POS[i].anchor}
-              fontFamily="Geist Mono, monospace"
-              fontSize="11.5"
-              letterSpacing="2"
-              fill="#CBD5E1"
-            >
-              {node[lang]}
-            </text>
-          ))}
-        </svg>
+      <div ref={visualRef} className="hero-visual">
+        <div className="hero-status" aria-live="off">
+          <span className="hero-status__k">{HERO.status.label}</span>
+          <span className="hero-status__v">
+            <span className="status-dot" aria-hidden="true" />
+            {stage === -1 || stage >= 3 ? status : HERO.status.booting}
+          </span>
+        </div>
+        <ArchitectureDiagram topology={HERO.topology} accent="#8B5CF6" play={stage === -1 || stage >= 0} label={HERO.topologyLabel[lang]} highlight="logic" />
+        <dl className="hero-readout">
+          {HERO.profile.rows
+            .filter((r) => r.k !== "STATUS")
+            .map((row) => (
+              <div key={row.k}>
+                <dt>{row.k}</dt>
+                <dd>{row.v[lang]}</dd>
+              </div>
+            ))}
+        </dl>
       </div>
     </section>
   );

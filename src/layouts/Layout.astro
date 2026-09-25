@@ -7,11 +7,13 @@ import { CONTACT, META } from "../data/content";
 interface Props {
   title?: string;
   description?: string;
+  /** Home page only: the brief "MYG / SYSTEM INITIALIZING" intro. */
+  intro?: boolean;
 }
 
-// The page is server-rendered in English; CosmicApp switches <html lang>,
+// Pages are server-rendered in English; the React app (useLang) switches <html lang>,
 // the description and og:locale on the client when Spanish is active.
-const { title = META.title, description = META.description.en } = Astro.props;
+const { title = META.title, description = META.description.en, intro = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? CONTACT.site).href;
 
 const jsonLd = {
@@ -22,12 +24,12 @@ const jsonLd = {
     "@type": "Person",
     name: "Mario Yael Gordillo García",
     alternateName: "MAEL",
-    jobTitle: "Full Stack Developer",
+    jobTitle: "Software Developer",
     url: CONTACT.site,
     email: `mailto:${CONTACT.email}`,
     sameAs: [CONTACT.github],
     affiliation: { "@type": "CollegeOrUniversity", name: "UPIICSA — Instituto Politécnico Nacional" },
-    knowsAbout: ["Full Stack Development", "Backend Development", "Databases", "System Integration", "Java", "Quarkus", "Python", "Angular", "React", "PostgreSQL"],
+    knowsAbout: ["Software Engineering", "Full Stack Development", "Backend Development", "System Integration", "Business Process Analysis", "Software Architecture", "Java", "Quarkus", "Python", "TypeScript", "Angular", "React", "PostgreSQL"],
   },
 };
 ---
@@ -62,12 +64,39 @@ const jsonLd = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {
+      intro && (
+        <script is:inline>
+          // Decide before first paint whether the intro plays: once per session,
+          // never under reduced motion. Without JS the overlay never shows.
+          (function () {
+            var d = document.documentElement;
+            try {
+              var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              var seen = sessionStorage.getItem("mael.intro") === "1";
+              d.dataset.intro = reduce || seen ? "skip" : "play";
+              if (!reduce) sessionStorage.setItem("mael.intro", "1");
+            } catch (e) {
+              d.dataset.intro = "skip";
+            }
+          })();
+        </script>
+      )
+    }
   </head>
   <body class="bg-bg text-ink">
     <!-- Starfield renders below everything -->
     <Stars />
     <!-- Grid/noise/glow texture layer, above the starfield -->
     <CosmicBackdrop />
+    {
+      intro && (
+        <div class="intro" aria-hidden="true">
+          <span class="intro__text">MYG / SYSTEM INITIALIZING</span>
+          <span class="intro__bar" />
+        </div>
+      )
+    }
     <!-- Content sits above the background -->
     <div class="relative" style="z-index: 1;">
       <slot />

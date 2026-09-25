@@ -1,0 +1,17 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CaseStudyApp from "../../components/react/CaseStudyApp";
+import { CASE_STUDIES, PROJECTS } from "../../data/content";
+
+export function getStaticPaths() {
+  return CASE_STUDIES.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const study = CASE_STUDIES.find((c) => c.slug === slug)!;
+const project = PROJECTS.find((p) => p.id === study.projectId)!;
+---
+
+<Layout title={`${project.name} — Case study | Mario Yael`} description={project.tagline.en}>
+  <CaseStudyApp client:load slug={slug!} />
+</Layout>

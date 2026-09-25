@@ -1,54 +1,51 @@
 import { useEffect, useState } from "react";
-import { META, type Lang } from "../../data/content";
+import { META, SECTIONS } from "../../data/content";
+import Cursor from "./Cursor";
+import ScrollProgress, { type ProgressSection } from "./ScrollProgress";
+import { useLang } from "./hooks";
 import Header from "./Header";
 import Hero from "./Hero";
 import Projects from "./Projects";
 import Process from "./Process";
-import Experience from "./Experience";
-import { SoftSkills, TechnicalSkills } from "./Skills";
+import FeaturedCaseStudy from "./FeaturedCaseStudy";
+import SystemThinking from "./SystemThinking";
 import About from "./About";
-import ContactFooter, { Footer } from "./ContactFooter";
+import Stack from "./Stack";
+import Experience from "./Experience";
+import { Direction, Education } from "./Growth";
+import Contact, { Footer } from "./ContactFooter";
 
-// Sections observed for the active nav item. Soft skills live under the
-// "Skills" nav entry, so they report as `skills`.
-const SECTION_IDS = ["hero", "projects", "process", "experience", "skills", "soft-skills", "about", "contact"];
-const NAV_ALIAS: Record<string, string> = { "soft-skills": "skills" };
+// Page story: who → what I've built → how I build → a project in depth →
+// how I think about systems → who I am → what I use → where I've worked →
+// where I'm heading → contact. Sections without their own nav entry report
+// as the closest one.
+const SECTION_IDS = ["hero", "work", "process", "case-study", "system", "about", "stack", "experience", "education", "direction", "contact"];
+const NAV_ALIAS: Record<string, string> = {
+  "case-study": "work",
+  system: "process",
+  education: "experience",
+  direction: "experience",
+};
+
+// Coordinates shown on the page spine: every section with its number and label.
+const SPINE: ProgressSection[] = (
+  [
+    ["work", SECTIONS.work],
+    ["process", SECTIONS.process],
+    ["case-study", SECTIONS.caseStudy],
+    ["system", SECTIONS.system],
+    ["about", SECTIONS.about],
+    ["stack", SECTIONS.stack],
+    ["experience", SECTIONS.experience],
+    ["education", SECTIONS.education],
+    ["direction", SECTIONS.direction],
+    ["contact", SECTIONS.contact],
+  ] as const
+).map(([id, h]) => ({ id, index: h.index, label: h.eyebrow }));
 
 export default function CosmicApp() {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [lang, setLang] = useLang(META.description);
   const [active, setActive] = useState("hero");
-
-  // Resolve the language after mount so the server-rendered and first client
-  // render always match (avoids a hydration mismatch): a saved choice wins,
-  // otherwise follow the browser's language.
-  useEffect(() => {
-    let next: Lang | null = null;
-    try {
-      const saved = window.localStorage.getItem("mael.lang");
-      if (saved === "es" || saved === "en") next = saved;
-    } catch {
-      /* localStorage unavailable */
-    }
-    if (!next && navigator.language?.toLowerCase().startsWith("es")) next = "es";
-    if (next) setLangState(next);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.lang = lang;
-    document.title = META.title;
-    document.querySelector('meta[name="description"]')?.setAttribute("content", META.description[lang]);
-    document.querySelector('meta[property="og:description"]')?.setAttribute("content", META.description[lang]);
-    document.querySelector('meta[property="og:locale"]')?.setAttribute("content", lang === "es" ? "es_MX" : "en_US");
-  }, [lang]);
-
-  const setLang = (l: Lang) => {
-    setLangState(l);
-    try {
-      window.localStorage.setItem("mael.lang", l);
-    } catch {
-      /* localStorage unavailable */
-    }
-  };
 
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -78,15 +75,20 @@ export default function CosmicApp() {
   return (
     <>
       <Header lang={lang} setLang={setLang} active={active} />
+      <ScrollProgress sections={SPINE} />
+      <Cursor />
       <main id="main" tabIndex={-1} style={{ position: "relative", zIndex: 10 }}>
         <Hero lang={lang} />
         <Projects lang={lang} />
         <Process lang={lang} />
-        <Experience lang={lang} />
-        <TechnicalSkills lang={lang} />
-        <SoftSkills lang={lang} />
+        <FeaturedCaseStudy lang={lang} />
+        <SystemThinking lang={lang} />
         <About lang={lang} />
-        <ContactFooter lang={lang} />
+        <Stack lang={lang} />
+        <Experience lang={lang} />
+        <Education lang={lang} />
+        <Direction lang={lang} />
+        <Contact lang={lang} />
       </main>
       <Footer lang={lang} />
     </>

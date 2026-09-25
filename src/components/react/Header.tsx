@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { BRAND, NAV_LINKS, UI, type Lang } from "../../data/content";
+import { CV_FILENAME, CV_PATH, NAV_LINKS, UI, type Lang } from "../../data/content";
 
 interface HeaderProps {
   lang: Lang;
   setLang: (l: Lang) => void;
-  active: string;
+  active?: string;
+  /** "" on the home page (plain #anchors, smooth-scrolled); "/" on inner pages. */
+  base?: string;
 }
 
 function LangSwitch({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
@@ -20,7 +22,7 @@ function LangSwitch({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void 
   );
 }
 
-export default function Header({ lang, setLang, active }: HeaderProps) {
+export default function Header({ lang, setLang, active, base = "" }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -45,16 +47,20 @@ export default function Header({ lang, setLang, active }: HeaderProps) {
   }, [open]);
 
   const links = (onNavigate?: () => void) =>
-    NAV_LINKS.map((item) => {
-      const current = active === item.id;
-      return (
-        <li key={item.id}>
-          <a href={`#${item.id}`} aria-current={current ? "location" : undefined} className="nav-link" onClick={onNavigate}>
-            {item.label[lang]}
-          </a>
-        </li>
-      );
-    });
+    NAV_LINKS.map((item) => (
+      <li key={item.id}>
+        <a href={`${base}#${item.id}`} aria-current={active === item.id ? "location" : undefined} className="nav-link" onClick={onNavigate}>
+          {item.label[lang]}
+        </a>
+      </li>
+    ));
+
+  const cv = (
+    <a href={CV_PATH} download={CV_FILENAME} className="nav-cv" aria-label={UI.cvLabel[lang]}>
+      {UI.cv[lang]}
+      <span aria-hidden="true">↓</span>
+    </a>
+  );
 
   return (
     <header id="site-nav" className="site-header">
@@ -62,9 +68,13 @@ export default function Header({ lang, setLang, active }: HeaderProps) {
         {UI.skip[lang]}
       </a>
 
-      <a href="#hero" aria-label={UI.home[lang]} className="brand">
-        <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: ".28em", color: "#F8FAFC" }}>{BRAND.name}</span>
-        <span className="brand__role" style={{ fontFamily: "'Geist Mono',monospace", fontSize: 11, letterSpacing: ".2em", color: "#94A3B8" }}>{BRAND.role[lang]}</span>
+      <a href={base ? "/" : "#hero"} aria-label={UI.home[lang]} className="brand">
+        <span className="brand__mark">
+          M<span style={{ color: "#8B5CF6" }}>.</span>
+        </span>
+        <span className="brand__id" aria-hidden="true">
+          MYG-01
+        </span>
       </a>
 
       <nav aria-label={UI.navLabel[lang]} className="nav-desktop">
@@ -73,6 +83,7 @@ export default function Header({ lang, setLang, active }: HeaderProps) {
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <LangSwitch lang={lang} setLang={setLang} />
+        <span className="nav-cv-wrap">{cv}</span>
         <button
           ref={toggleRef}
           type="button"
@@ -88,6 +99,7 @@ export default function Header({ lang, setLang, active }: HeaderProps) {
 
       <nav id="mobile-nav" aria-label={UI.navLabel[lang]} className="nav-mobile" hidden={!open}>
         <ul>{links(() => setOpen(false))}</ul>
+        <div style={{ marginTop: 14 }}>{cv}</div>
       </nav>
     </header>
   );

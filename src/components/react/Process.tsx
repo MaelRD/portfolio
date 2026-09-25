@@ -1,187 +1,140 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PROCESS_STEPS, SECTIONS, type Lang } from "../../data/content";
-import Reveal from "./Reveal";
+import ArchitectureDiagram from "./ArchitectureDiagram";
+import { prefersReducedMotion } from "./motion";
 import SectionHeader from "./SectionHeader";
 
-// One sweep of the beam across all steps, in ms. The beam reaches the last
-// step at FULL_AT of the cycle, holds briefly, then restarts.
-const CYCLE_MS = 1600 * PROCESS_STEPS.length;
-const FULL_AT = 0.88;
-
-type StepState = "idle" | "done" | "active";
-
 /**
- * Drives the beam and the step icons from a single clock, so they can never
- * drift apart (two independent CSS animations only stay in phase if they
- * start on the same frame — a resize across the breakpoint used to restart
- * the beam but not the icons). The track is sized from the icons' measured
- * centers, horizontally on desktop and vertically below 1024px, and each
- * icon lights up exactly when the beam tip reaches it.
+ * WOW 3 — the flow connects as you scroll.
+ * One measurement per frame drives everything: the line fills down to the
+ * middle of the viewport, every node the line has passed is "reached", and
+ * the last one reached is the active step (full intensity, its micro-diagram
+ * rebuilding; the others dim). Because line, nodes and active step come from
+ * the same number, they can never drift apart.
+ * Desktop: the active step's diagram sits in a sticky panel on the right.
+ * Phones: each step shows its own diagram inline.
+ * Reduced motion / no JS: every step fully visible, line complete.
  */
-function useProcessBeam() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const beamRef = useRef<HTMLDivElement>(null);
+function useScrollTimeline(count: number) {
+  const listRef = useRef<HTMLOListElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(-1);
 
   useEffect(() => {
-    const wrap = wrapRef.current;
-    const track = trackRef.current;
-    const beam = beamRef.current;
-    if (!wrap || !track || !beam) return;
-
-    const icons = Array.from(wrap.querySelectorAll<HTMLElement>(".process-icon"));
-    const desktop = window.matchMedia("(min-width: 1024px)");
-    let reduce = false;
-    try {
-      reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    } catch {
-      /* matchMedia unavailable */
+    const list = listRef.current;
+    const fill = fillRef.current;
+    if (!list || !fill) return;
+    const nodes = Array.from(list.querySelectorAll<HTMLElement>(".pt-node"));
+    const place = () => {
+      const r = list.getBoundingClientRect();
+      const first = nodes[0].getBoundingClientRect();
+      const lastNode = nodes[nodes.length - 1].getBoundingClientRect();
+      const top = first.top + first.height / 2;
+      const bottom = lastNode.top + lastNode.height / 2;
+      fill.parentElement!.style.top = `${top - r.top}px`;
+      fill.parentElement!.style.height = `${bottom - top}px`;
+      return { top, bottom };
+    };
+    if (prefersReducedMotion()) {
+      place();
+      fill.style.transform = "scaleY(1)";
+      const ro = new ResizeObserver(place);
+      ro.observe(list);
+      return () => ro.disconnect();
     }
-
-    let horizontal = desktop.matches;
-    let fracs: number[] = icons.map((_, i) => i / Math.max(1, icons.length - 1));
-    const states: StepState[] = icons.map(() => "idle");
-
-    const setState = (i: number, s: StepState) => {
-      if (states[i] === s) return;
-      states[i] = s;
-      icons[i].dataset.state = s;
-    };
-
-    // Size the track to run exactly from the first icon's center to the
-    // last one's, and record where each icon sits along it (0..1).
-    const measure = () => {
-      horizontal = desktop.matches;
-      const w = wrap.getBoundingClientRect();
-      const centers = icons.map((ic) => {
-        const r = ic.getBoundingClientRect();
-        return horizontal ? r.left + r.width / 2 - w.left : r.top + r.height / 2 - w.top;
-      });
-      const start = centers[0];
-      const len = Math.max(1, centers[centers.length - 1] - start);
-      const cross = icons[0].getBoundingClientRect();
-      const crossPos = horizontal ? cross.top + cross.height / 2 - w.top : cross.left + cross.width / 2 - w.left;
-      Object.assign(
-        track.style,
-        horizontal
-          ? { left: `${start}px`, width: `${len}px`, top: `${crossPos}px`, height: "1px", right: "auto", bottom: "auto" }
-          : { top: `${start}px`, height: `${len}px`, left: `${crossPos}px`, width: "1px", right: "auto", bottom: "auto" },
-      );
-      beam.style.transformOrigin = horizontal ? "left center" : "center top";
-      fracs = centers.map((c) => (c - start) / len);
-    };
-
-    const render = (f: number) => {
-      beam.style.transform = horizontal ? `scaleX(${f})` : `scaleY(${f})`;
-      // The step the beam most recently reached is "active"; earlier ones stay lit.
-      let current = -1;
-      fracs.forEach((p, i) => {
-        if (f >= p - 0.001) current = i;
-      });
-      icons.forEach((_, i) => setState(i, i < current ? "done" : i === current ? "active" : "idle"));
-    };
-
-    measure();
-
-    if (reduce) {
-      // No motion: show the whole path as complete, nothing pulses.
-      beam.style.transform = horizontal ? "scaleX(1)" : "scaleY(1)";
-      icons.forEach((_, i) => setState(i, "done"));
-      const onChange = () => {
-        measure();
-        beam.style.transform = horizontal ? "scaleX(1)" : "scaleY(1)";
-      };
-      window.addEventListener("resize", onChange, { passive: true });
-      document.fonts?.ready.then(onChange).catch(() => {});
-      return () => window.removeEventListener("resize", onChange);
-    }
-
+    list.dataset.armed = "";
     let raf = 0;
-    let origin = 0;
-    let running = false;
-    const tick = (now: number) => {
-      if (!origin) origin = now;
-      const p = ((now - origin) % CYCLE_MS) / CYCLE_MS;
-      render(Math.min(p / FULL_AT, 1));
-      raf = requestAnimationFrame(tick);
+    let last = -2;
+    const update = () => {
+      raf = 0;
+      const { top, bottom } = place();
+      const probe = window.innerHeight * 0.5;
+      const f = Math.max(0, Math.min(1, (probe - top) / Math.max(1, bottom - top)));
+      fill.style.transform = `scaleY(${f.toFixed(4)})`;
+      let idx = -1;
+      nodes.forEach((n, i) => {
+        const b = n.getBoundingClientRect();
+        if (b.top + b.height / 2 <= probe + 1) idx = i;
+      });
+      if (idx !== last) {
+        last = idx;
+        setActive(idx);
+      }
     };
-    const start = () => {
-      if (running) return;
-      running = true;
-      measure(); // layout may have shifted (fonts, entrance animations) since the last measure
-      origin = 0; // each time the section comes into view, the sweep starts from step 01
-      raf = requestAnimationFrame(tick);
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
     };
-    const stop = () => {
-      running = false;
-      cancelAnimationFrame(raf);
-    };
-
-    // Only animate while the section is on screen.
-    const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()), { threshold: 0.15 });
-    io.observe(wrap);
-
-    const ro = new ResizeObserver(() => measure());
-    ro.observe(wrap);
-    // Entrance animations (Reveal) and web-font swaps shift the steps; re-measure once they settle.
-    wrap.addEventListener("animationend", measure);
-    window.addEventListener("load", measure);
-    document.fonts?.ready.then(measure).catch(() => {});
-    desktop.addEventListener("change", measure);
-
+    update();
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(list);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     return () => {
-      stop();
-      io.disconnect();
+      cancelAnimationFrame(raf);
       ro.disconnect();
-      wrap.removeEventListener("animationend", measure);
-      window.removeEventListener("load", measure);
-      desktop.removeEventListener("change", measure);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [count]);
 
-  return { wrapRef, trackRef, beamRef };
+  return { listRef, fillRef, active };
 }
 
 export default function Process({ lang }: { lang: Lang }) {
-  const { wrapRef, trackRef, beamRef } = useProcessBeam();
+  const { listRef, fillRef, active } = useScrollTimeline(PROCESS_STEPS.length);
+  const shown = PROCESS_STEPS[Math.max(0, active)];
 
   return (
     <section id="process" aria-labelledby="process-title" className="mael-section">
       <SectionHeader header={SECTIONS.process} lang={lang} id="process-title" accent="#38BDF8" />
 
-      {/* Desktop: one row joined by a track the beam sweeps along.
-          Below 1024px: vertical cards, same beam running top to bottom. */}
-      <div ref={wrapRef} className="process-wrap">
-        <div ref={trackRef} className="process-track" aria-hidden="true">
-          <div ref={beamRef} className="process-beam" />
-        </div>
-        <ol className="process-list">
-          {PROCESS_STEPS.map((step, i) => (
-            <Reveal as="li" key={step.n} delay={Math.min(i, 4) * 70} className="process-step">
-              <span
-                aria-hidden="true"
-                className="process-icon"
-                style={{
-                  border: `1px solid ${step.accent}80`,
-                  color: step.accent,
-                  fontSize: step.icon === "</>" ? 16 : 19,
-                  fontFamily: step.icon === "</>" ? "'Geist Mono',monospace" : undefined,
-                }}
-              >
-                <span className="process-icon__glyph">{step.icon}</span>
-              </span>
-              <div className="process-text">
-                <h3 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 18.5, fontWeight: 500, color: "#F8FAFC" }}>
-                  <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 13, letterSpacing: ".1em", color: step.accent, marginRight: 8 }}>
-                    {step.n}
+      <div className="pt">
+        <div className="pt__timeline">
+          <div className="pt__track" aria-hidden="true">
+            <div ref={fillRef} className="pt__fill" />
+          </div>
+          <ol ref={listRef} className="pt__list">
+            {PROCESS_STEPS.map((step, i) => {
+              const state = active === -1 ? undefined : i === active ? "active" : i < active ? "done" : "next";
+              return (
+                <li key={step.n} className="pt-step" data-state={state} style={{ ["--accent" as string]: step.accent }}>
+                  <span className="pt-node process-icon" aria-hidden="true" style={{ border: `1px solid ${step.accent}80`, color: step.accent }}>
+                    <span className="process-icon__glyph">{step.icon}</span>
                   </span>
-                  {step.title[lang]}
-                </h3>
-                <p style={{ margin: "8px 0 0", fontSize: 15, lineHeight: 1.6, color: "#CBD5E1" }}>{step.body[lang]}</p>
-              </div>
-            </Reveal>
-          ))}
-        </ol>
+                  <div className="pt-step__body">
+                    <h3 className="process-title">
+                      <span className="process-n" style={{ color: step.accent }}>
+                        {step.n}
+                      </span>
+                      {step.title}
+                    </h3>
+                    <p className="process-body">{step.body[lang]}</p>
+                    <ul className="process-tags">
+                      {step.tags.map((t) => (
+                        <li key={t}>{t}</li>
+                      ))}
+                    </ul>
+                    {/* Phones: this step's micro-diagram inline, built once the line reaches the step. */}
+                    <div className="pt-step__micro">
+                      <ArchitectureDiagram topology={step.micro} accent={step.accent} size="sm" pulses={false} play={i <= active} />
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+        {/* Desktop: the active step's micro-diagram, rebuilt each time the step changes. */}
+        <div className="pt__stage" aria-hidden="true">
+          <div className="pt__stage-inner" style={{ ["--accent" as string]: shown.accent }}>
+            <p className="pt__stage-label">
+              <span style={{ color: shown.accent }}>{shown.n}</span> / {shown.title.toUpperCase()}
+            </p>
+            <ArchitectureDiagram topology={shown.micro} accent={shown.accent} playKey={shown.n} pulses={false} play={active >= 0} />
+            <p className="pt__stage-tags">{shown.tags.join(" · ")}</p>
+          </div>
+        </div>
       </div>
     </section>
   );

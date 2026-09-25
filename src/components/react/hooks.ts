@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function prefersReducedMotion(): boolean {
   try {
@@ -8,17 +8,23 @@ function prefersReducedMotion(): boolean {
   }
 }
 
-/** Buttons that nudge toward the pointer (`data-magnetic`). */
+/** Buttons that nudge toward the pointer — primary CTAs only, a few px, desktop pointers only. */
 export function useMagnetic<T extends HTMLElement>() {
   const ref = useRef<T>(null);
   useEffect(() => {
     const el = ref.current;
-    if (!el || prefersReducedMotion()) return;
+    let fine = false;
+    try {
+      fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    } catch {
+      /* matchMedia unavailable */
+    }
+    if (!el || !fine || prefersReducedMotion()) return;
     const onMove = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
       const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
       const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
-      el.style.transform = `translate(${(dx * 7).toFixed(1)}px,${(dy * 5).toFixed(1)}px)`;
+      el.style.transform = `translate(${(dx * 4).toFixed(1)}px,${(dy * 3).toFixed(1)}px)`;
     };
     const onLeave = () => {
       el.style.transform = "";
@@ -34,27 +40,42 @@ export function useMagnetic<T extends HTMLElement>() {
 }
 
 /**
- * Scroll-linked progress fill for the Process/Experience timelines: the
- * returned element's `width`/`height` tracks how far its *parent* track has
- * crossed 75% of the viewport, clamped to [0, 1] — same measurement the
- * source design used for its beam elements.
+ * Active language, shared by every page through localStorage. Resolved after
+ * mount so the server-rendered and first client render match (no hydration
+ * mismatch): a saved choice wins, otherwise the browser's language. Also keeps
+ * <html lang>, the meta description and og:locale in sync.
  */
-export function useScrollFill<T extends HTMLElement>(prop: "width" | "height") {
-  const fillRef = useRef<T>(null);
+export function useLang(descriptions: { en: string; es: string }) {
+  const [lang, setLangState] = useState<"en" | "es">("en");
+
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const el = fillRef.current;
-    const track = el?.parentElement;
-    if (!el || !track) return;
-    const clamp = (v: number) => Math.max(0, Math.min(1, v));
-    const onScroll = () => {
-      const r = track.getBoundingClientRect();
-      const p = clamp((window.innerHeight * 0.75 - r.top) / Math.max(1, r.height * 0.85));
-      el.style.setProperty(prop, `${(p * 100).toFixed(1)}%`);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [prop]);
-  return fillRef;
+    let next: "en" | "es" | null = null;
+    try {
+      const saved = window.localStorage.getItem("mael.lang");
+      if (saved === "es" || saved === "en") next = saved;
+    } catch {
+      /* localStorage unavailable */
+    }
+    if (!next && navigator.language?.toLowerCase().startsWith("es")) next = "es";
+    if (next) setLangState(next);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    const desc = descriptions[lang];
+    document.querySelector('meta[name="description"]')?.setAttribute("content", desc);
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", desc);
+    document.querySelector('meta[property="og:locale"]')?.setAttribute("content", lang === "es" ? "es_MX" : "en_US");
+  }, [lang, descriptions]);
+
+  const setLang = (l: "en" | "es") => {
+    setLangState(l);
+    try {
+      window.localStorage.setItem("mael.lang", l);
+    } catch {
+      /* localStorage unavailable */
+    }
+  };
+
+  return [lang, setLang] as const;
 }

@@ -1,8 +1,13 @@
 import type { Lang, SectionHeader as Header } from "../../data/content";
+import { useArmed, useCountTo, useInView } from "./motion";
+import RevealText from "./RevealText";
 
 /**
- * Shared section heading: a numbered mono eyebrow ("01 — PROJECTS") that
- * reads like a mission log entry, then the real `<h2>` and an optional intro.
+ * Section opener, the same everywhere so sections read as parts of one system:
+ *   a hairline draws across to the section's coordinate ("── 03 / EXPERIENCE"),
+ *   the number counts 00 → 03, the label opens its tracking,
+ *   the title reveals line by line through a mask, the intro fades in.
+ * Server render / no JS / reduced motion: final state.
  */
 export default function SectionHeader({
   header,
@@ -20,53 +25,22 @@ export default function SectionHeader({
   align?: "start" | "center";
   size?: "md" | "lg";
 }) {
-  const centered = align === "center";
+  const armed = useArmed();
+  const [ref, inView] = useInView<HTMLDivElement>({ threshold: 0.4 });
+  const target = parseInt(header.index, 10);
+  const n = useCountTo(target, armed && inView);
+  const state = !armed ? "static" : inView ? "in" : "out";
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 14,
-        alignItems: centered ? "center" : "flex-start",
-        textAlign: centered ? "center" : "left",
-        marginBottom: "clamp(28px,4vw,44px)",
-      }}
-    >
-      <p
-        style={{
-          margin: 0,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          fontFamily: "'Geist Mono',monospace",
-          fontSize: 12,
-          letterSpacing: ".24em",
-          color: "#94A3B8",
-        }}
-      >
-        <span style={{ color: accent }}>{header.index}</span>
-        <span aria-hidden="true" style={{ display: "block", width: 28, height: 1, background: `linear-gradient(90deg,${accent},transparent)` }} />
-        {header.eyebrow[lang]}
+    <div ref={ref} className={`sh sh--${align} sh--${size}`} data-sh={state} style={{ ["--sh-accent" as string]: accent }}>
+      <p className="sh__coord">
+        <span className="sh__rule" aria-hidden="true" />
+        <span className="sh__n">{String(n).padStart(2, "0")}</span>
+        <span aria-hidden="true">/</span>
+        <span className="sh__eyebrow">{header.eyebrow}</span>
       </p>
-      <h2
-        id={id}
-        style={{
-          margin: 0,
-          maxWidth: "24ch",
-          fontFamily: "'Space Grotesk',sans-serif",
-          fontSize: size === "lg" ? "clamp(32px,4.6vw,58px)" : "clamp(28px,3.4vw,42px)",
-          fontWeight: 500,
-          lineHeight: 1.12,
-          letterSpacing: "-.015em",
-          color: "#F8FAFC",
-          textWrap: "balance",
-        }}
-      >
-        {header.title[lang]}
-      </h2>
-      {header.intro && (
-        <p style={{ margin: 0, maxWidth: "58ch", fontSize: "clamp(15.5px,1.2vw,17px)", lineHeight: 1.65, color: "#CBD5E1" }}>{header.intro[lang]}</p>
-      )}
+      <RevealText as="h2" id={id} text={header.title[lang]} className="sh__title" play={armed ? inView : undefined} delay={120} />
+      {header.intro && <p className="sh__intro">{header.intro[lang]}</p>}
     </div>
   );
 }

@@ -1,12 +1,13 @@
 ---
-// Fine decorative texture from the source design that Stars.astro doesn't
-// provide: a faint scale grid, a film-grain noise overlay and a soft violet
-// glow behind the hero. Purely presentational, no interactivity — the
-// starfield/nebula itself is already handled by Stars.astro.
+// System grid behind all content: faint lines, a point at every
+// intersection, a lens that brightens the grid slightly around the cursor
+// (desktop only, off under reduced motion), film-grain noise so the black
+// never looks flat, and a soft violet glow at the top. Purely presentational.
 ---
 
 <div class="cosmic-backdrop" aria-hidden="true">
   <div class="cosmic-grid"></div>
+  <div class="cosmic-grid cosmic-grid--lens"></div>
   <div class="cosmic-noise"></div>
   <div class="cosmic-glow"></div>
 </div>
@@ -17,22 +18,38 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    --mx: 50%;
+    --my: 30%;
   }
 
+  /* 96px cells: 1px lines at ~5% plus a 1.5px point at each crossing (~12%). */
   .cosmic-grid {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(90deg, rgba(148, 163, 184, 0.055) 1px, transparent 1px) 0 0/96px 96px,
-      linear-gradient(0deg, rgba(148, 163, 184, 0.055) 1px, transparent 1px) 0 0/96px 96px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 85%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 85%);
+      radial-gradient(circle at 0 0, rgba(203, 213, 225, 0.12) 1.2px, transparent 1.6px) 0 0 / 96px 96px,
+      linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px) 0 0 / 96px 96px,
+      linear-gradient(0deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px) 0 0 / 96px 96px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 25%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 25%, transparent 90%);
   }
+  /* Same grid, brighter, only visible in a small lens under the cursor. */
+  .cosmic-grid--lens {
+    opacity: 0;
+    background:
+      radial-gradient(circle at 0 0, rgba(196, 181, 253, 0.35) 1.4px, transparent 1.8px) 0 0 / 96px 96px,
+      linear-gradient(90deg, rgba(167, 139, 250, 0.1) 1px, transparent 1px) 0 0 / 96px 96px,
+      linear-gradient(0deg, rgba(167, 139, 250, 0.1) 1px, transparent 1px) 0 0 / 96px 96px;
+    mask-image: radial-gradient(260px circle at var(--mx) var(--my), #000, transparent 70%);
+    -webkit-mask-image: radial-gradient(260px circle at var(--mx) var(--my), #000, transparent 70%);
+    transition: opacity 0.6s ease;
+  }
+  .cosmic-backdrop.has-lens .cosmic-grid--lens { opacity: 0.55; }
 
   .cosmic-noise {
     position: absolute;
     inset: 0;
-    opacity: 0.3;
+    opacity: 0.22;
     mix-blend-mode: overlay;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/></filter><rect width="160" height="160" filter="url(%23n)" opacity="0.5"/></svg>');
   }
@@ -40,6 +57,39 @@
   .cosmic-glow {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(139, 92, 246, 0.16), transparent 70%);
+    background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(139, 92, 246, 0.14), transparent 70%);
   }
 </style>
+
+<script>
+  // Cursor lens: one passive listener, one rAF write per frame, fine pointers only.
+  (function () {
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    } catch {
+      return;
+    }
+    const el = document.querySelector<HTMLElement>('.cosmic-backdrop');
+    if (!el) return;
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        x = e.clientX;
+        y = e.clientY;
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          el.style.setProperty('--mx', `${x}px`);
+          el.style.setProperty('--my', `${y}px`);
+          el.classList.add('has-lens');
+        });
+      },
+      { passive: true }
+    );
+    document.addEventListener('pointerleave', () => el.classList.remove('has-lens'));
+  })();
+</script>
