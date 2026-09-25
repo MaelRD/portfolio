@@ -2,79 +2,122 @@ import { useState } from "react";
 import { CAPABILITIES, SECTION_HEADERS, type Lang } from "../../data/content";
 import Reveal from "./Reveal";
 
-function PlanetCard({ group, lang, delay }: { group: (typeof CAPABILITIES)[number]; lang: Lang; delay: number }) {
+// Orbit geometry shared by the ring halves and the moon's offset-path, so the
+// moon rides exactly on the drawn ring.
+const RING_W = 136;
+const RING_H = 40;
+const RX = RING_W / 2;
+const RY = RING_H / 2;
+// Starts at the left tip and sweeps through the bottom (front) half first,
+// then the top (back) half — matching the z-index flip in `planet-moon-depth`.
+const MOON_PATH = `M 0 ${RY} A ${RX} ${RY} 0 0 0 ${RING_W} ${RY} A ${RX} ${RY} 0 0 0 0 ${RY}`;
+
+// Small per-card variation so the ten planets read as a system rather than
+// ten copies of one sprite.
+const SIZES = [58, 50, 54, 60, 48];
+const TILTS = [-14, 10, -6, 16, -18, 8, -10, 12, -4, 18];
+
+function Ring({ half, tilt, color }: { half: "back" | "front"; tilt: number; color: string }) {
+  // Back half = top arc (drawn under the planet), front half = bottom arc.
+  const d = half === "back" ? `M 0 ${RY} A ${RX} ${RY} 0 0 1 ${RING_W} ${RY}` : `M 0 ${RY} A ${RX} ${RY} 0 0 0 ${RING_W} ${RY}`;
+  return (
+    <svg
+      width={RING_W}
+      height={RING_H}
+      viewBox={`-1 -1 ${RING_W + 2} ${RING_H + 2}`}
+      style={{ position: "absolute", overflow: "visible", transform: `rotate(${tilt}deg)`, zIndex: half === "back" ? 1 : 3 }}
+    >
+      <path d={d} fill="none" stroke={color} strokeWidth={half === "front" ? 1.4 : 1} strokeOpacity={half === "front" ? 1 : 0.55} style={{ transition: "stroke .3s ease" }} />
+    </svg>
+  );
+}
+
+function PlanetCard({ group, lang, index }: { group: (typeof CAPABILITIES)[number]; lang: Lang; index: number }) {
   const [open, setOpen] = useState(false);
+  const size = SIZES[index % SIZES.length];
+  const tilt = TILTS[index % TILTS.length];
+  const period = 10 + (index % 4) * 2.5;
+  const ringColor = open ? group.accent : "rgba(148,163,184,.38)";
 
   return (
-    <Reveal delay={delay}>
+    <Reveal delay={Math.min(index, 4) * 60}>
       <article
         onPointerEnter={() => setOpen(true)}
         onPointerLeave={() => setOpen(false)}
         onClick={() => setOpen((o) => !o)}
         style={{
           position: "relative",
-          padding: "14px 16px 18px",
+          padding: "16px 16px 18px",
           border: `1px solid ${open ? `${group.accent}66` : "rgba(148,163,184,.12)"}`,
           borderRadius: 10,
-          background: "linear-gradient(160deg, rgba(7,11,30,.75), rgba(3,0,20,.85))",
+          background: `radial-gradient(120% 70% at 50% 30%, ${group.accent}${open ? "1F" : "12"}, transparent 60%), linear-gradient(160deg, rgba(7,11,30,.75), rgba(3,0,20,.85))`,
           cursor: "pointer",
-          transition: "border-color .3s ease",
+          transition: "border-color .3s ease, background .3s ease",
         }}
       >
-        {/* Planet + ring, with the category name riding the orbit line. */}
-        <div aria-hidden="true" style={{ position: "relative", height: 108, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {/* Planet system: the ring is split so its back half passes behind the
+            planet and its front half in front, and the moon rides that same
+            ring — dipping behind the planet on the far side of its orbit. */}
+        <div aria-hidden="true" style={{ position: "relative", height: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Ring half="back" tilt={tilt} color={ringColor} />
           <span
             style={{
               position: "absolute",
-              width: 122,
-              height: 50,
-              border: "1px solid rgba(148,163,184,.24)",
+              zIndex: 2,
+              width: size,
+              height: size,
               borderRadius: "50%",
+              background: `radial-gradient(circle at 34% 30%, #F8FAFC 0%, ${group.accent} 42%, #1E1B4B 82%, #0A0818 100%)`,
+              boxShadow: `0 0 ${open ? 48 : 30}px -6px ${group.accent}, inset -6px -8px 14px rgba(3,0,20,.55)`,
+              transform: open ? "scale(1.08)" : "scale(1)",
+              transition: "transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease",
             }}
           />
+          <Ring half="front" tilt={tilt} color={ringColor} />
           <span
             style={{
               position: "absolute",
-              left: "50%",
-              top: 15,
-              transform: "translateX(-50%)",
-              whiteSpace: "nowrap",
-              padding: "3px 10px",
-              borderRadius: 999,
-              background: "#0A0818",
-              border: `1px solid ${group.accent}66`,
-              fontFamily: "'Geist Mono',monospace",
-              fontSize: 9.5,
-              letterSpacing: ".08em",
+              width: RING_W,
+              height: RING_H,
+              transform: `rotate(${tilt}deg)`,
+              animation: `planet-moon-depth ${period}s linear infinite`,
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#E2E8F0",
+                boxShadow: `0 0 8px ${group.accent}`,
+                offsetPath: `path('${MOON_PATH}')`,
+                offsetRotate: "0deg",
+                animation: `cosmic-orbit ${period}s linear infinite`,
+              }}
+            />
+          </span>
+        </div>
+
+        {/* Name sits below the system instead of on top of the planet. */}
+        <div style={{ marginTop: 10, textAlign: "center" }}>
+          <h3
+            style={{
+              margin: 0,
+              fontFamily: "'Space Grotesk',sans-serif",
+              fontSize: 14,
+              fontWeight: 500,
+              letterSpacing: ".04em",
               color: "#F8FAFC",
             }}
           >
             {group.title[lang]}
+          </h3>
+          <span style={{ display: "block", marginTop: 4, fontFamily: "'Geist Mono',monospace", fontSize: 9.5, letterSpacing: ".14em", color: open ? group.accent : "#64748B", transition: "color .3s ease" }}>
+            {group.items.length} {lang === "es" ? "HABILIDADES" : "SKILLS"}
           </span>
-          <span
-            style={{
-              position: "absolute",
-              width: 56,
-              height: 56,
-              borderRadius: "50%",
-              background: `radial-gradient(circle at 35% 32%, #F8FAFC, ${group.accent} 48%, #0A0818 100%)`,
-              boxShadow: `0 0 34px -6px ${group.accent}`,
-              transform: open ? "scale(1.08)" : "scale(1)",
-              transition: "transform .3s ease",
-            }}
-          />
-          <span
-            style={{
-              position: "absolute",
-              left: "22%",
-              top: "62%",
-              width: 5,
-              height: 5,
-              borderRadius: "50%",
-              background: "#CBD5E1",
-              animation: "cosmic-pulse 6s ease-in-out infinite",
-            }}
-          />
         </div>
 
         {/* Skills — hidden until the planet is hovered/tapped. */}
@@ -83,10 +126,11 @@ function PlanetCard({ group, lang, delay }: { group: (typeof CAPABILITIES)[numbe
             display: "flex",
             flexWrap: "wrap",
             gap: 6,
+            marginTop: open ? 12 : 0,
             maxHeight: open ? 260 : 0,
             opacity: open ? 1 : 0,
             overflow: "hidden",
-            transition: "max-height .35s ease, opacity .25s ease",
+            transition: "max-height .35s ease, opacity .25s ease, margin-top .35s ease",
             justifyContent: "center",
           }}
         >
@@ -135,7 +179,7 @@ export default function Capabilities({ lang }: { lang: Lang }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: "clamp(14px,2vw,20px)", alignItems: "start" }}>
         {CAPABILITIES.map((group, i) => (
-          <PlanetCard key={group.title.en} group={group} lang={lang} delay={Math.min(i, 4) * 60} />
+          <PlanetCard key={group.title.en} group={group} lang={lang} index={i} />
         ))}
       </div>
     </section>
