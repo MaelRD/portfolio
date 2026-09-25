@@ -2,17 +2,15 @@ import { useEffect, useState } from "react";
 import type { Lang } from "../../data/content";
 import Header from "./Header";
 import Hero from "./Hero";
-import ValueProps from "./ValueProps";
-import About from "./About";
-import Process from "./Process";
 import FeaturedProject from "./FeaturedProject";
 import OtherProjects from "./OtherProjects";
 import Experience from "./Experience";
+import Process from "./Process";
 import Capabilities from "./Capabilities";
-import CareerDirection from "./CareerDirection";
+import About from "./About";
 import ContactFooter from "./ContactFooter";
 
-const SECTION_IDS = ["hero", "about", "process", "work", "work-other", "experience", "capabilities", "career", "contact"];
+const SECTION_IDS = ["hero", "work", "work-other", "experience", "process", "capabilities", "about", "contact"];
 
 export default function CosmicApp() {
   const [lang, setLangState] = useState<Lang>("en");
@@ -63,14 +61,12 @@ export default function CosmicApp() {
       <Header lang={lang} setLang={setLang} active={active} />
       <main id="top" style={{ position: "relative", zIndex: 10 }}>
         <Hero lang={lang} />
-        <ValueProps lang={lang} />
-        <About lang={lang} />
-        <Process lang={lang} />
         <FeaturedProject lang={lang} />
         <OtherProjects lang={lang} />
         <Experience lang={lang} />
+        <Process lang={lang} />
         <Capabilities lang={lang} />
-        <CareerDirection lang={lang} />
+        <About lang={lang} />
         <ContactFooter lang={lang} />
       </main>
     </>

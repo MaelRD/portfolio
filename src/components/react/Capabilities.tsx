@@ -1,15 +1,115 @@
+import { useState } from "react";
 import { CAPABILITIES, SECTION_HEADERS, type Lang } from "../../data/content";
 import Reveal from "./Reveal";
 
-// Ring size/rotation and planet size/shadow vary slightly per column, matching
-// the source design's hand-tuned values rather than one repeated shape.
-const RINGS: { ringW: number; ringH: number; rotate: number; planet: number; shadow: string; dotDelay: number }[] = [
-  { ringW: 168, ringH: 70, rotate: 12, planet: 92, shadow: "0 0 58px -10px rgba(56,189,248,.8)", dotDelay: 7 },
-  { ringW: 150, ringH: 64, rotate: -16, planet: 104, shadow: "0 0 60px -8px rgba(37,99,235,.85)", dotDelay: 6 },
-  { ringW: 158, ringH: 60, rotate: -8, planet: 98, shadow: "0 0 60px -8px rgba(139,92,246,.85)", dotDelay: 9 },
-  { ringW: 152, ringH: 66, rotate: 8, planet: 90, shadow: "0 0 58px -9px rgba(59,130,246,.8)", dotDelay: 8 },
-  { ringW: 146, ringH: 74, rotate: 20, planet: 86, shadow: "0 0 56px -10px rgba(192,38,211,.7)", dotDelay: 6.5 },
-];
+function PlanetCard({ group, lang, delay }: { group: (typeof CAPABILITIES)[number]; lang: Lang; delay: number }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Reveal delay={delay}>
+      <article
+        onPointerEnter={() => setOpen(true)}
+        onPointerLeave={() => setOpen(false)}
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          position: "relative",
+          padding: "14px 16px 18px",
+          border: `1px solid ${open ? `${group.accent}66` : "rgba(148,163,184,.12)"}`,
+          borderRadius: 10,
+          background: "linear-gradient(160deg, rgba(7,11,30,.75), rgba(3,0,20,.85))",
+          cursor: "pointer",
+          transition: "border-color .3s ease",
+        }}
+      >
+        {/* Planet + ring, with the category name riding the orbit line. */}
+        <div aria-hidden="true" style={{ position: "relative", height: 108, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span
+            style={{
+              position: "absolute",
+              width: 122,
+              height: 50,
+              border: "1px solid rgba(148,163,184,.24)",
+              borderRadius: "50%",
+            }}
+          />
+          <span
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: 15,
+              transform: "translateX(-50%)",
+              whiteSpace: "nowrap",
+              padding: "3px 10px",
+              borderRadius: 999,
+              background: "#0A0818",
+              border: `1px solid ${group.accent}66`,
+              fontFamily: "'Geist Mono',monospace",
+              fontSize: 9.5,
+              letterSpacing: ".08em",
+              color: "#F8FAFC",
+            }}
+          >
+            {group.title[lang]}
+          </span>
+          <span
+            style={{
+              position: "absolute",
+              width: 56,
+              height: 56,
+              borderRadius: "50%",
+              background: `radial-gradient(circle at 35% 32%, #F8FAFC, ${group.accent} 48%, #0A0818 100%)`,
+              boxShadow: `0 0 34px -6px ${group.accent}`,
+              transform: open ? "scale(1.08)" : "scale(1)",
+              transition: "transform .3s ease",
+            }}
+          />
+          <span
+            style={{
+              position: "absolute",
+              left: "22%",
+              top: "62%",
+              width: 5,
+              height: 5,
+              borderRadius: "50%",
+              background: "#CBD5E1",
+              animation: "cosmic-pulse 6s ease-in-out infinite",
+            }}
+          />
+        </div>
+
+        {/* Skills — hidden until the planet is hovered/tapped. */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+            maxHeight: open ? 260 : 0,
+            opacity: open ? 1 : 0,
+            overflow: "hidden",
+            transition: "max-height .35s ease, opacity .25s ease",
+            justifyContent: "center",
+          }}
+        >
+          {group.items.map((item) => (
+            <span
+              key={item.en}
+              style={{
+                padding: "4px 10px",
+                borderRadius: 999,
+                border: `1px solid ${group.accent}3D`,
+                background: "rgba(5,8,22,.6)",
+                fontSize: 11.5,
+                color: "#CBD5E1",
+              }}
+            >
+              {item[lang]}
+            </span>
+          ))}
+        </div>
+      </article>
+    </Reveal>
+  );
+}
 
 export default function Capabilities({ lang }: { lang: Lang }) {
   const h = SECTION_HEADERS.capabilities;
@@ -23,7 +123,7 @@ export default function Capabilities({ lang }: { lang: Lang }) {
         borderTop: "1px solid rgba(148,163,184,.08)",
       }}
     >
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 18, marginBottom: 46 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 18, marginBottom: 40 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <h2 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: "clamp(20px,2.2vw,26px)", fontWeight: 500, letterSpacing: ".22em", color: "#F8FAFC" }}>
             {h.title[lang]}
@@ -33,61 +133,10 @@ export default function Capabilities({ lang }: { lang: Lang }) {
         <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 10, letterSpacing: ".26em", color: "#64748B" }}>{h.tag[lang]}</span>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: "clamp(22px,3vw,44px)" }}>
-        {CAPABILITIES.map((col, i) => {
-          const r = RINGS[i];
-          return (
-            <Reveal key={col.title.en} delay={Math.min(i, 4) * 70}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-                <div aria-hidden="true" style={{ position: "relative", height: 150, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span
-                    style={{
-                      position: "absolute",
-                      width: r.ringW,
-                      height: r.ringH,
-                      border: "1px solid rgba(148,163,184,.20)",
-                      borderRadius: "50%",
-                      transform: `rotate(${r.rotate}deg)`,
-                    }}
-                  />
-                  <span
-                    style={{
-                      position: "absolute",
-                      width: r.planet,
-                      height: r.planet,
-                      borderRadius: "50%",
-                      background: col.glow,
-                      boxShadow: r.shadow,
-                    }}
-                  />
-                  <span
-                    style={{
-                      position: "absolute",
-                      left: "14%",
-                      top: "44%",
-                      width: 7,
-                      height: 7,
-                      borderRadius: "50%",
-                      background: "#CBD5E1",
-                      animation: `cosmic-pulse ${r.dotDelay}s ease-in-out infinite`,
-                    }}
-                  />
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-                  <span aria-hidden="true" style={{ color: col.accent, fontSize: 16 }}>
-                    {col.icon}
-                  </span>
-                  <h3 style={{ margin: 0, fontFamily: "'Space Grotesk',sans-serif", fontSize: 18, fontWeight: 500, color: "#F8FAFC" }}>{col.title[lang]}</h3>
-                </div>
-                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 9, fontSize: 13.5, color: "#94A3B8" }}>
-                  {col.items.map((item) => (
-                    <li key={item.en}>{item[lang]}</li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          );
-        })}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: "clamp(14px,2vw,20px)", alignItems: "start" }}>
+        {CAPABILITIES.map((group, i) => (
+          <PlanetCard key={group.title.en} group={group} lang={lang} delay={Math.min(i, 4) * 60} />
+        ))}
       </div>
     </section>
   );

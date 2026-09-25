@@ -84,6 +84,25 @@
 /* Capabilities' small satellite dots and the hero halo's outer ring. */
 @keyframes cosmic-pulse { 0%, 100% { opacity: .35; transform: scale(1); } 50% { opacity: 1; transform: scale(1.25); } }
 @keyframes cosmic-breathe { 0%, 100% { opacity: .5; } 50% { opacity: .95; } }
+/* "How I Build" auto-playing flow: the beam sweeps left-to-right, holds full
+   width briefly, then snaps back to restart — a self-running progress line
+   rather than one tied to scroll position. Must run with `linear` timing
+   (set in Process.tsx) — width has to grow at a constant rate for the
+   per-step delays computed there to land in sync with the beam's position. */
+@keyframes cosmic-flow-sweep {
+  0% { width: 0%; }
+  88% { width: 100%; }
+  100% { width: 100%; }
+}
+/* Each step icon shares this one keyframe, peaking at its own 0% — a
+   positive `animation-delay` (see Process.tsx, computed from the icon's
+   actual position along the track) is what phase-shifts it, so the "lit up"
+   moment lands exactly when the linear sweep above reaches that icon.
+   `currentColor` picks up each icon's own accent color for the glow. */
+@keyframes cosmic-step-pulse {
+  0% { transform: scale(1.18); box-shadow: 0 0 22px currentColor; }
+  10%, 100% { transform: scale(1); box-shadow: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

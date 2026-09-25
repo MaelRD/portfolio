@@ -94,9 +94,6 @@ export default function ContactFooter({ lang }: { lang: Lang }) {
           <a href={CONTACT.site} target="_blank" rel="noopener" style={{ color: "#CBD5E1" }}>
             {CONTACT.siteLabel}
           </a>
-          <a href={`tel:${CONTACT.phone}`} style={{ color: "#CBD5E1" }}>
-            {CONTACT.phoneDisplay}
-          </a>
         </div>
       </section>
 

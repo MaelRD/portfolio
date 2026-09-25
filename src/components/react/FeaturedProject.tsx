@@ -56,8 +56,22 @@ export default function FeaturedProject({ lang }: { lang: Lang }) {
     >
       <Reveal>
         <div style={{ marginBottom: 40 }}>
-          <div style={{ fontFamily: "'Geist Mono',monospace", fontSize: 10, letterSpacing: ".3em", color: F.accent, marginBottom: 14 }}>
-            {F.eyebrow[lang]}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+            <span style={{ fontFamily: "'Geist Mono',monospace", fontSize: 10, letterSpacing: ".3em", color: F.accent }}>{F.eyebrow[lang]}</span>
+            <span
+              style={{
+                fontFamily: "'Geist Mono',monospace",
+                fontSize: 9,
+                letterSpacing: ".18em",
+                color: "#F8FAFC",
+                background: "rgba(56,189,248,.14)",
+                border: "1px solid rgba(56,189,248,.4)",
+                borderRadius: 999,
+                padding: "3px 10px",
+              }}
+            >
+              {F.status[lang]}
+            </span>
           </div>
           <h2
             style={{
@@ -95,10 +109,10 @@ export default function FeaturedProject({ lang }: { lang: Lang }) {
             <Block label={F.problemLabel[lang]} text={F.problem[lang]} />
           </Reveal>
           <Reveal delay={70}>
-            <Block label={F.challengeLabel[lang]} text={F.challenge[lang]} />
+            <Block label={F.solutionLabel[lang]} text={F.solution[lang]} />
           </Reveal>
           <Reveal delay={140}>
-            <Block label={F.solutionLabel[lang]} text={F.solution[lang]} />
+            <Block label={F.decisionLabel[lang]} text={F.decision[lang]} />
           </Reveal>
           <Reveal delay={210}>
             <Block label={F.roleLabel[lang]} text={F.role[lang]} />

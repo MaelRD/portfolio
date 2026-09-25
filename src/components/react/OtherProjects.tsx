@@ -107,7 +107,7 @@ function CrisolMock({ lang }: { lang: Lang }) {
           }}
         />
         <strong style={{ position: "relative", fontFamily: "'Space Grotesk',sans-serif", fontSize: 13.5, fontWeight: 500, color: "#F8FAFC", lineHeight: 1.35 }}>
-          {lang === "en" ? "Turn scattered context into usable knowledge." : "Convierte contexto disperso en conocimiento utilizable."}
+          {lang === "en" ? "Exploring how to centralise scattered context." : "Explorando cómo centralizar contexto disperso."}
         </strong>
         <div
           style={{

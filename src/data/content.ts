@@ -1,7 +1,11 @@
 // Content for the "Cosmic Engineering" portfolio. Every user-facing string is
 // bilingual (`en`/`es`, English primary) so components can pick `copy[lang]`
-// directly. Narrative rewritten around one idea: understand the business
-// first, then design and build the system for it.
+// directly.
+//
+// Content source of truth: Guia_de_contenido_Portafolio_Mario_Yael.md
+// (fact-checked against the CV and project documentation, dated 2026-09-21).
+// Job titles/dates match the CV exactly. In-progress work is framed as such —
+// no completed status, solo authorship or metrics beyond what's documented.
 
 export type Lang = "en" | "es";
 
@@ -11,10 +15,11 @@ export interface Bi {
 }
 
 export const NAV_LINKS: { id: string; label: Bi }[] = [
-  { id: "about", label: { en: "About", es: "Perfil" } },
-  { id: "process", label: { en: "How I Build", es: "Cómo Construyo" } },
   { id: "work", label: { en: "Work", es: "Proyectos" } },
   { id: "experience", label: { en: "Experience", es: "Experiencia" } },
+  { id: "process", label: { en: "How I Build", es: "Cómo Construyo" } },
+  { id: "capabilities", label: { en: "Skills", es: "Skills" } },
+  { id: "about", label: { en: "About", es: "Perfil" } },
   { id: "contact", label: { en: "Contact", es: "Contacto" } },
 ];
 
@@ -26,14 +31,14 @@ export const BRAND = {
 export const HERO = {
   eyebrow: { en: "FULL STACK DEVELOPER", es: "DESARROLLADOR FULL STACK" } as Bi,
   headline: {
-    en: { lead: "I build software around ", highlight: "real business problems." },
-    es: { lead: "Construyo software alrededor de ", highlight: "problemas de negocio reales." },
+    en: { lead: "I design and build software to solve ", highlight: "real problems." },
+    es: { lead: "Diseño y desarrollo software para resolver ", highlight: "problemas reales." },
   },
   body: {
-    en: "I study how a business actually runs, then design and build the system around it — backend, frontend, architecture and the integrations that connect it all.",
-    es: "Estudio cómo funciona realmente un negocio y después diseño y construyo el sistema a su alrededor — backend, frontend, arquitectura y las integraciones que conectan todo.",
+    en: "I translate requirements and business rules into web applications. My work brings together frontend, backend, data and system integration to build useful, maintainable software.",
+    es: "Transformo necesidades y reglas de negocio en aplicaciones web. Mi trabajo conecta frontend, backend, datos e integración de sistemas para construir software útil y mantenible.",
   } as Bi,
-  ctaPrimary: { en: "EXPLORE MY WORK", es: "VER MI TRABAJO" } as Bi,
+  ctaPrimary: { en: "VIEW PROJECTS", es: "VER PROYECTOS" } as Bi,
   ctaSecondary: { en: "DOWNLOAD CV", es: "DESCARGAR CV" } as Bi,
   footnote: {
     en: ["WHERE BUSINESS LOGIC", "MEETS SOFTWARE"],
@@ -52,86 +57,120 @@ export const HERO = {
   ] as Bi[],
 };
 
-export const VALUE_PROPS: { eyebrow: string; accent: string; bgTint: string; title: Bi; body: Bi }[] = [
-  {
-    eyebrow: "01 / BUSINESS LOGIC",
-    accent: "#7042F8",
-    bgTint: "rgba(112,66,248,.10)",
-    title: { en: "Understand", es: "Entender" },
-    body: {
-      en: "I start by understanding how the business actually works — the process, the exceptions and the rules nobody wrote down.",
-      es: "Empiezo por entender cómo funciona realmente el negocio — el proceso, las excepciones y las reglas que nadie escribió.",
-    },
-  },
-  {
-    eyebrow: "02 / ENGINEERING",
-    accent: "#38BDF8",
-    bgTint: "rgba(37,99,235,.10)",
-    title: { en: "Architect", es: "Diseñar" },
-    body: {
-      en: "I turn that understanding into architecture: data models, service boundaries and decisions that keep the system maintainable.",
-      es: "Convierto ese entendimiento en arquitectura: modelos de datos, límites de servicios y decisiones que mantienen el sistema sostenible.",
-    },
-  },
-  {
-    eyebrow: "03 / INTEGRATION",
-    accent: "#C026D3",
-    bgTint: "rgba(192,38,211,.09)",
-    title: { en: "Connect & Ship", es: "Conectar y Entregar" },
-    body: {
-      en: "I connect it to what's already running — ERP, APIs, the systems the business depends on — and build it end to end.",
-      es: "Lo conecto con lo que ya está en operación — ERP, APIs, los sistemas de los que depende el negocio — y lo construyo de extremo a extremo.",
-    },
-  },
-];
-
 export const PROCESS_STEPS: { n: string; icon: string; accent: "violet" | "sky" | "fuchsia"; title: Bi; body: Bi }[] = [
   {
     n: "01",
     icon: "◎",
     accent: "violet",
     title: { en: "Understand", es: "Entender" },
-    body: { en: "Business goals, users, restrictions and how the process actually runs today.", es: "Objetivos de negocio, usuarios, restricciones y cómo funciona realmente el proceso hoy." },
+    body: {
+      en: "I analyze and map the process as it works today, to identify the real needs and define what the system needs to solve.",
+      es: "Analizo y diagramo el proceso tal como funciona hoy para identificar las necesidades reales y definir qué debe resolver el sistema.",
+    },
   },
   {
     n: "02",
-    icon: "▥",
+    icon: "◧",
     accent: "violet",
-    title: { en: "Model", es: "Modelar" },
+    title: { en: "Design", es: "Diseñar" },
     body: {
-      en: "Turn the process into rules, entities, flows and data the system can actually work with.",
-      es: "Convertir el proceso en reglas, entidades, flujos y datos con los que el sistema pueda trabajar.",
+      en: "I structure the business rules, data and system model to define its components, their responsibilities and how they connect.",
+      es: "Estructuro las reglas de negocio, los datos y el modelo del sistema para definir sus componentes, sus responsabilidades y cómo se conectan.",
     },
   },
   {
     n: "03",
-    icon: "◧",
+    icon: "</>",
     accent: "sky",
-    title: { en: "Design", es: "Diseñar" },
-    body: { en: "Architecture, data models and the integrations the solution will depend on.", es: "Arquitectura, modelos de datos y las integraciones de las que dependerá la solución." },
+    title: { en: "Build & Integrate", es: "Construir e Integrar" },
+    body: {
+      en: "I take the design into code: building interfaces, services and integrations so every piece works together.",
+      es: "Llevo el diseño al código: desarrollo interfaces, servicios e integraciones para que todas las piezas trabajen juntas.",
+    },
   },
   {
     n: "04",
-    icon: "</>",
-    accent: "sky",
-    title: { en: "Build", es: "Construir" },
-    body: { en: "Frontend, backend and the services that connect them to the real system of record.", es: "Frontend, backend y los servicios que los conectan con el sistema de registro real." },
-  },
-  {
-    n: "05",
     icon: "✓",
     accent: "fuchsia",
     title: { en: "Validate", es: "Validar" },
-    body: { en: "Check it against the real operation — real data, real edge cases, real users.", es: "Contrastarlo con la operación real — datos reales, casos límite reales, usuarios reales." },
+    body: {
+      en: "I put the solution through real cases and edge situations to confirm it responds to the process's needs.",
+      es: "Pongo la solución a prueba con casos reales y situaciones límite para comprobar que responde a las necesidades del proceso.",
+    },
   },
   {
-    n: "06",
+    n: "05",
     icon: "↻",
     accent: "fuchsia",
     title: { en: "Improve", es: "Mejorar" },
-    body: { en: "Feedback, results and iteration, since the first version is rarely the last.", es: "Retroalimentación, resultados e iteración, porque la primera versión rara vez es la última." },
+    body: {
+      en: "I listen to the people using it, identify what makes their work harder, and prioritize the changes that make it more useful.",
+      es: "Escucho a quienes la usan, identifico lo que les complica el trabajo y priorizo los cambios que pueden hacerla más útil.",
+    },
   },
 ];
+
+// The featured case study — GBS Builder. Framed as in-development, shared
+// with the team, per the fact-checked content guide. Nothing here claims a
+// finished rollout, a solo build, or a measured result that isn't confirmed.
+export const FEATURED_PROJECT = {
+  status: { en: "IN DEVELOPMENT", es: "EN DESARROLLO" } as Bi,
+  eyebrow: { en: "FEATURED PROJECT", es: "PROYECTO DESTACADO" } as Bi,
+  name: "GBS BUILDER",
+  subtitle: { en: "Costing and quotation software", es: "Software de costeo y cotización" } as Bi,
+  accent: "#8B5CF6",
+  spotColor: "rgba(139,92,246,.18)",
+  problemLabel: { en: "THE PROBLEM", es: "EL PROBLEMA" } as Bi,
+  problem: {
+    en: "Calculating cost, margin and sale price for a promotional-product quotation means pulling together data from Sales, Purchasing and Logistics. The previous process ran on a spreadsheet — GBS Nacional — which made large-scale data capture slow and error-prone.",
+    es: "Calcular costo, margen y precio de venta de una cotización de producto promocional implica reunir información de Comercial, Compras y Logística. El proceso anterior corría en una hoja de cálculo — GBS Nacional — que hacía lenta y propensa a errores la captura masiva de datos.",
+  } as Bi,
+  solutionLabel: { en: "WHAT I'M BUILDING", es: "QUÉ ESTOY CONSTRUYENDO" } as Bi,
+  solution: {
+    en: "A web application with a spreadsheet-style Angular interface and a Java/Quarkus backend that reads and consolidates data from Odoo, applying the same costing and pricing rules the business already used.",
+    es: "Una aplicación web con una interfaz tipo hoja de cálculo en Angular y un backend en Java/Quarkus que lee y consolida datos desde Odoo, aplicando las mismas reglas de costeo y precio que el negocio ya usaba.",
+  } as Bi,
+  decisionLabel: { en: "A KEY DECISION", es: "UNA DECISIÓN CLAVE" } as Bi,
+  decision: {
+    en: "One core decision was how to identify and consolidate line items consistently across systems — that's what lets the same quotation logic work whether the data comes from old spreadsheet habits or directly from Odoo.",
+    es: "Una decisión central fue cómo identificar y consolidar partidas de forma consistente entre sistemas — eso permite que la misma lógica de cotización funcione ya sea que los datos vengan de la costumbre en hoja de cálculo o directo de Odoo.",
+  } as Bi,
+  architectureLabel: { en: "ARCHITECTURE", es: "ARQUITECTURA" } as Bi,
+  architecture: [
+    { en: "Angular", es: "Angular" },
+    { en: "Java 21 / Quarkus", es: "Java 21 / Quarkus" },
+    { en: "Odoo (XML-RPC)", es: "Odoo (XML-RPC)" },
+    { en: "Operational data", es: "Datos operativos" },
+  ] as Bi[],
+  logicLabel: { en: "COSTING LOGIC IT APPLIES", es: "LÓGICA DE COSTEO QUE APLICA" } as Bi,
+  logic: [
+    { en: "Costs", es: "Costos" },
+    { en: "Net cost", es: "Costo neto" },
+    { en: "Target margin", es: "Margen objetivo" },
+    { en: "Sale price", es: "Precio de venta" },
+    { en: "Project total", es: "Total del proyecto" },
+  ] as Bi[],
+  fieldsLabel: { en: "DATA IT WORKS WITH", es: "DATOS CON LOS QUE TRABAJA" } as Bi,
+  fields: [
+    { en: "Product description", es: "Descripción del producto" },
+    { en: "Pieces", es: "Piezas" },
+    { en: "Waste (merma)", es: "Merma" },
+    { en: "Unit cost", es: "Costo unitario" },
+    { en: "Customization", es: "Personalización" },
+    { en: "Logistics cost", es: "Costo logístico" },
+  ] as Bi[],
+  roleLabel: { en: "MY CONTRIBUTION", es: "MI CONTRIBUCIÓN" } as Bi,
+  role: {
+    en: "I designed the architecture and I'm responsible for functional closure and validation. Persistence and traceability are being built together with the team.",
+    es: "Diseñé la arquitectura y soy responsable del cierre funcional y la validación. La persistencia y la trazabilidad se están construyendo junto con el equipo.",
+  } as Bi,
+  evolutionLabel: { en: "WHAT'S NEXT", es: "SIGUIENTE PASO" } as Bi,
+  evolution: {
+    en: "Once the core is validated, the plan is to evolve it into a tracking tool — budgeted vs. quoted, projected vs. actual — connected to live Odoo data.",
+    es: "Una vez validado el núcleo, el plan es evolucionarlo hacia una herramienta de seguimiento — presupuestado vs. cotizado, proyectado vs. real — conectada a datos vivos de Odoo.",
+  } as Bi,
+  stack: "Angular · Java 21 · Quarkus · Odoo (XML-RPC)",
+};
 
 export interface Project {
   index: string;
@@ -150,10 +189,10 @@ export const PROJECTS: Project[] = [
     accent: "#38BDF8",
     spotColor: "rgba(56,189,248,.16)",
     name: "LAYOUTBUILDER",
-    subtitle: { en: "Systems integration layer", es: "Capa de integración de sistemas" },
+    subtitle: { en: "Data-entry and system-integration application", es: "Aplicación de captura de datos e integración de sistemas" },
     description: {
-      en: "A hexagonal-architecture backend-for-frontend connecting a web app with Odoo, PostgreSQL, SAT, Discord and other external services.",
-      es: "Un backend-for-frontend con arquitectura hexagonal que conecta una aplicación web con Odoo, PostgreSQL, SAT, Discord y otros servicios externos.",
+      en: "A spreadsheet-style Astro/React application with a Java/Quarkus backend that connects data and services. Its hexagonal architecture organizes integrations with Odoo, SAT validation, Discord notifications and PostgreSQL persistence.",
+      es: "Una aplicación con interfaz tipo hoja de cálculo en Astro/React y un backend Java/Quarkus que conecta datos y servicios. Su arquitectura hexagonal organiza las integraciones con Odoo, validación SAT, notificaciones en Discord y persistencia en PostgreSQL.",
     },
     stack: "Astro · React · Quarkus · PostgreSQL",
     visual: "layout",
@@ -163,226 +202,232 @@ export const PROJECTS: Project[] = [
     accent: "#C026D3",
     spotColor: "rgba(192,38,211,.16)",
     name: "EL CRISOL",
-    subtitle: { en: "Personal AI knowledge system", es: "Sistema personal de conocimiento con IA" },
+    subtitle: { en: "Personal project — definition in progress", es: "Proyecto personal — en definición" },
     description: {
-      en: "An ongoing experiment in centralising knowledge, projects and context across AI tools — RAG, structured memory, Model Context Protocol.",
-      es: "Un experimento en curso para centralizar conocimiento, proyectos y contexto entre herramientas de IA — RAG, memoria estructurada, Model Context Protocol.",
+      en: "An evolving personal exploration of centralising knowledge and context across AI tools. Its scope and architecture are still being defined.",
+      es: "Una exploración personal en evolución para centralizar conocimiento y contexto entre herramientas de IA. Su alcance y arquitectura todavía están en definición.",
     },
-    stack: "RAG · MCP · Knowledge Architecture",
+    stack: "PERSONAL PROJECT · IN DEFINITION",
     visual: "crisol",
   },
 ];
 
-// The featured case study — GBS Builder gets its own, much larger section
-// instead of sharing a card grid with the other projects.
-export const FEATURED_PROJECT = {
-  eyebrow: { en: "FEATURED PROJECT", es: "PROYECTO DESTACADO" } as Bi,
-  name: "GBS BUILDER",
-  subtitle: { en: "Business quotation platform, connected to Odoo", es: "Plataforma de cotización comercial, conectada a Odoo" } as Bi,
-  accent: "#8B5CF6",
-  spotColor: "rgba(139,92,246,.18)",
-  problemLabel: { en: "THE PROBLEM", es: "EL PROBLEMA" } as Bi,
-  problem: {
-    en: "Promotional-product quotations were built in a spreadsheet — GBS Nacional — used to calculate cost, margin and sale price project by project. It worked, but every quotation meant capturing and adjusting large amounts of data by hand, field by field, and nobody wanted to do that directly inside Odoo.",
-    es: "Las cotizaciones de producto promocional se armaban en una hoja de cálculo — GBS Nacional — usada para calcular costo, margen y precio de venta proyecto por proyecto. Funcionaba, pero cada cotización implicaba capturar y ajustar mucha información a mano, campo por campo, y nadie quería hacerlo directamente dentro de Odoo.",
-  } as Bi,
-  challengeLabel: { en: "THE CHALLENGE", es: "EL RETO" } as Bi,
-  challenge: {
-    en: "The operational data — products, costs, clients — already lived in Odoo, but the actual pricing logic lived in a spreadsheet nobody could safely change. Any replacement had to keep that logic intact while making capture fast, adjustments easy, and everything connected to real operational data instead of a static file.",
-    es: "Los datos operativos — productos, costos, clientes — ya vivían en Odoo, pero la lógica de precios vivía en una hoja de cálculo que nadie podía modificar con seguridad. Cualquier reemplazo tenía que conservar esa lógica, hacer la captura rápida, los ajustes sencillos y todo conectado a datos operativos reales en lugar de un archivo estático.",
-  } as Bi,
-  solutionLabel: { en: "THE SOLUTION", es: "LA SOLUCIÓN" } as Bi,
-  solution: {
-    en: "I designed and built a web application that replaces the spreadsheet: it captures project data — pieces, waste, unit cost, customization, logistics — and calculates net cost, margin and sale price using the same rules the business already trusted, reading and writing directly to Odoo.",
-    es: "Diseñé y construí una aplicación web que reemplaza la hoja de cálculo: captura los datos del proyecto — piezas, merma, costo unitario, personalización, logística — y calcula costo neto, margen y precio de venta con las mismas reglas que el negocio ya usaba, leyendo y escribiendo directamente en Odoo.",
-  } as Bi,
-  architectureLabel: { en: "ARCHITECTURE", es: "ARQUITECTURA" } as Bi,
-  architecture: [
-    { en: "Angular", es: "Angular" },
-    { en: "Java 21 / Quarkus", es: "Java 21 / Quarkus" },
-    { en: "Odoo (XML-RPC)", es: "Odoo (XML-RPC)" },
-    { en: "Operational data", es: "Datos operativos" },
-  ] as Bi[],
-  logicLabel: { en: "PRICING LOGIC", es: "LÓGICA DE PRECIOS" } as Bi,
-  logic: [
-    { en: "Costs", es: "Costos" },
-    { en: "Net cost", es: "Costo neto" },
-    { en: "Target margin", es: "Margen objetivo" },
-    { en: "Sale price", es: "Precio de venta" },
-    { en: "Project total", es: "Total del proyecto" },
-  ] as Bi[],
-  fieldsLabel: { en: "WHAT IT CAPTURES", es: "QUÉ CAPTURA" } as Bi,
-  fields: [
-    { en: "Product description", es: "Descripción del producto" },
-    { en: "Pieces", es: "Piezas" },
-    { en: "Waste (merma)", es: "Merma" },
-    { en: "Unit cost", es: "Costo unitario" },
-    { en: "Customization", es: "Personalización" },
-    { en: "Hologram", es: "Holograma" },
-    { en: "Strap (fleje)", es: "Fleje" },
-    { en: "Handling", es: "Maniobras" },
-    { en: "Display box", es: "Caja display" },
-    { en: "Logistics cost", es: "Costo logístico" },
-  ] as Bi[],
-  roleLabel: { en: "MY ROLE", es: "MI ROL" } as Bi,
-  role: {
-    en: "I designed the architecture, built the Angular frontend and the Quarkus/Java backend, and implemented the Odoo integration — from reverse-engineering the original spreadsheet logic to shipping the system that replaced it.",
-    es: "Diseñé la arquitectura, construí el frontend en Angular y el backend en Quarkus/Java, e implementé la integración con Odoo — desde entender a fondo la lógica de la hoja de cálculo original hasta entregar el sistema que la reemplazó.",
-  } as Bi,
-  evolutionLabel: { en: "WHAT'S NEXT", es: "SIGUIENTE PASO" } as Bi,
-  evolution: {
-    en: "The next step is evolving GBS Builder from a calculator into a tracking tool: budgeted vs. quoted, projected vs. actual, margin deviations and dashboards built on live Odoo data.",
-    es: "El siguiente paso es evolucionar GBS Builder de una calculadora a una herramienta de seguimiento: presupuestado vs. cotizado, proyectado vs. real, desviaciones de margen y dashboards construidos sobre datos vivos de Odoo.",
-  } as Bi,
-  stack: "Angular · Java 21 · Quarkus · Odoo (XML-RPC)",
-};
+export interface SkillGroup {
+  accent: string;
+  title: Bi;
+  items: Bi[];
+}
 
-export const CAPABILITIES: { icon: string; accent: string; glow: string; title: Bi; items: Bi[] }[] = [
+// Full skill inventory, as provided directly by Mario (from his CV). Kept as
+// a plain tag list per group rather than the old 3-item planet cards — the
+// point here is completeness, not curation.
+export const CAPABILITIES: SkillGroup[] = [
   {
-    icon: "▤",
     accent: "#38BDF8",
-    glow: "radial-gradient(circle at 34% 30%, #BFDBFE, #38BDF8 45%, #14224A 100%)",
-    title: { en: "Build Interfaces", es: "Construir Interfaces" },
+    title: { en: "Backend", es: "Backend" },
     items: [
-      { en: "Angular · React · Astro", es: "Angular · React · Astro" },
-      { en: "TypeScript", es: "TypeScript" },
+      { en: "Java", es: "Java" },
+      { en: "Python", es: "Python" },
+      { en: "Quarkus", es: "Quarkus" },
+      { en: "FastAPI", es: "FastAPI" },
+      { en: "REST APIs", es: "REST APIs" },
+      { en: "XML-RPC", es: "XML-RPC" },
+      { en: "JSON", es: "JSON" },
+      { en: "Webhooks", es: "Webhooks" },
+    ],
+  },
+  {
+    accent: "#8B5CF6",
+    title: { en: "Frontend", es: "Frontend" },
+    items: [
+      { en: "Angular", es: "Angular" },
+      { en: "React", es: "React" },
+      { en: "Astro", es: "Astro" },
+      { en: "JavaScript", es: "JavaScript" },
+      { en: "HTML5", es: "HTML5" },
+      { en: "CSS3", es: "CSS3" },
       { en: "Tailwind CSS", es: "Tailwind CSS" },
     ],
   },
   {
-    icon: "⌬",
-    accent: "#8B5CF6",
-    glow: "radial-gradient(circle at 35% 32%, #93C5FD, #2563EB 52%, #1E1B4B 100%)",
-    title: { en: "Build Systems", es: "Construir Sistemas" },
-    items: [
-      { en: "Java 21 · Quarkus", es: "Java 21 · Quarkus" },
-      { en: "REST APIs", es: "REST APIs" },
-    ],
-  },
-  {
-    icon: "⛁",
     accent: "#A78BFA",
-    glow: "radial-gradient(circle at 36% 34%, #E9D5FF, #8B5CF6 48%, #2E1065 100%)",
-    title: { en: "Work with Data", es: "Trabajar con Datos" },
+    title: { en: "Databases", es: "Bases de Datos" },
     items: [
       { en: "PostgreSQL", es: "PostgreSQL" },
-      { en: "Odoo 18", es: "Odoo 18" },
+      { en: "MySQL", es: "MySQL" },
+      { en: "MariaDB", es: "MariaDB" },
+      { en: "SQL", es: "SQL" },
+      { en: "Relational database modeling", es: "Modelado de bases de datos relacionales" },
     ],
   },
   {
-    icon: "◈",
     accent: "#60A5FA",
-    glow: "radial-gradient(circle at 33% 30%, #DBEAFE, #3B82F6 48%, #1E3A8A 100%)",
-    title: { en: "Connect Systems", es: "Conectar Sistemas" },
+    title: { en: "Software Architecture", es: "Arquitectura de Software" },
     items: [
-      { en: "XML-RPC · JWT", es: "XML-RPC · JWT" },
-      { en: "Odoo Studio · QWeb", es: "Odoo Studio · QWeb" },
+      { en: "Hexagonal Architecture", es: "Hexagonal Architecture" },
+      { en: "MVC", es: "MVC" },
+      { en: "Layered Architecture", es: "Layered Architecture" },
+      { en: "BFF", es: "BFF" },
+      { en: "Separation of Concerns", es: "Separación de Responsabilidades" },
+      { en: "Clean Architecture Concepts", es: "Conceptos de Clean Architecture" },
     ],
   },
   {
-    icon: "◬",
     accent: "#E879F9",
-    glow: "radial-gradient(circle at 38% 32%, #F5D0FE, #C026D3 50%, #3B0764 100%)",
-    title: { en: "Design Solutions", es: "Diseñar Soluciones" },
+    title: { en: "Design Patterns", es: "Patrones de Diseño" },
     items: [
-      { en: "Business Logic", es: "Lógica de Negocio" },
-      { en: "Hexagonal Architecture", es: "Arquitectura Hexagonal" },
+      { en: "Singleton", es: "Singleton" },
+      { en: "Dependency Injection", es: "Inyección de Dependencias" },
+      { en: "Repository Pattern", es: "Patrón Repository" },
+      { en: "Service Layer", es: "Capa de Servicios" },
+    ],
+  },
+  {
+    accent: "#C026D3",
+    title: { en: "Odoo / ERP", es: "Odoo / ERP" },
+    items: [
+      { en: "Odoo 18", es: "Odoo 18" },
+      { en: "Odoo Studio", es: "Odoo Studio" },
+      { en: "XML", es: "XML" },
+      { en: "QWeb", es: "QWeb" },
+      { en: "Automated Actions", es: "Acciones Automatizadas" },
+      { en: "Odoo Spreadsheets", es: "Odoo Spreadsheets" },
+      { en: "Domains", es: "Domains" },
+      { en: "Access Rules", es: "Reglas de Acceso" },
+      { en: "Custom Fields", es: "Campos Personalizados" },
+      { en: "Odoo Integrations", es: "Integraciones Odoo" },
+    ],
+  },
+  {
+    accent: "#38BDF8",
+    title: { en: "Security & Integration", es: "Seguridad e Integración" },
+    items: [
+      { en: "JWT", es: "JWT" },
+      { en: "API Keys", es: "API Keys" },
+      { en: "Authentication", es: "Autenticación" },
+      { en: "Authorization", es: "Autorización" },
+      { en: "REST Integration", es: "Integración REST" },
+      { en: "External Services Integration", es: "Integración de Servicios Externos" },
+    ],
+  },
+  {
+    accent: "#8B5CF6",
+    title: { en: "Software Engineering", es: "Ingeniería de Software" },
+    items: [
+      { en: "Requirements Analysis", es: "Análisis de Requerimientos" },
+      { en: "Business Logic Modeling", es: "Modelado de Lógica de Negocio" },
+      { en: "Process Modeling", es: "Modelado de Procesos" },
+      { en: "Solution Design", es: "Diseño de Soluciones" },
       { en: "System Integration", es: "Integración de Sistemas" },
+      { en: "Technical Documentation", es: "Documentación Técnica" },
+      { en: "Debugging", es: "Depuración" },
+      { en: "Problem Solving", es: "Resolución de Problemas" },
+    ],
+  },
+  {
+    accent: "#A78BFA",
+    title: { en: "Project Management", es: "Gestión de Proyectos" },
+    items: [
+      { en: "Sprint Planning", es: "Planificación de Sprints" },
+      { en: "Task Management", es: "Gestión de Tareas" },
+      { en: "Requirements Definition", es: "Definición de Requerimientos" },
+      { en: "Technical Coordination", es: "Coordinación Técnica" },
+      { en: "Progress Tracking", es: "Seguimiento de Avance" },
+      { en: "Prioritization", es: "Priorización" },
+    ],
+  },
+  {
+    accent: "#E879F9",
+    title: { en: "Soft Skills", es: "Habilidades Blandas" },
+    items: [
+      { en: "Problem Solving", es: "Resolución de Problemas" },
+      { en: "Analytical Thinking", es: "Pensamiento Analítico" },
+      { en: "Effective Communication", es: "Comunicación Efectiva" },
+      { en: "Teamwork", es: "Trabajo en Equipo" },
+      { en: "Leadership", es: "Liderazgo" },
+      { en: "Adaptability", es: "Adaptabilidad" },
+      { en: "Self-Learning", es: "Autoaprendizaje" },
+      { en: "Organization", es: "Organización" },
+      { en: "Planning", es: "Planificación" },
+      { en: "Critical Thinking", es: "Pensamiento Crítico" },
     ],
   },
 ];
 
+// Titles and dates match the CV exactly — do not edit without updating the CV too.
 export const EXPERIENCE: { dotColor: string; title: Bi; date: Bi; company: string; body: Bi; stack: string }[] = [
   {
     dotColor: "#8B5CF6",
-    title: { en: "Full Stack Developer — Odoo Systems", es: "Full Stack Developer — Sistemas Odoo" },
-    date: { en: "2026 — PRESENT", es: "2026 — ACTUALIDAD" },
+    title: { en: "Full Stack Developer & Odoo Technical Lead", es: "Full Stack Developer y Líder Técnico Odoo" },
+    date: { en: "JUN 2026 — PRESENT", es: "JUN 2026 — ACTUALIDAD" },
     company: "CPA GRUP",
     body: {
-      en: "Designs and builds platforms around Odoo: custom views, reports, automated actions and Odoo Spreadsheets over sales, purchasing and inventory processes, plus integrations with external applications. What started as ERP support grew into building the standalone tools the operation actually needed.",
-      es: "Diseña y construye plataformas alrededor de Odoo: vistas personalizadas, reportes, acciones automatizadas y Odoo Spreadsheets sobre procesos de ventas, compras e inventarios, además de integraciones con aplicaciones externas. Lo que empezó como soporte ERP evolucionó hacia construir las herramientas propias que la operación realmente necesitaba.",
+      en: "Develops applications and integrations built around Odoo and coordinates technical work: architecture, requirement analysis with business areas, and custom views, reports and automated actions over sales, purchasing and inventory processes.",
+      es: "Desarrolla aplicaciones e integraciones alrededor de Odoo y coordina trabajo técnico: arquitectura, análisis de requerimientos con las áreas de negocio, y vistas, reportes y acciones automatizadas personalizadas sobre procesos de ventas, compras e inventarios.",
     },
     stack: "ODOO 18 · ODOO STUDIO · XML-RPC · JAVA 21 · QUARKUS · ANGULAR",
   },
   {
-    dotColor: "#94A3B8",
-    title: { en: "Odoo Support & Implementation", es: "Soporte e Implementación Odoo" },
-    date: { en: "2025", es: "2025" },
+    dotColor: "#38BDF8",
+    title: { en: "Odoo Support Assistant", es: "Auxiliar de Soporte Odoo" },
+    date: { en: "FEB 2026 — JUN 2026", es: "FEB 2026 — JUN 2026" },
     company: "CPA GRUP",
     body: {
-      en: "First contact with real ERP operations: sales, purchasing, inventory and quotation flows, user access, and the customizations — views, XML, QWeb reports — that kept the system matching how the business actually worked.",
-      es: "Primer contacto con la operación real de un ERP: flujos de ventas, compras, inventarios y cotizaciones, accesos de usuario, y las personalizaciones — vistas, XML, reportes QWeb — que mantenían el sistema alineado con cómo funcionaba realmente el negocio.",
+      en: "Resolved functional and technical incidents across operational modules, and built the customizations — views, XML, QWeb reports — that kept the system matching how the business actually worked.",
+      es: "Resolvió incidencias funcionales y técnicas en módulos operativos, y construyó las personalizaciones — vistas, XML, reportes QWeb — que mantenían el sistema alineado con cómo funcionaba realmente el negocio.",
     },
-    stack: "ODOO · XML · QWEB · BUSINESS PROCESSES",
+    stack: "ODOO · XML · QWEB · XML-RPC · POSTGRESQL",
   },
   {
-    dotColor: "#38BDF8",
+    dotColor: "#94A3B8",
+    title: { en: "Odoo ERP Support Intern", es: "Becario de Soporte Odoo ERP" },
+    date: { en: "MAR 2025 — FEB 2026", es: "MAR 2025 — FEB 2026" },
+    company: "CPA GRUP",
+    body: {
+      en: "First contact with real ERP operations: sales, purchasing and inventory flows, user access, and documentation of business processes.",
+      es: "Primer contacto con la operación real de un ERP: flujos de ventas, compras e inventarios, accesos de usuario y documentación de procesos de negocio.",
+    },
+    stack: "ODOO · BUSINESS PROCESSES · DOCUMENTATION",
+  },
+  {
+    dotColor: "#64748B",
     title: { en: "Backend Developer — Social Service", es: "Desarrollador Backend — Servicio Social" },
-    date: { en: "2025", es: "2025" },
+    date: { en: "JUL 2025 — JAN 2026", es: "JUL 2025 — ENE 2026" },
     company: "CORPORATIVO EMETH",
     body: {
-      en: "Built backend services and data models in Java, with a focus on clean REST APIs and a structure that stayed maintainable as the project grew.",
-      es: "Desarrollo de servicios backend y modelos de datos en Java, con foco en APIs REST limpias y una estructura que se mantuviera sostenible conforme el proyecto crecía.",
+      en: "Concurrent with the ERP support role — built backend services and data models in Java, with hexagonal architecture and a focus on clean REST APIs.",
+      es: "En paralelo al rol de soporte ERP — desarrolló servicios backend y modelos de datos en Java, con arquitectura hexagonal y foco en APIs REST limpias.",
     },
-    stack: "JAVA · REST APIs · POSTGRESQL",
+    stack: "JAVA · REST APIs · POSTGRESQL · DOCKER · GIT",
   },
 ];
 
 export const ABOUT = {
   lead: {
-    en: "I work where the operation meets the software — reading how a company actually runs, then building the system that makes it run better.",
-    es: "Trabajo donde la operación se encuentra con el software — leo cómo funciona realmente una empresa y construyo el sistema que la hace funcionar mejor.",
+    en: "I am a Full Stack Developer studying Ingeniería en Informática at UPIICSA-IPN. I'm interested in understanding a problem, modeling its logic and building the interfaces, services and integrations the solution needs.",
+    es: "Soy desarrollador Full Stack y estudiante de Ingeniería en Informática en UPIICSA-IPN. Me interesa entender un problema, modelar su lógica y construir las interfaces, servicios e integraciones que necesita la solución.",
   } as Bi,
   p1: {
-    en: "I'm studying Computer Engineering at UPIICSA while working on real ERP operations: Odoo customization, backend services, process analysis and the technical decisions that hold a solution together. The interesting part is rarely the framework — it's the rule buried in a spreadsheet that nobody documented.",
-    es: "Estudio Ingeniería en Informática en la UPIICSA mientras trabajo sobre operaciones ERP reales: personalización de Odoo, servicios backend, análisis de procesos y las decisiones técnicas que sostienen una solución. Lo interesante casi nunca es el framework — es la regla enterrada en una hoja de cálculo que nadie documentó.",
+    en: "At CPA Grup, I develop applications and integrations and coordinate technical work. My experience with users and operational processes helps me connect software decisions with practical needs — the interesting part is rarely the framework, it's the rule nobody documented.",
+    es: "En CPA Grup desarrollo aplicaciones e integraciones y coordino trabajo técnico. Mi experiencia con usuarios y procesos operativos me ayuda a conectar decisiones de software con necesidades concretas — lo interesante casi nunca es el framework, es la regla que nadie documentó.",
   } as Bi,
   p2: {
-    en: "That started as ERP support, grew into full-stack development, and is now pulling me toward architecture — I'm currently a Full Stack Developer, moving toward Software Engineer and, eventually, Solutions Architect.",
-    es: "Eso empezó como soporte ERP, creció hacia desarrollo full-stack, y ahora me está llevando hacia la arquitectura — actualmente soy Full Stack Developer, avanzando hacia Software Engineer y, eventualmente, Solutions Architect.",
+    en: "I expect to graduate in December 2026, and I want to keep growing in system design and solution architecture.",
+    es: "Tengo prevista mi graduación para diciembre de 2026, y quiero seguir creciendo en diseño de sistemas y arquitectura de soluciones.",
   } as Bi,
   stats: [
-    { label: { en: "FOCUS", es: "ENFOQUE" }, value: { en: "Backend · Integration", es: "Backend · Integración" } },
-    { label: { en: "STUDYING", es: "ESTUDIA" }, value: { en: "Computer Engineering, UPIICSA", es: "Ing. en Informática, UPIICSA" } },
-    { label: { en: "NEXT", es: "SIGUIENTE" }, value: { en: "Software Engineer", es: "Software Engineer" } },
+    { label: { en: "FOCUS", es: "ENFOQUE" }, value: { en: "Full Stack · Integration", es: "Full Stack · Integración" } },
+    { label: { en: "STUDYING", es: "ESTUDIA" }, value: { en: "Comp. Eng., UPIICSA-IPN", es: "Ing. Informática, UPIICSA-IPN" } },
+    { label: { en: "GROWING TOWARD", es: "CRECIENDO HACIA" }, value: { en: "System & Solution Design", es: "Diseño de Sistemas y Soluciones" } },
   ] as { label: Bi; value: Bi }[],
 };
 
-// Career trajectory: where I am, where I'm headed. Node 0 is current —
-// never render node 1/2 as already reached.
-export const CAREER_PATH: { title: string; state: "current" | "next" | "future"; body: Bi }[] = [
-  {
-    title: "Full Stack Developer",
-    state: "current",
-    body: {
-      en: "Building complete features end to end — frontend, backend and the integrations between them.",
-      es: "Construyendo funcionalidades completas de extremo a extremo — frontend, backend y las integraciones entre ambos.",
-    },
-  },
-  {
-    title: "Software Engineer",
-    state: "next",
-    body: {
-      en: "Owning architecture and technical decisions, not just implementation.",
-      es: "Responsable de la arquitectura y las decisiones técnicas, no solo de la implementación.",
-    },
-  },
-  {
-    title: "Solutions Architect",
-    state: "future",
-    body: {
-      en: "Designing how business and systems fit together at a larger scale.",
-      es: "Diseñando cómo encajan el negocio y los sistemas a mayor escala.",
-    },
-  },
-];
-
 export const CONTACT = {
   eyebrow: { en: "SAME UNIVERSE. HIGHER POSSIBILITIES.", es: "MISMO UNIVERSO. MÁS POSIBILIDADES." } as Bi,
-  headline: { en: "Have a problem that software could solve?", es: "¿Tienes un problema que el software podría resolver?" } as Bi,
+  headline: { en: "Let's talk about the systems you're building.", es: "Hablemos de los sistemas que estás construyendo." } as Bi,
   body: {
-    en: "Tell me how the process works. We'll figure out the technology after that.",
-    es: "Cuéntame cómo funciona el proceso. La tecnología la resolvemos después.",
+    en: "I'm interested in contributing to business applications, backend development and system integration.",
+    es: "Me interesa colaborar en aplicaciones de negocio, backend e integración de sistemas.",
   } as Bi,
   ctaPrimary: { en: "LET'S CONNECT", es: "HABLEMOS" } as Bi,
   ctaSecondary: { en: "DOWNLOAD CV", es: "DESCARGAR CV" } as Bi,
@@ -391,8 +436,6 @@ export const CONTACT = {
   githubLabel: "github.com/MaelRD",
   site: "https://maeldev.netlify.app/",
   siteLabel: "maeldev.netlify.app",
-  phone: "+525610919906",
-  phoneDisplay: "+52 56 1091 9906",
 };
 
 export const FOOTER = {
@@ -413,22 +456,17 @@ export const SECTION_HEADERS = {
     accent: "#38BDF8",
   },
   capabilities: {
-    title: { en: "CAPABILITIES", es: "CAPACIDADES" } as Bi,
+    title: { en: "SKILLS", es: "SKILLS" } as Bi,
     tag: { en: "TECHNICAL SKILL. BUSINESS PERSPECTIVE.", es: "HABILIDAD TÉCNICA. VISIÓN DE NEGOCIO." } as Bi,
     accent: "#8B5CF6",
   },
   experience: {
     title: { en: "EXPERIENCE", es: "EXPERIENCIA" } as Bi,
-    tag: "ERP SUPPORT → DEVELOPMENT → ARCHITECTURE",
+    tag: "CPA GRUP · CORPORATIVO EMETH",
     accent: "#38BDF8",
   },
   about: {
     title: { en: "ABOUT", es: "PERFIL" } as Bi,
     accent: "#7042F8",
-  },
-  career: {
-    title: { en: "WHERE I'M HEADED", es: "HACIA DÓNDE VOY" } as Bi,
-    tag: { en: "CURRENT TRAJECTORY.", es: "TRAYECTORIA ACTUAL." } as Bi,
-    accent: "#C026D3",
   },
 };

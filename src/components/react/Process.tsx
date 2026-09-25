@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { PROCESS_STEPS, SECTION_HEADERS, type Lang } from "../../data/content";
-import { useScrollFill } from "./hooks";
 import Reveal from "./Reveal";
 
 const ACCENTS: Record<(typeof PROCESS_STEPS)[number]["accent"], { border: string; color: string }> = {
@@ -9,10 +8,27 @@ const ACCENTS: Record<(typeof PROCESS_STEPS)[number]["accent"], { border: string
   fuchsia: { border: "rgba(192,38,211,.45)", color: "#E879F9" },
 };
 
+const STEP_COUNT = PROCESS_STEPS.length;
+const CYCLE_SECONDS = 1.6 * STEP_COUNT;
+// The `88%` checkpoint in the `cosmic-flow-sweep` keyframe (global.css) —
+// how far into the cycle the beam finishes crossing the track before it
+// holds at full width and then resets.
+const FULL_AT = 0.88;
+// With `repeat(auto-fit, minmax(…,1fr))` and no wrap, the N step columns are
+// exactly equal-width, so icon i sits at ((i+0.5)/N) of the row. The track
+// itself is inset by that same half-column margin on each side (see
+// `EDGE_PERCENT` below), which is what makes the *first* and *last* icon
+// sit exactly on the track's two ends — so icon i's position along the
+// track (0 = start, 1 = end) reduces to the simple i/(N-1).
+const EDGE_PERCENT = 50 / STEP_COUNT;
+// Icon i should be lit right when the (linear) beam reaches its position:
+// time = positionFraction * timeToFullWidth.
+const stepDelay = (i: number) => (STEP_COUNT > 1 ? (i / (STEP_COUNT - 1)) * FULL_AT * CYCLE_SECONDS : 0);
+
 export default function Process({ lang }: { lang: Lang }) {
   const h = SECTION_HEADERS.process;
-  const beamRef = useScrollFill<HTMLDivElement>("width");
   const trackRef = useRef<HTMLDivElement>(null);
+  const beamRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
 
   // The beam only makes sense as a single straight line: once the steps wrap
@@ -31,12 +47,8 @@ export default function Process({ lang }: { lang: Lang }) {
     };
     check();
     window.addEventListener("resize", check, { passive: true });
-    window.addEventListener("scroll", check, { passive: true });
-    return () => {
-      window.removeEventListener("resize", check);
-      window.removeEventListener("scroll", check);
-    };
-  }, [beamRef]);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <section
@@ -58,21 +70,27 @@ export default function Process({ lang }: { lang: Lang }) {
       </div>
 
       <div style={{ position: "relative" }}>
-        <div ref={trackRef} aria-hidden="true" style={{ position: "absolute", left: "6%", right: "6%", top: 60, height: 1, background: "rgba(148,163,184,.16)" }} />
-        <div
-          ref={beamRef}
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            left: "6%",
-            top: 60,
-            height: 1,
-            width: "0%",
-            background: "linear-gradient(90deg,#7042F8,#38BDF8)",
-            boxShadow: "0 0 12px rgba(56,189,248,.8)",
-            transition: "width .2s linear",
-          }}
-        />
+        {/* Lane wrapper: inset by EDGE_PERCENT on each side so its two ends
+            land exactly on the first and last icon's centers (see the
+            comment on EDGE_PERCENT above). Track and beam both size
+            themselves as 0-100% of THIS element, not of the section — so
+            the beam's animated width can never overshoot past the track. */}
+        <div ref={trackRef} aria-hidden="true" style={{ position: "absolute", left: `${EDGE_PERCENT}%`, right: `${EDGE_PERCENT}%`, top: 60, height: 1 }}>
+          <div style={{ position: "absolute", inset: 0, background: "rgba(148,163,184,.16)" }} />
+          <div
+            ref={beamRef}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: "0%",
+              background: "linear-gradient(90deg,#7042F8,#38BDF8)",
+              boxShadow: "0 0 12px rgba(56,189,248,.8)",
+              animation: `cosmic-flow-sweep ${CYCLE_SECONDS}s linear infinite`,
+            }}
+          />
+        </div>
         <ol
           ref={listRef}
           style={{
@@ -104,6 +122,8 @@ export default function Process({ lang }: { lang: Lang }) {
                       color: c.color,
                       fontSize: step.icon === "</>" ? 17 : 19,
                       fontFamily: step.icon === "</>" ? "'Geist Mono',monospace" : undefined,
+                      animation: `cosmic-step-pulse ${CYCLE_SECONDS}s ease-in-out infinite`,
+                      animationDelay: `${stepDelay(i)}s`,
                     }}
                   >
                     {step.icon}
