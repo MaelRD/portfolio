@@ -159,7 +159,7 @@
 }
 .body-text {
   margin: 0;
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.7;
   color: #CBD5E1;
 }
@@ -286,7 +286,7 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .flow__node + .flow__node::after {
-    animation: flow-pulse-y 2.4s linear infinite;
+    animation: flow-pulse-y 2.4s linear 4;
     animation-delay: calc(var(--i) * 0.4s);
   }
 }
@@ -601,6 +601,13 @@
 }
 .mael-link:hover { text-decoration-color: #A78BFA; }
 
+/* Press feedback (a 1px settle, no scaling) and no double-tap zoom delay. */
+a, button { touch-action: manipulation; }
+.mael-btn:active, .nav-cv:active, .sn__list button:active, .lang-switch__btn:active, .sys-node:active, .arch button.arch__node:active {
+  transform: translateY(1px);
+}
+.arch button.arch__node:active { transform: translate(-50%, calc(-50% + 1px)); }
+
 /* Outbound links: the ↗ travels diagonally on hover. */
 .arrow-link {
   display: inline-flex;
@@ -769,16 +776,17 @@
   opacity: 0;
   animation: node-in var(--dur-normal) var(--ease) forwards;
 }
-.arch[data-state="play"] .arch__pulse { animation: pulse-travel 5.4s linear infinite; }
+/* Ambient packets run a few cycles, then the system rests (no endless motion). */
+.arch[data-state="play"] .arch__pulse { animation: pulse-travel 5.4s linear 3; }
 
 /* Interactive (skill map): selected node + its connection light up, others dim. */
 .arch[data-interactive] button.arch__node { cursor: pointer; font: inherit; font-family: 'Geist Mono', monospace; }
 .arch[data-interactive] button.arch__node:hover { border-color: rgba(148, 163, 184, 0.6); }
-.arch[data-has-active] button.arch__node:not([data-active]) { opacity: 0.45; }
+.arch[data-has-active] button.arch__node:not([data-active]) { opacity: 0.6; }
 .arch[data-state="play"][data-has-active] button.arch__node:not([data-active]) { animation-name: node-in-dim; }
 @keyframes node-in-dim {
   from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
-  to { opacity: 0.45; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
 }
 .arch button.arch__node[data-active] {
   border-color: var(--arch-accent);
@@ -1069,7 +1077,7 @@ html[data-intro="play"] .intro {
   background: #4ADE80;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .status-dot { animation: status-pulse 6s ease-out infinite; }
+  .status-dot { animation: status-pulse 6s ease-out 3; }
 }
 .hero-readout {
   margin: 0;
@@ -1140,7 +1148,15 @@ html[data-intro="play"] .intro {
     grid-template-columns: minmax(0, 1.15fr) minmax(260px, 1fr);
     transition: opacity var(--dur-normal) var(--ease), transform var(--dur-normal) var(--ease), visibility 0s linear var(--dur-normal);
   }
-  .pp:not([data-active]) { opacity: 0; transform: translateY(-10px); visibility: hidden; pointer-events: none; }
+  .pp:not([data-active]) {
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    pointer-events: none;
+    /* Exits are quicker than entrances (~60%). */
+    transition-duration: var(--dur-fast), var(--dur-fast), 0s;
+    transition-delay: 0s, 0s, var(--dur-fast);
+  }
   .pp[data-active] { transition-delay: 80ms, 80ms, 0s; }
   .pp[data-active] .pp__story > * { animation: pp-in var(--dur-slow) var(--ease) both; }
   .pp[data-active] .pp__story > *:nth-child(2) { animation-delay: 40ms; }
@@ -1283,7 +1299,7 @@ html[data-intro="play"] .intro {
   opacity: 0;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .sys-row:not(:last-child)::after { animation: sys-packet 3s linear infinite; }
+  .sys-row:not(:last-child)::after { animation: sys-packet 3s linear 4; }
   .sys-row:nth-child(2)::after { animation-delay: 0.5s; }
   .sys-row:nth-child(3)::after { animation-delay: 1s; }
   .sys-row:nth-child(4)::after { animation-delay: 1.5s; }
@@ -1346,7 +1362,7 @@ html[data-intro="play"] .intro {
 }
 .sys-fork path[data-on] { stroke: #38BDF8; }
 @media (prefers-reduced-motion: no-preference) {
-  .sys-fork path { animation: sys-dash 1.4s linear infinite; }
+  .sys-fork path { animation: sys-dash 1.4s linear 8; }
 }
 @keyframes sys-dash { to { stroke-dashoffset: -16; } }
 .sys-leaves {
@@ -1480,10 +1496,13 @@ html[data-intro="play"] .intro {
   gap: 20px;
   transition: opacity var(--dur-normal) var(--ease);
 }
-/* The walk: the current step leads, steps behind fade a little, steps ahead more. */
-.pt__list[data-armed] .pt-step { opacity: 0.25; }
-.pt__list[data-armed] .pt-step[data-state="done"] { opacity: 0.4; }
-.pt__list[data-armed] .pt-step[data-state="active"] { opacity: 1; }
+/* The walk: the current step leads; the others step back through color, not
+   opacity, so their text keeps ≥4.5:1 contrast (#94A3B8 on the page is ~7:1). */
+.pt__list[data-armed] .pt-step:not([data-state="active"]) .process-title { color: #94A3B8; }
+.pt__list[data-armed] .pt-step:not([data-state="active"]) .process-body { color: #94A3B8; }
+.pt__list[data-armed] .pt-step:not([data-state="active"]) .process-tags li { border-color: rgba(148, 163, 184, 0.12); color: #94A3B8; }
+.pt__list[data-armed] .pt-step[data-state="next"] .process-n { filter: saturate(0.4); }
+.process-title, .process-body, .process-tags li { transition: color var(--dur-normal) var(--ease), border-color var(--dur-normal) var(--ease); }
 .pt-node { position: relative; z-index: 1; }
 .pt-step__body { min-width: 0; padding-top: 4px; }
 .pt-step__micro { margin-top: 18px; max-width: 420px; }

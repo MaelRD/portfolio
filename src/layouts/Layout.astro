@@ -9,11 +9,13 @@ interface Props {
   description?: string;
   /** Home page only: the brief "MYG / SYSTEM INITIALIZING" intro. */
   intro?: boolean;
+  /** The "Portfolio Espacial" page draws its own sky (canvas + nebulae) and uses its own type. */
+  space?: boolean;
 }
 
 // Pages are server-rendered in English; the React app (useLang) switches <html lang>,
 // the description and og:locale on the client when Spanish is active.
-const { title = META.title, description = META.description.en, intro = false } = Astro.props;
+const { title = META.title, description = META.description.en, intro = false, space = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? CONTACT.site).href;
 
 const jsonLd = {
@@ -63,6 +65,14 @@ const jsonLd = {
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {
+      space && (
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+        />
+      )
+    }
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     {
       intro && (
@@ -85,10 +95,16 @@ const jsonLd = {
     }
   </head>
   <body class="bg-bg text-ink">
-    <!-- Starfield renders below everything -->
-    <Stars />
-    <!-- Grid/noise/glow texture layer, above the starfield -->
-    <CosmicBackdrop />
+    {
+      !space && (
+        <>
+          <!-- Starfield renders below everything -->
+          <Stars />
+          <!-- Grid/noise/glow texture layer, above the starfield -->
+          <CosmicBackdrop />
+        </>
+      )
+    }
     {
       intro && (
         <div class="intro" aria-hidden="true">
@@ -119,8 +135,11 @@ const jsonLd = {
       if (!reduce) {
         try {
           lenis = new Lenis({ lerp: 0.1, smoothWheel: true, touchMultiplier: 1.4 });
+          // After Lenis moves the page, tell anything drawn against scroll (the
+          // home page's sky) to paint this same frame, so it never lags a frame behind.
           const raf = (time: number) => {
             lenis!.raf(time);
+            window.dispatchEvent(new CustomEvent('mael:frame', { detail: time }));
             requestAnimationFrame(raf);
           };
           requestAnimationFrame(raf);
@@ -143,8 +162,9 @@ const jsonLd = {
         if (!target) return;
         e.preventDefault();
 
+        // Land below the fixed top bar (or the home page's dock).
         const header = document.getElementById('site-nav');
-        const offset = -((header?.getBoundingClientRect().height ?? 64) + 12);
+        const offset = header ? -(header.getBoundingClientRect().bottom + 12) : 0;
         if (lenis) {
           lenis.scrollTo(target, { offset, duration: 1.1 });
         } else {

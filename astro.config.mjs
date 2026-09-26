@@ -7,4 +7,6 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   site: 'https://maeldev.netlify.app',
   integrations: [react(), tailwind()],
+  // The dev toolbar sits bottom-center, right on top of the home page's dock.
+  devToolbar: { enabled: false },
 });

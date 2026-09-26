@@ -10,5 +10,8 @@
       "Bash(sed -i '' 's/tracking-tighter/tracking-wide/g' /Users/mario/Proyectos/portfolio/src/components/Experience.astro /Users/mario/Proyectos/portfolio/src/components/Stack.astro /Users/mario/Proyectos/portfolio/src/components/Contact.astro /Users/mario/Proyectos/portfolio/src/components/Projects.astro)",
       "Bash(sed -i '' 's/tracking-tighter/tracking-normal/g' /Users/mario/Proyectos/portfolio/src/components/Navbar.astro)"
     ]
+  },
+  "skillOverrides": {
+    "ui-ux-pro-max": "name-only"
   }
 }
