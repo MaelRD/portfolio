@@ -491,6 +491,10 @@ export const ORGS: { name: string; meta: Bi; roles: SpaceRole[] }[] = [
   },
 ];
 
+// ── Text loop ───────────────────────────────────────────────────────────────
+
+export const LOOP_TEXT = bi("Del problema al software", "From problem to software");
+
 // ── Contact ─────────────────────────────────────────────────────────────────
 
 export const CONTACT_TEXT = {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { META } from "../../../data/content";
 import { UI_TEXT } from "../../../data/space";
 import { useLang } from "../hooks";
@@ -15,6 +15,34 @@ import Contact from "./Contact";
 import "../../../styles/space.css";
 
 const SECTION_IDS = ["hero", "work", "process", "system", "about", "stack", "experience", "contact"];
+
+/**
+ * Spotlight cards (after React Bits' SpotlightCard): any `.spotlight` element
+ * gets a soft light that follows the pointer. One delegated listener feeds the
+ * card under the cursor its --mouse-x/--mouse-y; the glow itself is CSS.
+ * Mouse and trackpad only: touch has no hover to follow.
+ */
+function useSpotlight(rootRef: RefObject<HTMLElement>) {
+  useEffect(() => {
+    const root = rootRef.current;
+    let fine = false;
+    try {
+      fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    } catch {
+      /* matchMedia unavailable */
+    }
+    if (!root || !fine) return;
+    const onMove = (e: PointerEvent) => {
+      const card = (e.target as Element | null)?.closest?.<HTMLElement>(".spotlight");
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mouse-x", `${e.clientX - r.left}px`);
+      card.style.setProperty("--mouse-y", `${e.clientY - r.top}px`);
+    };
+    root.addEventListener("pointermove", onMove, { passive: true });
+    return () => root.removeEventListener("pointermove", onMove);
+  }, [rootRef]);
+}
 
 function useActiveSection() {
   const [active, setActive] = useState("hero");
@@ -51,6 +79,7 @@ export default function SpaceApp() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   useSpaceEngine(rootRef, canvasRef, pathRef);
+  useSpotlight(rootRef);
 
   return (
     <div className="space" ref={rootRef}>

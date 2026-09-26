@@ -20,7 +20,7 @@ export default function Experience({ lang }: { lang: Lang }) {
               </span>
               <ol className="log">
                 {o.roles.map((r) => (
-                  <li key={r.title} className="panel entry" data-current={r.current ? "" : undefined}>
+                  <li key={r.title} className="spotlight panel entry" data-current={r.current ? "" : undefined}>
                     <span className="entry__dot" aria-hidden="true" />
                     <p className="entry__when">
                       <span>{r.year[lang]}</span>

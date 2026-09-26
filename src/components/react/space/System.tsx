@@ -95,7 +95,7 @@ export default function System({ lang }: { lang: Lang }) {
             ))}
           </div>
 
-          <div id="layer-readout" className="panel readout" aria-live="polite">
+          <div id="layer-readout" className="spotlight panel readout" aria-live="polite">
             <span className="label label--11" style={{ color: "var(--cyan)" }}>
               {SYSTEM_TEXT.responsibility[lang]} · {layer.geo[lang]}
             </span>

@@ -302,6 +302,30 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .chip--sm { font-size: 11px; padding: 4px 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
 
+/* Spotlight cards (React Bits SpotlightCard): a soft light under the pointer.
+   The position comes from useSpotlight in SpaceApp; the pseudo-element takes
+   the card's radius instead of clipping it, so parts that sit outside a card
+   (the experience timeline dots) stay visible. */
+.spotlight {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-color: rgba(167, 139, 250, 0.34);
+  position: relative;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .spotlight:hover::before, .spotlight:focus-within::before { opacity: 0.6; }
+}
+
 /* Selectable rows (projects, layers, stack areas) share one pattern. */
 .pick {
   display: flex;
@@ -626,6 +650,32 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .bullets li { display: flex; gap: 10px; font-size: 14px; line-height: 1.5; color: var(--soft); }
 .bullets li::before { content: "›"; color: var(--cyan); }
 @media (max-width: 480px) { .log { padding-left: 30px; } .entry__dot { left: -26px; } .log__rail { left: 6px; } .entry { padding: 18px; } }
+
+/* ── Corner text loop ─────────────────────────────────────────────────────── */
+/* A square frame pinned to the hero's top-right corner. The loop's SVG is
+   1.6× the frame, centered on a point of the frame's diagonal and turned 45°,
+   so the ribbon runs corner-to-edge and the frame clips both ends. */
+.corner-loop {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  width: clamp(240px, 38vw, 560px);
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+.corner-loop__band.text-loop {
+  position: absolute;
+  left: -9%;
+  top: -6.2%;
+  width: 160.7%;
+  overflow: visible;
+  transform: rotate(45deg);
+  filter: drop-shadow(0 14px 30px rgba(124, 58, 237, 0.4));
+}
+/* Measure and draw in the same face, or the loop squeezes its letters to fit. */
+.corner-loop .text-loop-text, .corner-loop .text-loop-measure { font-family: var(--display); }
+.launch .hero__grid { position: relative; z-index: 1; }
 
 /* ── Contact ─────────────────────────────────────────────────────────────── */
 .signal { position: relative; padding: 120px 24px 0; overflow: hidden; }

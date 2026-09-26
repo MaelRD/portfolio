@@ -33,7 +33,7 @@ export default function Stack({ lang }: { lang: Lang }) {
             ))}
           </ul>
 
-          <div id="constellation" className="panel constellation">
+          <div id="constellation" className="spotlight panel constellation">
             <div className="swap stack-40" style={{ gap: 22 }} key={sel}>
               <span className="label label--12" style={{ color: "var(--cyan)" }}>
                 {STACK_TEXT.constellation[lang]} · {area.code[lang]}

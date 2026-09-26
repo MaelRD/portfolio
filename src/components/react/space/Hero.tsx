@@ -1,11 +1,13 @@
 import { CV_FILENAME, CV_PATH } from "../../../data/content";
 import { HERO, type Lang } from "../../../data/space";
 import Name from "./Name";
+import CornerLoop from "./Loop";
 import { Planet, SURFACES } from "./ui";
 
 export default function Hero({ lang }: { lang: Lang }) {
   return (
     <section id="hero" className="launch" aria-labelledby="hero-title">
+      <CornerLoop lang={lang} />
       <div className="hero__grid">
         <div className="hero__copy">
           <Name first={HERO.first} last={HERO.last} />

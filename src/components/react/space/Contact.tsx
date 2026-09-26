@@ -24,7 +24,7 @@ export default function Contact({ lang }: { lang: Lang }) {
           {channels.map((c) => (
             <li key={c.href}>
               <a
-                className="channel"
+                className="spotlight channel"
                 href={c.href}
                 {...(c.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 {...(c.download ? { download: CV_FILENAME } : {})}

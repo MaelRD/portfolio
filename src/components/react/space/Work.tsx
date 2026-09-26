@@ -17,7 +17,7 @@ export default function Work({ lang }: { lang: Lang }) {
             <li key={p.name}>
               <button
                 type="button"
-                className="pick world"
+                className="spotlight pick world"
                 aria-pressed={i === sel}
                 aria-controls="mission"
                 onClick={() => setSel(i)}
@@ -34,7 +34,7 @@ export default function Work({ lang }: { lang: Lang }) {
           ))}
         </ul>
 
-        <article id="mission" className="panel mission" aria-labelledby="mission-title">
+        <article id="mission" className="spotlight panel mission" aria-labelledby="mission-title">
           <div className="mission__story swap" key={`s${sel}`}>
             <div className="mission__block" style={{ gap: 10 }}>
               <h3 className="mission__title" id="mission-title">

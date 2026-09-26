@@ -19,7 +19,7 @@ export default function About({ lang }: { lang: Lang }) {
             ))}
           </div>
 
-          <aside className="panel dossier">
+          <aside className="spotlight panel dossier">
             <div className="dossier__horizon">
               <Planet className="dossier__earth" surface={SURFACES.earth} speed={6} />
               <span className="label" style={{ left: 20 }}>
@@ -43,7 +43,7 @@ export default function About({ lang }: { lang: Lang }) {
 
         <ul className="levels">
           {ABOUT.levels.map((l) => (
-            <li key={l.k.en}>
+            <li key={l.k.en} className="spotlight">
               <span className="label label--12" style={{ color: l.color }}>
                 {l.k[lang]}
               </span>
