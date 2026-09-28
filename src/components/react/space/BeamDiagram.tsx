@@ -3,12 +3,13 @@ import { useReducedMotion } from "motion/react";
 import { AnimatedBeam } from "@/components/magicui/animated-beam";
 import type { Bi, Lang } from "../../../data/content";
 
-/** The light crosses the diagram in BEAM_SWEEP seconds, once every BEAM_CYCLE seconds. */
-const BEAM_CYCLE = 5;
-const BEAM_SWEEP = 1.6;
+/** The light crosses the diagram in BEAM_SWEEP seconds, once every BEAM_CYCLE seconds.
+ *  It moves at a steady pace so the eye can follow the data travelling. */
+const BEAM_CYCLE = 5.5;
+const BEAM_SWEEP = 4;
 
 export interface ArchGraph {
-  cols: { id: string; l: Bi; s?: Bi }[][];
+  cols: { id: string; l: Bi; s?: Bi; tone?: string }[][];
   edges: [string, string][];
 }
 
@@ -25,6 +26,9 @@ export default function BeamDiagram({ graph, lang, label }: { graph: ArchGraph; 
   const ref = (id: string) => (refs.current[id] ??= createRef<HTMLDivElement>());
   const still = useReducedMotion();
   const [hot, setHot] = useState<string | null>(null);
+  // An area node lights its own beams in its color.
+  const tones: Record<string, string> = {};
+  for (const col of graph.cols) for (const n of col) if (n.tone) tones[n.id] = n.tone;
   // Let the nodes land before the first sweep.
   const lead = still ? 0 : 0.2 + graph.cols.length * 0.08;
 
@@ -44,6 +48,8 @@ export default function BeamDiagram({ graph, lang, label }: { graph: ArchGraph; 
               key={n.id}
               ref={ref(n.id)}
               className="beam-node"
+              data-tone={n.tone ? "" : undefined}
+              style={n.tone ? ({ ["--tone" as string]: n.tone } as CSSProperties) : undefined}
               data-hot={hot === n.id ? "" : undefined}
               onPointerEnter={(e) => e.pointerType === "mouse" && setHot(n.id)}
             >
@@ -53,24 +59,28 @@ export default function BeamDiagram({ graph, lang, label }: { graph: ArchGraph; 
           ))}
         </div>
       ))}
-      {graph.edges.map(([from, to]) => (
-        <AnimatedBeam
-          key={`${from}-${to}`}
-          className={hot && (hot === from || hot === to) ? "beam--hot" : undefined}
-          containerRef={containerRef}
-          fromRef={ref(from)}
-          toRef={ref(to)}
-          pathColor="#A78BFA"
-          pathOpacity={0.22}
-          pathWidth={1.5}
-          gradientStartColor="#7DE3FF"
-          gradientStopColor="#A78BFA"
-          delay={lead}
-          duration={still ? 0 : BEAM_SWEEP}
-          repeat={still ? 0 : Infinity}
-          repeatDelay={BEAM_CYCLE - BEAM_SWEEP}
-        />
-      ))}
+      {graph.edges.map(([from, to]) => {
+        const tone = tones[from] ?? tones[to];
+        return (
+          <AnimatedBeam
+            key={`${from}-${to}`}
+            className={hot && (hot === from || hot === to) ? "beam--hot" : undefined}
+            containerRef={containerRef}
+            fromRef={ref(from)}
+            toRef={ref(to)}
+            pathColor={tone ?? "#A78BFA"}
+            pathOpacity={0.22}
+            pathWidth={1.5}
+            gradientStartColor={tone ?? "#7DE3FF"}
+            gradientStopColor={tone ?? "#A78BFA"}
+            delay={lead}
+            duration={still ? 0 : BEAM_SWEEP}
+            ease="linear"
+            repeat={still ? 0 : Infinity}
+            repeatDelay={BEAM_CYCLE - BEAM_SWEEP}
+          />
+        );
+      })}
     </div>
   );
 }

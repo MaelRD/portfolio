@@ -7,9 +7,19 @@ import { Head, Planet, SURFACES } from "./ui";
 
 const both = (t: Text): Bi => bi(tx(t, "es"), tx(t, "en"));
 
+/** One color per area, for stages that group several areas (sales, purchasing, logistics…). */
+const AREA_TONES = ["#6EF3A5", "#FFC07A", "#F9A8D4", "#9DB4FF"];
+
 /** A project's flow as the beam diagram's columns: each stage a column, every node linked to the next stage. */
 function toGraph(p: Project): ArchGraph {
-  const cols = p.diagram.flow.stages.map((stage, i) => stage.map((n, j) => ({ id: `${i}-${j}`, l: both(n.label), s: n.sub ? both(n.sub) : undefined })));
+  const cols = p.diagram.flow.stages.map((stage, i) =>
+    stage.map((n, j) => ({
+      id: `${i}-${j}`,
+      l: both(n.label),
+      s: n.sub ? both(n.sub) : undefined,
+      tone: stage.length > 1 ? AREA_TONES[j % AREA_TONES.length] : undefined,
+    })),
+  );
   const edges = cols.slice(1).flatMap((col, i) => cols[i].flatMap((a) => col.map((b) => [a.id, b.id] as [string, string])));
   return { cols, edges };
 }

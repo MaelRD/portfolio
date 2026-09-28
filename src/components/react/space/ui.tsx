@@ -50,20 +50,9 @@ export const SURFACES = {
     "radial-gradient(ellipse 260px 30px at 20% 3%,rgba(255,255,255,.7),transparent 70%),radial-gradient(ellipse 340px 40px at 65% 5%,rgba(255,255,255,.45),transparent 70%),radial-gradient(ellipse 200px 24px at 90% 8%,rgba(0,0,0,.5),transparent 70%)|1600px 100%",
 };
 
-export function Eyebrow({ head, lang }: { head: Pick<SectionHead, "n" | "eyebrow">; lang: Lang }) {
-  return (
-    <p className="eyebrow">
-      {head.n && <span>{head.n}</span>}
-      <span className="eyebrow__rule" aria-hidden="true" />
-      <span>{head.eyebrow[lang]}</span>
-    </p>
-  );
-}
-
 export function Head({ head, lang, id }: { head: SectionHead; lang: Lang; id: string }) {
   return (
     <header className="head">
-      <Eyebrow head={head} lang={lang} />
       <h2 className="h2" id={id}>
         {head.title[lang]}
       </h2>

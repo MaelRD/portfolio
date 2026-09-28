@@ -3,7 +3,6 @@ import type { Lang } from "@/data/content";
 import { START, STEPS_FORM } from "@/data/start";
 import { useLang } from "@/lib/lang";
 import SiteShell from "./layout/SiteShell";
-import { Eyebrow } from "./react/space/ui";
 import StartProjectForm from "./contact/StartProjectForm";
 
 function Success({ lang }: { lang: Lang }) {
@@ -42,7 +41,6 @@ export default function StartProjectApp() {
             <a href="/" className="back-link">
               <span aria-hidden="true">←</span> {START.back[lang]}
             </a>
-            <Eyebrow head={{ eyebrow: START.eyebrow }} lang={lang} />
             <h1 className="h2 start__title" id="start-title">
               {START.title[lang]}
             </h1>

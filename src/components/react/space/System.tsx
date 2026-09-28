@@ -96,9 +96,6 @@ export default function System({ lang }: { lang: Lang }) {
           </div>
 
           <div id="layer-readout" className="spotlight panel readout" aria-live="polite">
-            <span className="label label--11" style={{ color: "var(--cyan)" }}>
-              {SYSTEM_TEXT.responsibility[lang]} · {layer.geo[lang]}
-            </span>
             <div className="readout__title readout-swap" key={`t${sel}`}>
               <strong>{layer.name[lang]}</strong>
             </div>

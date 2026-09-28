@@ -116,9 +116,6 @@ export default function Process({ lang, pathRef }: { lang: Lang; pathRef: RefObj
 
         <div id="phase" className="spotlight panel phase">
           <div className="phase__main swap" key={`m${sel}`}>
-            <span className="label label--12" style={{ color: "var(--cyan)" }}>
-              {STEP_TEXT.phase[lang]} {pad(sel + 1)} · {step.code[lang]}
-            </span>
             <div className="phase__title">
               <span className="phase__n" aria-hidden="true">
                 {pad(sel + 1)}

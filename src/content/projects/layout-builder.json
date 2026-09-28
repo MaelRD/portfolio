@@ -23,8 +23,8 @@
     "es": "Un Backend for Frontend que mantiene autenticación, operaciones de negocio e integraciones detrás de una capa API controlada."
   },
   "problem": {
-    "en": "Frontend applications needed a clean way to communicate with Odoo and external services without coupling every integration directly to the interface.",
-    "es": "Las aplicaciones frontend necesitaban una forma limpia de comunicarse con Odoo y servicios externos sin acoplar cada integración directamente a la interfaz."
+    "en": "Frontend applications needed a clean way to communicate with the ERP and external services without coupling every integration directly to the interface.",
+    "es": "Las aplicaciones frontend necesitaban una forma limpia de comunicarse con el ERP y servicios externos sin acoplar cada integración directamente a la interfaz."
   },
   "solution": {
     "en": "I built a backend-for-frontend architecture that centralizes authentication, business operations and integrations behind a controlled API layer.",
@@ -35,8 +35,7 @@
     "Quarkus",
     "JWT",
     "PostgreSQL",
-    "Odoo XML-RPC",
-    "SAT",
+    "Odoo",
     "Webhooks"
   ],
   "capabilities": [
@@ -53,8 +52,8 @@
     "flow": {
       "direction": "responsive",
       "label": {
-        "en": "Bulk records go into LayoutBuilder, which verifies with the SAT that each RFC exists and loads the records into Odoo.",
-        "es": "Los registros masivos entran a LayoutBuilder, que verifica en el SAT que cada RFC exista y carga los registros en Odoo."
+        "en": "Bulk records go into LayoutBuilder, which validates them with an external service and loads them into the ERP.",
+        "es": "Los registros masivos entran a LayoutBuilder, que los valida con un servicio externo y los carga en el ERP."
       },
       "stages": [
         [
@@ -73,16 +72,19 @@
         ],
         [
           {
-            "label": "SAT",
+            "label": {
+              "en": "VALIDATION",
+              "es": "VALIDACIÓN"
+            },
             "sub": {
-              "en": "RFC exists?",
-              "es": "¿existe el RFC?"
+              "en": "external service",
+              "es": "servicio externo"
             }
           }
         ],
         [
           {
-            "label": "ODOO",
+            "label": "ERP",
             "sub": {
               "en": "load",
               "es": "carga"
@@ -100,8 +102,8 @@
       },
       "paragraphs": [
         {
-          "en": "LayoutBuilder sits between web applications and the enterprise services they rely on: Odoo, SAT validation, PostgreSQL and webhook notifications.",
-          "es": "LayoutBuilder se ubica entre las aplicaciones web y los servicios empresariales de los que dependen: Odoo, validación con el SAT, PostgreSQL y notificaciones por webhooks."
+          "en": "LayoutBuilder sits between web applications and the enterprise services they rely on: the ERP, external validation services, PostgreSQL and webhook notifications.",
+          "es": "LayoutBuilder se ubica entre las aplicaciones web y los servicios empresariales de los que dependen: el ERP, servicios de validación externos, PostgreSQL y notificaciones por webhooks."
         }
       ]
     },
@@ -112,8 +114,8 @@
       },
       "paragraphs": [
         {
-          "en": "Frontend applications needed a clean way to communicate with Odoo and external services without coupling every integration directly to the interface.",
-          "es": "Las aplicaciones frontend necesitaban una forma limpia de comunicarse con Odoo y servicios externos sin acoplar cada integración directamente a la interfaz."
+          "en": "Frontend applications needed a clean way to communicate with the ERP and external services without coupling every integration directly to the interface.",
+          "es": "Las aplicaciones frontend necesitaban una forma limpia de comunicarse con el ERP y servicios externos sin acoplar cada integración directamente a la interfaz."
         }
       ]
     },
@@ -153,8 +155,11 @@
           ],
           [
             {
-              "label": "ODOO",
-              "sub": "ERP"
+              "label": "ERP",
+              "sub": {
+                "en": "core system",
+                "es": "sistema central"
+              }
             }
           ]
         ]
@@ -167,16 +172,16 @@
       },
       "list": [
         {
-          "en": "Validate information before it reaches the ERP, including SAT validation.",
-          "es": "Validar la información antes de que llegue al ERP, incluida la validación con el SAT."
+          "en": "Validate information before it reaches the ERP, including validation with external services.",
+          "es": "Validar la información antes de que llegue al ERP, incluida la validación con servicios externos."
         },
         {
-          "en": "Persist records in PostgreSQL and synchronize them with Odoo.",
-          "es": "Persistir registros en PostgreSQL y sincronizarlos con Odoo."
+          "en": "Persist records in PostgreSQL and synchronize them with the ERP.",
+          "es": "Persistir registros en PostgreSQL y sincronizarlos con el ERP."
         },
         {
-          "en": "Notify through webhooks (Discord).",
-          "es": "Notificar mediante webhooks (Discord)."
+          "en": "Notify through webhooks.",
+          "es": "Notificar mediante webhooks."
         },
         {
           "en": "Authenticated access (JWT).",
@@ -203,15 +208,15 @@
       },
       "paragraphs": [
         {
-          "en": "Records are registered in bulk, each RFC is verified against the SAT to confirm it exists, and the records are then loaded into Odoo.",
-          "es": "Los registros se capturan de forma masiva, cada RFC se verifica en el SAT para confirmar que existe y después los registros se cargan en Odoo."
+          "en": "Records are captured in bulk, validated against an external service and only then loaded into the ERP.",
+          "es": "Los registros se capturan de forma masiva, se validan contra un servicio externo y solo después se cargan en el ERP."
         }
       ],
       "flow": {
         "direction": "responsive",
         "label": {
-          "en": "Bulk registration, RFC verification with the SAT, load into Odoo.",
-          "es": "Registro masivo, verificación del RFC en el SAT, carga en Odoo."
+          "en": "Bulk registration, external validation, load into the ERP.",
+          "es": "Registro masivo, validación externa, carga en el ERP."
         },
         "stages": [
           [
@@ -225,12 +230,12 @@
           [
             {
               "label": {
-                "en": "SAT VERIFICATION",
-                "es": "VERIFICACIÓN SAT"
+                "en": "EXTERNAL VALIDATION",
+                "es": "VALIDACIÓN EXTERNA"
               },
               "sub": {
-                "en": "RFC exists?",
-                "es": "¿existe el RFC?"
+                "en": "valid data?",
+                "es": "¿datos válidos?"
               },
               "accent": true
             }
@@ -238,8 +243,8 @@
           [
             {
               "label": {
-                "en": "LOAD INTO ODOO",
-                "es": "CARGA EN ODOO"
+                "en": "LOAD INTO THE ERP",
+                "es": "CARGA EN EL ERP"
               }
             }
           ]
@@ -253,15 +258,15 @@
       },
       "paragraphs": [
         {
-          "en": "Odoo, SAT validation, webhook notifications and PostgreSQL are adapters around the domain, so each integration can change without touching the rules.",
-          "es": "Odoo, la validación SAT, las notificaciones por webhooks y PostgreSQL son adaptadores alrededor del dominio, así cada integración puede cambiar sin tocar las reglas."
+          "en": "The ERP, external validation, webhook notifications and PostgreSQL are adapters around the domain, so each integration can change without touching the rules.",
+          "es": "El ERP, la validación externa, las notificaciones por webhooks y PostgreSQL son adaptadores alrededor del dominio, así cada integración puede cambiar sin tocar las reglas."
         }
       ],
       "flow": {
         "direction": "vertical",
         "label": {
-          "en": "Architecture: frontend, BFF API with JWT, domain services, PostgreSQL, and Odoo, SAT and webhooks as external integrations.",
-          "es": "Arquitectura: frontend, BFF API con JWT, servicios de dominio, PostgreSQL, y Odoo, SAT y webhooks como integraciones externas."
+          "en": "Architecture: frontend, BFF API with JWT, domain services, PostgreSQL, and the ERP, external validation and webhooks as external integrations.",
+          "es": "Arquitectura: frontend, BFF API con JWT, servicios de dominio, PostgreSQL, y el ERP, la validación externa y webhooks como integraciones externas."
         },
         "stages": [
           [
@@ -299,11 +304,13 @@
           ],
           [
             {
-              "label": "ODOO",
-              "sub": "XML-RPC"
+              "label": "ERP"
             },
             {
-              "label": "SAT"
+              "label": {
+                "en": "VALIDATION",
+                "es": "VALIDACIÓN"
+              }
             },
             {
               "label": "WEBHOOKS"
@@ -334,8 +341,8 @@
             "es": "¿Qué responsabilidades se separaron?"
           },
           "a": {
-            "en": "Authentication (JWT), validation and error handling are centralized in the backend; Odoo is reached through XML-RPC only from there.",
-            "es": "Autenticación (JWT), validación y manejo de errores están centralizados en el backend; a Odoo solo se llega desde ahí mediante XML-RPC."
+            "en": "Authentication (JWT), validation and error handling are centralized in the backend; the ERP is reached only from there.",
+            "es": "Autenticación (JWT), validación y manejo de errores están centralizados en el backend; al ERP solo se llega desde ahí."
           }
         }
       ]
@@ -372,8 +379,7 @@
             "es": "Integración"
           },
           "items": [
-            "Odoo XML-RPC",
-            "SAT",
+            "Odoo",
             "Webhooks"
           ]
         }

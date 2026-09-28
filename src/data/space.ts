@@ -620,6 +620,12 @@ export const ABOUT = {
       "I'm currently deepening my knowledge of software engineering, system design and architecture while building products that force me to solve increasingly complex problems.",
     ),
   ],
+  card: {
+    title: bi("Desarrollador de software", "Software developer"),
+    status: bi("Disponible", "Available"),
+    contact: bi("Contactar", "Contact"),
+    photoAlt: bi("Foto de Mario Yael", "Photo of Mario Yael"),
+  },
   dossier: bi("EXPEDIENTE / MYG-01", "DOSSIER / MYG-01"),
   coords: bi("19.43°N 99.13°O", "19.43°N 99.13°W"),
   facts: [

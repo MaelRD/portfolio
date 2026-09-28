@@ -21,6 +21,7 @@ export interface AnimatedBeamProps {
   duration?: number
   repeat?: number
   repeatDelay?: number
+  ease?: "linear" | [number, number, number, number]
   startXOffset?: number
   startYOffset?: number
   endXOffset?: number
@@ -43,6 +44,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   gradientStopColor = "#9c40ff",
   repeat = Infinity,
   repeatDelay = 0,
+  ease = [0.16, 1, 0.3, 1], // https://easings.net/#easeOutExpo
   startXOffset = 0,
   startYOffset = 0,
   endXOffset = 0,
@@ -169,7 +171,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
           transition={{
             delay,
             duration,
-            ease: [0.16, 1, 0.3, 1], // https://easings.net/#easeOutExpo
+            ease,
             repeat,
             repeatDelay,
           }}

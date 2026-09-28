@@ -25,12 +25,12 @@
     "es": "Una mirada más profunda a cómo un proceso manual de costeo se convirtió en un sistema Full Stack integrado con un ERP."
   },
   "problem": {
-    "en": "Quoting required manually combining information from Sales, Purchasing and Logistics while calculations for costs, margins and prices lived in a spreadsheet.",
-    "es": "El proceso de cotización requería combinar manualmente información de Ventas, Compras y Logística mientras los cálculos de costos, márgenes y precios permanecían en una hoja de cálculo."
+    "en": "The quoting process required manually combining data from several areas while the calculations stayed in a spreadsheet.",
+    "es": "El proceso de cotización requería reunir a mano información de varias áreas mientras los cálculos permanecían en una hoja de cálculo."
   },
   "solution": {
-    "en": "I designed a Full Stack application that centralizes quote lines, applies costing rules and communicates directly with Odoo.",
-    "es": "Diseñé una aplicación Full Stack que centraliza las líneas de cotización, aplica reglas de costeo y se comunica directamente con Odoo."
+    "en": "I designed a Full Stack application that centralizes quote lines, applies business rules and communicates directly with the ERP.",
+    "es": "Diseñé una aplicación Full Stack que centraliza las líneas de cotización, aplica reglas de negocio y se comunica directamente con el ERP."
   },
   "stack": [
     "Angular",
@@ -114,12 +114,12 @@
       },
       "paragraphs": [
         {
-          "en": "Quoting a promotional-product order means calculating cost, margin and sale price with data owned by three areas: Sales, Purchasing and Logistics.",
-          "es": "Cotizar un pedido de producto promocional implica calcular costo, margen y precio de venta con información que pertenece a tres áreas: Ventas, Compras y Logística."
+          "en": "Quoting an order means calculating cost, margin and price with data owned by different areas of the company.",
+          "es": "Cotizar un pedido implica calcular costo, margen y precio con información que pertenece a distintas áreas de la empresa."
         },
         {
-          "en": "GBS Builder is the internal application I'm developing to support that quoting process, connected to the company's ERP (Odoo).",
-          "es": "GBS Builder es la aplicación interna que estoy desarrollando para soportar ese proceso de cotización, conectada al ERP de la empresa (Odoo)."
+          "en": "GBS Builder is the internal application I'm developing to support that process, connected to the company's ERP.",
+          "es": "GBS Builder es la aplicación interna que estoy desarrollando para soportar ese proceso, conectada al ERP de la empresa."
         }
       ]
     },
@@ -231,12 +231,12 @@
           "es": "Captura masiva de líneas de cotización con una interfaz tipo hoja de cálculo."
         },
         {
-          "en": "Apply the same costing and pricing rules the business already used.",
-          "es": "Aplicar las mismas reglas de costeo y precio que el negocio ya utilizaba."
+          "en": "Apply the quoting rules the business already used.",
+          "es": "Aplicar las reglas de cotización que el negocio ya utilizaba."
         },
         {
-          "en": "Read and consolidate data from Odoo.",
-          "es": "Leer y consolidar información desde Odoo."
+          "en": "Read and consolidate data from the ERP.",
+          "es": "Leer y consolidar información desde el ERP."
         },
         {
           "en": "Identify line items consistently across systems.",
@@ -251,8 +251,8 @@
       },
       "paragraphs": [
         {
-          "en": "A web application with a spreadsheet-style Angular interface and a Java 21 / Quarkus backend that reads and consolidates Odoo data and applies the costing and pricing rules.",
-          "es": "Una aplicación web con interfaz tipo hoja de cálculo en Angular y un backend en Java 21 / Quarkus que lee y consolida datos de Odoo y aplica las reglas de costeo y precio."
+          "en": "A web application with a spreadsheet-style Angular interface and a Java 21 / Quarkus backend that consolidates ERP data and applies the quoting rules.",
+          "es": "Una aplicación web con interfaz tipo hoja de cálculo en Angular y un backend en Java 21 / Quarkus que consolida datos del ERP y aplica las reglas de cotización."
         },
         {
           "en": "Quote lines are captured in one place, the rules are applied by the system instead of by formulas, and ERP data arrives through the backend instead of being copied by hand.",
@@ -267,8 +267,8 @@
       },
       "paragraphs": [
         {
-          "en": "Each line works with product description, pieces, waste, unit cost, customization and logistics cost; from there come net cost, target margin, sale price and the project total.",
-          "es": "Cada línea trabaja con descripción del producto, piezas, merma, costo unitario, personalización y costo logístico; de ahí salen el costo neto, el margen objetivo, el precio de venta y el total del proyecto."
+          "en": "Each line brings together product data, quantities and their costs; from them the system derives the cost, the price and the quote total.",
+          "es": "Cada línea reúne los datos del producto, las cantidades y sus costos; a partir de ellos el sistema deriva el costo, el precio y el total de la cotización."
         }
       ],
       "rules": {
@@ -282,35 +282,27 @@
         },
         "inputs": [
           {
-            "en": "Description",
-            "es": "Descripción"
+            "en": "Product",
+            "es": "Producto"
           },
           {
-            "en": "Pieces",
-            "es": "Piezas"
+            "en": "Quantities",
+            "es": "Cantidades"
           },
           {
-            "en": "Waste",
-            "es": "Merma"
+            "en": "Direct costs",
+            "es": "Costos directos"
           },
           {
-            "en": "Unit cost",
-            "es": "Costo unitario"
-          },
-          {
-            "en": "Customization",
-            "es": "Personalización"
-          },
-          {
-            "en": "Logistics cost",
-            "es": "Costo logístico"
+            "en": "Additional costs",
+            "es": "Costos adicionales"
           }
         ],
         "steps": [
           {
             "label": {
-              "en": "Net cost",
-              "es": "Costo neto"
+              "en": "Total cost",
+              "es": "Costo total"
             },
             "from": {
               "en": "line costs",
@@ -323,8 +315,8 @@
               "es": "Precio de venta"
             },
             "from": {
-              "en": "net cost + target margin",
-              "es": "costo neto + margen objetivo"
+              "en": "total cost + margin",
+              "es": "costo total + margen"
             }
           },
           {
@@ -345,8 +337,8 @@
           "es": "Restricción: las reglas debían calcular una cotización exactamente como el negocio ya lo hacía."
         },
         {
-          "en": "Decision: line items keep one consistent identification across systems, so the same logic works whether data was captured in the app or comes from Odoo.",
-          "es": "Decisión: las partidas mantienen una identificación consistente entre sistemas, para que la misma lógica funcione si la información se capturó en la aplicación o viene de Odoo."
+          "en": "Decision: line items keep one consistent identification across systems, so the same logic works whether data was captured in the app or comes from the ERP.",
+          "es": "Decisión: las partidas mantienen una identificación consistente entre sistemas, para que la misma lógica funcione si la información se capturó en la aplicación o viene del ERP."
         }
       ]
     },
@@ -373,15 +365,15 @@
       },
       "paragraphs": [
         {
-          "en": "The interface only captures and displays; the calculation rules live in the backend, which is also the only piece that talks to Odoo (XML-RPC).",
-          "es": "La interfaz solo captura y muestra; las reglas de cálculo viven en el backend, que también es la única pieza que se comunica con Odoo (XML-RPC)."
+          "en": "The interface only captures and displays; the calculation rules live in the backend, which is also the only piece that talks to the ERP.",
+          "es": "La interfaz solo captura y muestra; las reglas de cálculo viven en el backend, que también es la única pieza que se comunica con el ERP."
         }
       ],
       "flow": {
         "direction": "vertical",
         "label": {
-          "en": "Architecture: Angular frontend, REST API, Quarkus backend with the costing rules, PostgreSQL and Odoo.",
-          "es": "Arquitectura: frontend en Angular, API REST, backend en Quarkus con las reglas de costeo, PostgreSQL y Odoo."
+          "en": "Architecture: Angular frontend, REST API, Quarkus backend with the business rules, PostgreSQL and the ERP.",
+          "es": "Arquitectura: frontend en Angular, API REST, backend en Quarkus con las reglas de negocio, PostgreSQL y el ERP."
         },
         "stages": [
           [
@@ -409,8 +401,8 @@
                 "es": "DOMINIO / SERVICIOS"
               },
               "sub": {
-                "en": "costing rules",
-                "es": "reglas de costeo"
+                "en": "business rules",
+                "es": "reglas de negocio"
               },
               "accent": true
             }
@@ -430,7 +422,7 @@
                 "en": "EXTERNAL INTEGRATION",
                 "es": "INTEGRACIÓN EXTERNA"
               },
-              "sub": "Odoo · XML-RPC"
+              "sub": "ERP"
             }
           ]
         ]
@@ -458,8 +450,8 @@
             "es": "¿Qué responsabilidades se separaron?"
           },
           "a": {
-            "en": "Capture and display in Angular; costing rules and consolidation in Quarkus; the backend is the only piece that talks to Odoo.",
-            "es": "Captura y visualización en Angular; reglas de costeo y consolidación en Quarkus; el backend es la única pieza que habla con Odoo."
+            "en": "Capture and display in Angular; rules and consolidation in Quarkus; the backend is the only piece that talks to the ERP.",
+            "es": "Captura y visualización en Angular; reglas y consolidación en Quarkus; el backend es la única pieza que habla con el ERP."
           }
         },
         {
@@ -515,8 +507,7 @@
             "es": "Integración"
           },
           "items": [
-            "Odoo",
-            "XML-RPC"
+            "Odoo"
           ]
         }
       ]

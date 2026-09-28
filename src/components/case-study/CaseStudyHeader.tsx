@@ -1,7 +1,6 @@
 import type { Lang } from "@/data/content";
 import { CASE_TEXT as T } from "@/data/caseStudy";
 import type { Project } from "@/lib/projects";
-import { Eyebrow } from "../react/space/ui";
 import ProjectStatus from "../work/ProjectStatus";
 
 export default function CaseStudyHeader({ project: p, lang }: { project: Project; lang: Lang }) {
@@ -16,7 +15,6 @@ export default function CaseStudyHeader({ project: p, lang }: { project: Project
       <a href="/#work" className="back-link">
         <span aria-hidden="true">←</span> {T.back[lang]}
       </a>
-      <Eyebrow head={{ eyebrow: T.eyebrow }} lang={lang} />
       <h1 className="case-head__title">{p.title}</h1>
       <p className="case-head__subtitle">{p.subtitle[lang]}</p>
       <ProjectStatus status={p.status} lang={lang} />

@@ -2,7 +2,6 @@ import type { Bi, Lang } from "@/data/content";
 import type { Project } from "@/lib/projects";
 import DataFlow from "../diagrams/DataFlow";
 import RuleFlow from "../diagrams/RuleFlow";
-import { Eyebrow } from "../react/space/ui";
 
 type Section = NonNullable<NonNullable<Project["caseStudy"]>["context"]>;
 
@@ -14,7 +13,6 @@ export default function CaseStudySection({ id, n, label, section: s, lang }: { i
   const headingId = `${id}-title`;
   return (
     <section id={id} className="case-sec" aria-labelledby={headingId}>
-      <Eyebrow head={{ n: String(n).padStart(2, "0"), eyebrow: label }} lang={lang} />
       <h2 className="case-sec__title" id={headingId}>
         {s.title[lang]}
       </h2>

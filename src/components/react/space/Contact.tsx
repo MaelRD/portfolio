@@ -1,6 +1,6 @@
 import { CONTACT, CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
 import { CONTACT_TEXT as T, FOOTER, HEADS, UI_TEXT, type Lang } from "../../../data/space";
-import { Eyebrow, Planet, SURFACES } from "./ui";
+import { Planet, SURFACES } from "./ui";
 
 export default function Contact({ lang }: { lang: Lang }) {
   const channels = [
@@ -12,7 +12,6 @@ export default function Contact({ lang }: { lang: Lang }) {
   return (
     <section id="contact" className="signal" aria-labelledby="contact-title">
       <div className="contact__inner">
-        <Eyebrow head={HEADS.contact} lang={lang} />
         <h2 className="contact__title" id="contact-title">
           {HEADS.contact.title[lang]}
         </h2>
