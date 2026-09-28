@@ -1,12 +1,12 @@
-import { CONTACT, CV_FILENAME, CV_PATH } from "../../../data/content";
-import { CONTACT_TEXT as T, HEADS, UI_TEXT, type Lang } from "../../../data/space";
+import { CONTACT, CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
+import { CONTACT_TEXT as T, FOOTER, HEADS, UI_TEXT, type Lang } from "../../../data/space";
 import { Eyebrow, Planet, SURFACES } from "./ui";
 
 export default function Contact({ lang }: { lang: Lang }) {
   const channels = [
     { k: T.email[lang], v: CONTACT.email, href: `mailto:${CONTACT.email}` },
-    { k: T.github[lang], v: "github.com/MaelRD", href: CONTACT.github, external: true },
-    { k: T.cv[lang], v: "cv.pdf", href: CV_PATH, download: true },
+    { k: T.github[lang], v: "github.com/MaelRD", href: CONTACT.github, external: true, track: "GitHub" },
+    { k: T.cv[lang], v: "cv.pdf", href: CV_PATH, download: true, track: "Download Resume" },
   ];
 
   return (
@@ -17,8 +17,9 @@ export default function Contact({ lang }: { lang: Lang }) {
           {HEADS.contact.title[lang]}
         </h2>
         <p className="contact__lede">{HEADS.contact.intro![lang]}</p>
-        <a href={`mailto:${CONTACT.email}`} className="btn btn--solid btn--signal">
-          {T.cta[lang]} <span aria-hidden="true">→</span>
+        <p className="contact__support">{T.support[lang]}</p>
+        <a href={START_PATH} className="btn btn--solid btn--signal" data-track="Start Project" data-track-label="open-channel">
+          {T.ctaStart[lang]} <span aria-hidden="true">→</span>
         </a>
         <ul className="channels">
           {channels.map((c) => (
@@ -28,6 +29,7 @@ export default function Contact({ lang }: { lang: Lang }) {
                 href={c.href}
                 {...(c.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 {...(c.download ? { download: CV_FILENAME } : {})}
+                {...(c.track ? { "data-track": c.track, "data-track-label": "open-channel" } : {})}
               >
                 <span className="label">
                   {c.k} <span aria-hidden="true">↗</span>
@@ -42,10 +44,10 @@ export default function Contact({ lang }: { lang: Lang }) {
       <div className="contact__horizon">
         <Planet className="contact__world" surface={SURFACES.horizon} speed={5} />
         <footer className="sky-footer">
-          <span>{T.footer[lang]}</span>
+          <span>{FOOTER.copyright[lang].toUpperCase()}</span>
           <span>
             <span className="dot-live" data-blink aria-hidden="true" />
-            {T.available[lang]}
+            {FOOTER.status[lang].toUpperCase()}
           </span>
         </footer>
       </div>

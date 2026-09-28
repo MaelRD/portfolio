@@ -7,11 +7,12 @@ import { LOOP_TEXT, type Lang } from "../../../data/space";
 // Pauses under the pointer; holds still for reduced motion (the component).
 
 // The loop fits a whole number of phrases along its path and stretches or
-// squeezes letter spacing to close the gap. The phrase measures ~1255 units in
-// Syne 800 at 44px (1234 in Spanish, 1276 in English), so a straight path of
-// 2 × 1255 keeps that adjustment under 2% in both languages. Centered on the
+// squeezes letter spacing to close the gap. The phrase measures ~1144 units in
+// Syne 800 at 44px (1168 in Spanish, 1119 in English), so a straight path of
+// 2 × 1144 keeps that adjustment near 2% in both languages. Centered on the
 // loop's 1200 × 520 viewBox (y = 260); the frame hides the overhang.
-const PATH = "M -655 260 L 1855 260";
+// Changing LOOP_TEXT means re-measuring and resizing this path.
+const PATH = "M -544 260 L 1744 260";
 
 export default function CornerLoop({ lang }: { lang: Lang }) {
   return (

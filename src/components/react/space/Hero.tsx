@@ -1,4 +1,5 @@
-import { CV_FILENAME, CV_PATH } from "../../../data/content";
+import { Fragment, type CSSProperties } from "react";
+import { CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
 import { HERO, type Lang } from "../../../data/space";
 import Name from "./Name";
 import CornerLoop from "./Loop";
@@ -12,21 +13,34 @@ export default function Hero({ lang }: { lang: Lang }) {
         <div className="hero__copy">
           <Name first={HERO.first} last={HERO.last} />
           <p className="hero__role">
-            <span>{HERO.role[lang]}</span>
+            <span>{HERO.eyebrow[lang]}</span>
           </p>
-          <p className="hero__headline">{HERO.headline[lang]}</p>
+          <p className="hero__headline">{HERO.statement[lang]}</p>
+          <p className="hero__desc">{HERO.description[lang]}</p>
           <div className="hero__ctas">
             <a href="#work" className="btn btn--solid">
               {HERO.ctaWork[lang]} <span aria-hidden="true">→</span>
             </a>
-            <a href={CV_PATH} download={CV_FILENAME} className="btn btn--line">
+            <a href={START_PATH} className="btn btn--line" data-track="Start Project" data-track-label="hero">
+              {HERO.ctaStart[lang]} <span aria-hidden="true">↗</span>
+            </a>
+            <a href={CV_PATH} download={CV_FILENAME} className="btn btn--ghost" data-track="Download Resume" data-track-label="hero">
               {HERO.ctaCv[lang]} <span aria-hidden="true">↓</span>
             </a>
           </div>
+          <p className="hero__stack">
+            <span className="sr-only">{HERO.stackLabel[lang]}: </span>
+            {HERO.stack.join(" · ")}
+          </p>
         </div>
 
         <div className="hero__visual">
-          <figure className="orrery" role="img" aria-label={HERO.orbitLabel[lang]} style={{ margin: 0 }}>
+          <figure
+            className="orrery"
+            role="img"
+            aria-label={HERO.orbitLabel[lang]}
+            style={{ margin: 0 }}
+          >
             <div className="orrery__glow" />
             <svg viewBox="0 0 100 100" aria-hidden="true">
               <g transform="rotate(-14 50 50)" fill="none" stroke="rgba(167,139,250,.38)" strokeWidth=".22">
@@ -39,6 +53,7 @@ export default function Hero({ lang }: { lang: Lang }) {
                     ry={o.ry}
                     strokeDasharray={i % 2 ? ".8 1.2" : undefined}
                     stroke={i === HERO.orbits.length - 1 ? "rgba(125,227,255,.3)" : undefined}
+                    style={{ ["--k" as string]: i } as CSSProperties}
                   />
                 ))}
               </g>
@@ -46,24 +61,29 @@ export default function Hero({ lang }: { lang: Lang }) {
             <div className="orrery__ring orrery__ring--back" />
             <Planet className="orrery__planet" style={{ position: "absolute" }} surface={SURFACES.hero} speed={14} />
             <div className="orrery__ring orrery__ring--front" />
-            {HERO.orbits.map((o) => (
-              <div
-                key={o.rx}
-                className="sat"
-                aria-hidden="true"
-                data-orbit={o.rx}
-                data-ry={o.ry}
-                data-tilt="-14"
-                data-speed={o.speed}
-                data-phase={o.phase}
-                data-depth="1"
-              >
-                <span className="sat__dot" style={{ width: o.size, height: o.size, background: o.color, boxShadow: `0 0 12px ${o.color}` }} />
-                <span className="sat__tag" style={{ borderColor: `color-mix(in srgb, ${o.color} 40%, transparent)` }}>
-                  {o.label[lang]}
-                </span>
-              </div>
-            ))}
+            {HERO.orbits.map((o, i) => {
+              const orbit = { "data-orbit": o.rx, "data-ry": o.ry, "data-tilt": "-14", "data-speed": o.speed, "data-phase": o.phase };
+              return (
+                <Fragment key={o.rx}>
+                  {/* The satellite: passes behind the planet. */}
+                  <div className="sat" style={{ ["--k" as string]: i } as CSSProperties} aria-hidden="true" data-depth="1" {...orbit}>
+                    <span className="sat__dot" style={{ width: o.size, height: o.size, background: o.color, boxShadow: `0 0 12px ${o.color}` }} />
+                  </div>
+                  {/* Its label: always on top, opening toward the outside of the orbit. */}
+                  <div
+                    className="sat sat--label"
+                    style={{ ["--k" as string]: i, ["--dot" as string]: `${o.size / 2 + 6}px` } as CSSProperties}
+                    aria-hidden="true"
+                    data-depth="tag"
+                    {...orbit}
+                  >
+                    <span className="sat__tag" style={{ borderColor: `color-mix(in srgb, ${o.color} 40%, transparent)` }}>
+                      {o.label[lang]}
+                    </span>
+                  </div>
+                </Fragment>
+              );
+            })}
           </figure>
 
         </div>

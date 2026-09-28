@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AREAS, HEADS, STACK_TEXT, type Lang } from "../../../data/space";
+import { CAPABILITIES as AREAS, HEADS, STACK_TEXT, type Lang } from "../../../data/space";
 import { Head } from "./ui";
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -11,7 +11,7 @@ export default function Stack({ lang }: { lang: Lang }) {
   return (
     <section id="stack" className="sec" aria-labelledby="stack-title">
       <div className="wrap stack-40">
-        <Head head={HEADS.stack} lang={lang} id="stack-title" />
+        <Head head={HEADS.capabilities} lang={lang} id="stack-title" />
 
         <div className="chart">
           <ul className="pick-list">
@@ -42,7 +42,7 @@ export default function Stack({ lang }: { lang: Lang }) {
               <p>{area.desc[lang]}</p>
               <ul className="stars-grid">
                 {area.items.map((it) => (
-                  <li key={it.en}>{it[lang]}</li>
+                  <li key={it}>{it}</li>
                 ))}
               </ul>
             </div>

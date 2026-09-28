@@ -51,6 +51,7 @@ export default function About({ lang }: { lang: Lang }) {
             </li>
           ))}
         </ul>
+        <p className="about__note">{ABOUT.levelsNote[lang]}</p>
       </div>
     </section>
   );

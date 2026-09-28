@@ -1,10 +1,40 @@
 import { useState } from "react";
-import { HEADS, PROJECT_TEXT as T, PROJECTS, type Lang } from "../../../data/space";
-import BeamDiagram from "./BeamDiagram";
+import { bi, tx, type Bi, type Text } from "../../../data/content";
+import { HEADS, PLANETS, PROJECT_TEXT as T, type Lang } from "../../../data/space";
+import { caseStudyPath, type Project } from "@/lib/projects";
+import BeamDiagram, { type ArchGraph } from "./BeamDiagram";
 import { Head, Planet, SURFACES } from "./ui";
 
-export default function Work({ lang }: { lang: Lang }) {
+const both = (t: Text): Bi => bi(tx(t, "es"), tx(t, "en"));
+
+/** A project's flow as the beam diagram's columns: each stage a column, every node linked to the next stage. */
+function toGraph(p: Project): ArchGraph {
+  const cols = p.diagram.flow.stages.map((stage, i) => stage.map((n, j) => ({ id: `${i}-${j}`, l: both(n.label), s: n.sub ? both(n.sub) : undefined })));
+  const edges = cols.slice(1).flatMap((col, i) => cols[i].flatMap((a) => col.map((b) => [a.id, b.id] as [string, string])));
+  return { cols, edges };
+}
+
+function toMission(p: Project, i: number) {
+  return {
+    n: String(i + 1).padStart(2, "0"),
+    name: p.title,
+    kind: p.category,
+    status: p.status,
+    tagline: p.subtitle,
+    problem: p.problem,
+    solution: p.solution,
+    stack: p.stack,
+    arch: toGraph(p),
+    href: caseStudyPath(p.slug),
+    slug: p.slug,
+    cta: p.links.cta,
+    ...(PLANETS[p.slug] ?? PLANETS["gbs-builder"]),
+  };
+}
+
+export default function Work({ projects, lang }: { projects: Project[]; lang: Lang }) {
   const [sel, setSel] = useState(0);
+  const PROJECTS = projects.map(toMission);
   const cur = PROJECTS[sel];
 
   return (
@@ -65,13 +95,9 @@ export default function Work({ lang }: { lang: Lang }) {
                 </li>
               ))}
             </ul>
-            {cur.href ? (
-              <a href={cur.href} className="btn btn--solid" style={{ alignSelf: "flex-start", padding: "12px 20px" }}>
-                {T.caseStudy[lang]} <span aria-hidden="true">↗</span>
-              </a>
-            ) : (
-              <span className="no-case">{T.noCase[lang]}</span>
-            )}
+            <a href={cur.href} className="btn btn--solid" style={{ alignSelf: "flex-start", padding: "12px 20px" }} data-track="View Project" data-track-label={cur.slug}>
+              {cur.cta[lang]} <span aria-hidden="true">↗</span>
+            </a>
           </div>
 
           <div className="mission__arch">

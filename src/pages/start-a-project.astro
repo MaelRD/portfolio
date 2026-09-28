@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import StartProjectApp from "../components/StartProjectApp";
+import { START } from "../data/start";
+---
+
+<Layout title="Start a project | Mario Yael" description={START.intro.en} ogType="website">
+  <StartProjectApp client:load />
+
+  <!--
+    Netlify Forms registers a form from static HTML at deploy time. The React
+    form above posts to this same name with these same fields.
+  -->
+  <form name="start-project" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="start-project" />
+    <input name="bot-field" />
+    <input name="project_type" />
+    <input name="current_process" />
+    <textarea name="problem"></textarea>
+    <input name="name" />
+    <input name="company" />
+    <input name="email" type="email" />
+    <input name="budget" />
+    <input name="language" />
+  </form>
+</Layout>

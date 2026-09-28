@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { META } from "../../../data/content";
 import { UI_TEXT } from "../../../data/space";
-import { useLang } from "../hooks";
+import { useLang } from "@/lib/lang";
+import { listenForTrackedClicks } from "@/lib/analytics";
+import type { Project } from "@/lib/projects";
 import { useSpaceEngine } from "./engine";
 import SpaceNav from "./SpaceNav";
 import Hero from "./Hero";
@@ -12,9 +14,12 @@ import About from "./About";
 import Stack from "./Stack";
 import Experience from "./Experience";
 import Contact from "./Contact";
+import IntentSelector from "../../intent/IntentSelector";
+import SolutionsGrid from "../../solutions/SolutionsGrid";
+import FeaturedCaseStudy from "../../case-study/FeaturedCaseStudy";
 import "../../../styles/space.css";
 
-const SECTION_IDS = ["hero", "work", "process", "system", "about", "stack", "experience", "contact"];
+const SECTION_IDS = ["hero", "intent", "work", "solutions", "process", "system", "case-study", "stack", "experience", "about", "contact"];
 
 /**
  * Spotlight cards (after React Bits' SpotlightCard): any `.spotlight` element
@@ -72,7 +77,7 @@ function useActiveSection() {
   return active;
 }
 
-export default function SpaceApp() {
+export default function SpaceApp({ projects }: { projects: Project[] }) {
   const [lang, setLang] = useLang(META.description);
   const active = useActiveSection();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -80,6 +85,7 @@ export default function SpaceApp() {
   const pathRef = useRef<SVGPathElement>(null);
   useSpaceEngine(rootRef, canvasRef, pathRef);
   useSpotlight(rootRef);
+  useEffect(() => listenForTrackedClicks(), []);
 
   return (
     <div className="space" ref={rootRef}>
@@ -95,12 +101,15 @@ export default function SpaceApp() {
 
       <main id="main" tabIndex={-1}>
         <Hero lang={lang} />
-        <Work lang={lang} />
+        <IntentSelector lang={lang} />
+        <Work projects={projects} lang={lang} />
+        <SolutionsGrid lang={lang} />
         <Process lang={lang} pathRef={pathRef} />
         <System lang={lang} />
-        <About lang={lang} />
+        <FeaturedCaseStudy lang={lang} />
         <Stack lang={lang} />
         <Experience lang={lang} />
+        <About lang={lang} />
         <Contact lang={lang} />
       </main>
     </div>

@@ -99,11 +99,13 @@ export default function System({ lang }: { lang: Lang }) {
             <span className="label label--11" style={{ color: "var(--cyan)" }}>
               {SYSTEM_TEXT.responsibility[lang]} · {layer.geo[lang]}
             </span>
-            <div className="readout__title">
+            <div className="readout__title readout-swap" key={`t${sel}`}>
               <strong>{layer.name[lang]}</strong>
-              <span>{layer.tech[lang]}</span>
             </div>
-            <p>{layer.desc[lang]}</p>
+            <p className="readout-swap" key={`r${sel}`}>{layer.resp[lang]}</p>
+            <p className="readout__example readout-swap" key={`e${sel}`}>
+              <span className="label label--11">{SYSTEM_TEXT.example[lang]}</span> {layer.example[lang]}
+            </p>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Copy, Menu, X } from "lucide-react";
-import { CONTACT, CV_FILENAME, CV_PATH } from "../../../data/content";
+import { CONTACT, CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
 import { HERO, NAV, UI_TEXT, type Lang } from "../../../data/space";
 
 // Floating pill navigation (after zenwood.studio): availability on the left,
@@ -51,7 +51,18 @@ function LangSwitch({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void 
   );
 }
 
-export default function SpaceNav({ lang, setLang, active }: { lang: Lang; setLang: (l: Lang) => void; active: string }) {
+export default function SpaceNav({
+  lang,
+  setLang,
+  active,
+  base = "",
+}: {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  active?: string;
+  /** "" on the home page (in-page anchors), "/" on the other pages. */
+  base?: string;
+}) {
   const scrolled = useScrolled();
   const [copied, copy] = useCopy(CONTACT.email);
   const [open, setOpen] = useState(false);
@@ -83,19 +94,24 @@ export default function SpaceNav({ lang, setLang, active }: { lang: Lang; setLan
       </div>
 
       <nav className="zpill znav__menu" aria-label={UI_TEXT.nav[lang]}>
-        <a href="#hero" className="zlogo" aria-label={UI_TEXT.home[lang]}>
+        <a href={base || "#hero"} className="zlogo" aria-label={UI_TEXT.home[lang]}>
           <span className="nav__mark" aria-hidden="true" />
         </a>
         <ul className="zlinks">
           {LINKS.map((n) => (
             <li key={n.id}>
-              <a href={`#${n.id}`} aria-current={active === n.id ? "true" : undefined}>
+              <a href={`${base}#${n.id}`} aria-current={active === n.id ? "true" : undefined}>
                 {n.label[lang]}
               </a>
             </li>
           ))}
+          <li>
+            <a href={CV_PATH} download={CV_FILENAME} data-track="Download Resume" data-track-label="nav">
+              {UI_TEXT.resume[lang]}
+            </a>
+          </li>
         </ul>
-        <a href="#contact" className="zcta" aria-current={active === "contact" ? "true" : undefined}>
+        <a href={START_PATH} className="zcta" data-track="Start Project" data-track-label="nav">
           {UI_TEXT.cta[lang]}
         </a>
         <button
@@ -120,7 +136,7 @@ export default function SpaceNav({ lang, setLang, active }: { lang: Lang; setLan
         <ul>
           {NAV.map((n) => (
             <li key={n.id}>
-              <a href={`#${n.id}`} aria-current={active === n.id ? "true" : undefined} onClick={() => setOpen(false)}>
+              <a href={`${base}#${n.id}`} aria-current={active === n.id ? "true" : undefined} onClick={() => setOpen(false)}>
                 {n.label[lang]}
               </a>
             </li>
@@ -128,7 +144,7 @@ export default function SpaceNav({ lang, setLang, active }: { lang: Lang; setLan
         </ul>
         <div className="zsheet__row">
           <LangSwitch lang={lang} setLang={setLang} />
-          <a href={CV_PATH} download={CV_FILENAME} className="zsheet__cv">
+          <a href={CV_PATH} download={CV_FILENAME} className="zsheet__cv" data-track="Download Resume" data-track-label="menu">
             {UI_TEXT.cvLabel[lang]}
           </a>
         </div>

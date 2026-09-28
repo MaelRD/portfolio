@@ -1,0 +1,383 @@
+{
+  "title": "LayoutBuilder",
+  "slug": "layout-builder",
+  "order": 2,
+  "role": {
+    "en": "Backend development",
+    "es": "Desarrollo backend"
+  },
+  "category": {
+    "en": "INTEGRATION PLATFORM",
+    "es": "PLATAFORMA DE INTEGRACIÓN"
+  },
+  "status": {
+    "en": "IN DEVELOPMENT",
+    "es": "EN DESARROLLO"
+  },
+  "subtitle": {
+    "en": "A backend layer that connects web applications with enterprise services.",
+    "es": "Una capa backend que conecta aplicaciones web con servicios empresariales."
+  },
+  "summary": {
+    "en": "A backend-for-frontend that keeps authentication, business operations and integrations behind one controlled API layer.",
+    "es": "Un Backend for Frontend que mantiene autenticación, operaciones de negocio e integraciones detrás de una capa API controlada."
+  },
+  "problem": {
+    "en": "Frontend applications needed a clean way to communicate with Odoo and external services without coupling every integration directly to the interface.",
+    "es": "Las aplicaciones frontend necesitaban una forma limpia de comunicarse con Odoo y servicios externos sin acoplar cada integración directamente a la interfaz."
+  },
+  "solution": {
+    "en": "I built a backend-for-frontend architecture that centralizes authentication, business operations and integrations behind a controlled API layer.",
+    "es": "Construí una arquitectura Backend for Frontend que centraliza autenticación, operaciones de negocio e integraciones detrás de una capa API controlada."
+  },
+  "stack": [
+    "Java 21",
+    "Quarkus",
+    "JWT",
+    "PostgreSQL",
+    "Odoo XML-RPC",
+    "SAT",
+    "Webhooks"
+  ],
+  "capabilities": [
+    "backend-apis",
+    "system-integrations"
+  ],
+  "links": {
+    "cta": {
+      "en": "Explore architecture",
+      "es": "Explorar arquitectura"
+    }
+  },
+  "diagram": {
+    "flow": {
+      "direction": "responsive",
+      "label": {
+        "en": "Bulk records go into LayoutBuilder, which verifies with the SAT that each RFC exists and loads the records into Odoo.",
+        "es": "Los registros masivos entran a LayoutBuilder, que verifica en el SAT que cada RFC exista y carga los registros en Odoo."
+      },
+      "stages": [
+        [
+          {
+            "label": {
+              "en": "BULK DATA",
+              "es": "DATOS MASIVOS"
+            }
+          }
+        ],
+        [
+          {
+            "label": "LAYOUTBUILDER",
+            "accent": true
+          }
+        ],
+        [
+          {
+            "label": "SAT",
+            "sub": {
+              "en": "RFC exists?",
+              "es": "¿existe el RFC?"
+            }
+          }
+        ],
+        [
+          {
+            "label": "ODOO",
+            "sub": {
+              "en": "load",
+              "es": "carga"
+            }
+          }
+        ]
+      ]
+    }
+  },
+  "caseStudy": {
+    "context": {
+      "title": {
+        "en": "Web applications that depend on enterprise services.",
+        "es": "Aplicaciones web que dependen de servicios empresariales."
+      },
+      "paragraphs": [
+        {
+          "en": "LayoutBuilder sits between web applications and the enterprise services they rely on: Odoo, SAT validation, PostgreSQL and webhook notifications.",
+          "es": "LayoutBuilder se ubica entre las aplicaciones web y los servicios empresariales de los que dependen: Odoo, validación con el SAT, PostgreSQL y notificaciones por webhooks."
+        }
+      ]
+    },
+    "problem": {
+      "title": {
+        "en": "Every integration pulled on the interface.",
+        "es": "Cada integración tiraba de la interfaz."
+      },
+      "paragraphs": [
+        {
+          "en": "Frontend applications needed a clean way to communicate with Odoo and external services without coupling every integration directly to the interface.",
+          "es": "Las aplicaciones frontend necesitaban una forma limpia de comunicarse con Odoo y servicios externos sin acoplar cada integración directamente a la interfaz."
+        }
+      ]
+    },
+    "previousWorkflow": {
+      "title": {
+        "en": "Records depended directly on the ERP.",
+        "es": "Los registros dependían directamente del ERP."
+      },
+      "paragraphs": [
+        {
+          "en": "Creating and managing certain records required manual steps and direct dependence on the ERP.",
+          "es": "La creación y administración de determinados registros requería procesos manuales y dependencia directa del ERP."
+        }
+      ],
+      "flow": {
+        "direction": "responsive",
+        "label": {
+          "en": "Previous workflow: records went through manual steps straight into the ERP.",
+          "es": "Flujo anterior: los registros pasaban por pasos manuales directamente al ERP."
+        },
+        "stages": [
+          [
+            {
+              "label": {
+                "en": "RECORD",
+                "es": "REGISTRO"
+              }
+            }
+          ],
+          [
+            {
+              "label": {
+                "en": "MANUAL STEPS",
+                "es": "PASOS MANUALES"
+              }
+            }
+          ],
+          [
+            {
+              "label": "ODOO",
+              "sub": "ERP"
+            }
+          ]
+        ]
+      }
+    },
+    "requirements": {
+      "title": {
+        "en": "What had to sit behind the API.",
+        "es": "Lo que debía vivir detrás de la API."
+      },
+      "list": [
+        {
+          "en": "Validate information before it reaches the ERP, including SAT validation.",
+          "es": "Validar la información antes de que llegue al ERP, incluida la validación con el SAT."
+        },
+        {
+          "en": "Persist records in PostgreSQL and synchronize them with Odoo.",
+          "es": "Persistir registros en PostgreSQL y sincronizarlos con Odoo."
+        },
+        {
+          "en": "Notify through webhooks (Discord).",
+          "es": "Notificar mediante webhooks (Discord)."
+        },
+        {
+          "en": "Authenticated access (JWT).",
+          "es": "Acceso autenticado (JWT)."
+        }
+      ]
+    },
+    "solution": {
+      "title": {
+        "en": "One controlled layer between the interface and the services.",
+        "es": "Una capa controlada entre la interfaz y los servicios."
+      },
+      "paragraphs": [
+        {
+          "en": "A decoupled application where the frontend consumes a backend in charge of validating information, running business rules and communicating with different services.",
+          "es": "Una aplicación desacoplada donde el frontend consume un backend encargado de validar la información, ejecutar reglas de negocio y comunicarse con diferentes servicios."
+        }
+      ]
+    },
+    "businessLogic": {
+      "title": {
+        "en": "Nothing reaches the ERP unvalidated.",
+        "es": "Nada llega al ERP sin validarse."
+      },
+      "paragraphs": [
+        {
+          "en": "Records are registered in bulk, each RFC is verified against the SAT to confirm it exists, and the records are then loaded into Odoo.",
+          "es": "Los registros se capturan de forma masiva, cada RFC se verifica en el SAT para confirmar que existe y después los registros se cargan en Odoo."
+        }
+      ],
+      "flow": {
+        "direction": "responsive",
+        "label": {
+          "en": "Bulk registration, RFC verification with the SAT, load into Odoo.",
+          "es": "Registro masivo, verificación del RFC en el SAT, carga en Odoo."
+        },
+        "stages": [
+          [
+            {
+              "label": {
+                "en": "BULK REGISTRATION",
+                "es": "REGISTRO MASIVO"
+              }
+            }
+          ],
+          [
+            {
+              "label": {
+                "en": "SAT VERIFICATION",
+                "es": "VERIFICACIÓN SAT"
+              },
+              "sub": {
+                "en": "RFC exists?",
+                "es": "¿existe el RFC?"
+              },
+              "accent": true
+            }
+          ],
+          [
+            {
+              "label": {
+                "en": "LOAD INTO ODOO",
+                "es": "CARGA EN ODOO"
+              }
+            }
+          ]
+        ]
+      }
+    },
+    "architecture": {
+      "title": {
+        "en": "The domain in the middle, integrations at the edges.",
+        "es": "El dominio al centro, las integraciones en los bordes."
+      },
+      "paragraphs": [
+        {
+          "en": "Odoo, SAT validation, webhook notifications and PostgreSQL are adapters around the domain, so each integration can change without touching the rules.",
+          "es": "Odoo, la validación SAT, las notificaciones por webhooks y PostgreSQL son adaptadores alrededor del dominio, así cada integración puede cambiar sin tocar las reglas."
+        }
+      ],
+      "flow": {
+        "direction": "vertical",
+        "label": {
+          "en": "Architecture: frontend, BFF API with JWT, domain services, PostgreSQL, and Odoo, SAT and webhooks as external integrations.",
+          "es": "Arquitectura: frontend, BFF API con JWT, servicios de dominio, PostgreSQL, y Odoo, SAT y webhooks como integraciones externas."
+        },
+        "stages": [
+          [
+            {
+              "label": "FRONTEND"
+            }
+          ],
+          [
+            {
+              "label": "BFF API",
+              "sub": "Quarkus · JWT"
+            }
+          ],
+          [
+            {
+              "label": {
+                "en": "DOMAIN / SERVICES",
+                "es": "DOMINIO / SERVICIOS"
+              },
+              "sub": {
+                "en": "validation · rules",
+                "es": "validación · reglas"
+              },
+              "accent": true
+            }
+          ],
+          [
+            {
+              "label": {
+                "en": "DATABASE",
+                "es": "BASE DE DATOS"
+              },
+              "sub": "PostgreSQL"
+            }
+          ],
+          [
+            {
+              "label": "ODOO",
+              "sub": "XML-RPC"
+            },
+            {
+              "label": "SAT"
+            },
+            {
+              "label": "WEBHOOKS"
+            }
+          ]
+        ]
+      }
+    },
+    "engineeringDecisions": {
+      "title": {
+        "en": "Integrations as adapters, not dependencies.",
+        "es": "Integraciones como adaptadores, no como dependencias."
+      },
+      "pairs": [
+        {
+          "q": {
+            "en": "Why this architecture?",
+            "es": "¿Por qué esta arquitectura?"
+          },
+          "a": {
+            "en": "Hexagonal architecture: each integration is an adapter around the domain, so it can change without touching the rules.",
+            "es": "Arquitectura hexagonal: cada integración es un adaptador alrededor del dominio, así puede cambiar sin tocar las reglas."
+          }
+        },
+        {
+          "q": {
+            "en": "Which responsibilities were separated?",
+            "es": "¿Qué responsabilidades se separaron?"
+          },
+          "a": {
+            "en": "Authentication (JWT), validation and error handling are centralized in the backend; Odoo is reached through XML-RPC only from there.",
+            "es": "Autenticación (JWT), validación y manejo de errores están centralizados en el backend; a Odoo solo se llega desde ahí mediante XML-RPC."
+          }
+        }
+      ]
+    },
+    "stack": {
+      "title": {
+        "en": "Each tool owns one responsibility.",
+        "es": "Cada herramienta tiene una responsabilidad."
+      },
+      "groups": [
+        {
+          "name": {
+            "en": "Backend & security",
+            "es": "Backend y seguridad"
+          },
+          "items": [
+            "Java 21",
+            "Quarkus",
+            "JWT"
+          ]
+        },
+        {
+          "name": {
+            "en": "Data",
+            "es": "Datos"
+          },
+          "items": [
+            "PostgreSQL"
+          ]
+        },
+        {
+          "name": {
+            "en": "Integration",
+            "es": "Integración"
+          },
+          "items": [
+            "Odoo XML-RPC",
+            "SAT",
+            "Webhooks"
+          ]
+        }
+      ]
+    }
+  }
+}

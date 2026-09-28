@@ -1,0 +1,119 @@
+{
+  "title": "El Crisol",
+  "slug": "el-crisol",
+  "order": 3,
+  "role": { "en": "Solo project", "es": "Proyecto individual" },
+  "category": { "en": "KNOWLEDGE SYSTEM", "es": "SISTEMA DE CONOCIMIENTO" },
+  "status": { "en": "BUILDING", "es": "EN CONSTRUCCIÓN" },
+  "subtitle": {
+    "en": "A personal knowledge infrastructure designed around context, retrieval and AI.",
+    "es": "Una infraestructura personal de conocimiento diseñada alrededor de contexto, recuperación e IA."
+  },
+  "summary": {
+    "en": "A concept I'm building: a knowledge system that centralizes information and exposes it to AI tools.",
+    "es": "Un concepto que estoy construyendo: un sistema de conocimiento que centraliza información y la expone a herramientas de IA."
+  },
+  "problem": {
+    "en": "Technical knowledge is usually scattered across notes, books, documentation, conversations and different AI tools.",
+    "es": "El conocimiento técnico suele estar disperso entre notas, libros, documentación, conversaciones y distintas herramientas de IA."
+  },
+  "solution": {
+    "en": "I’m designing a knowledge system that centralizes information and exposes it through retrieval, memory and interoperable AI interfaces.",
+    "es": "Estoy diseñando un sistema de conocimiento que centraliza información y la expone mediante recuperación, memoria e interfaces de IA interoperables."
+  },
+  "stack": ["Python", "RAG", "Vector Search", "MCP", "APIs", "PostgreSQL"],
+  "capabilities": ["backend-apis"],
+  "links": {
+    "cta": { "en": "View concept", "es": "Ver concepto" }
+  },
+  "diagram": {
+    "flow": {
+      "direction": "vertical",
+      "label": {
+        "en": "Books, notes, docs and projects feed a knowledge base, exposed through RAG and MCP to AI tools.",
+        "es": "Libros, notas, documentación y proyectos alimentan una base de conocimiento, expuesta mediante RAG y MCP a herramientas de IA."
+      },
+      "stages": [
+        [
+          { "label": { "en": "BOOKS", "es": "LIBROS" } },
+          { "label": { "en": "NOTES", "es": "NOTAS" } },
+          { "label": "DOCS" },
+          { "label": { "en": "PROJECTS", "es": "PROYECTOS" } }
+        ],
+        [{ "label": { "en": "KNOWLEDGE BASE", "es": "BASE DE CONOCIMIENTO" }, "accent": true }],
+        [{ "label": "RAG" }],
+        [{ "label": "MCP" }],
+        [{ "label": { "en": "AI TOOLS", "es": "HERRAMIENTAS DE IA" } }]
+      ]
+    }
+  },
+  "caseStudy": {
+    "notice": {
+      "en": "This is a concept in progress, not a finished system. Scope and architecture are still being defined.",
+      "es": "Es un concepto en progreso, no un sistema terminado. El alcance y la arquitectura todavía se están definiendo."
+    },
+    "context": {
+      "title": { "en": "A personal system, built in the open.", "es": "Un sistema personal, construido a la vista." },
+      "paragraphs": [
+        {
+          "en": "El Crisol is a solo project: a personal knowledge infrastructure for the way I study and build software with AI tools.",
+          "es": "El Crisol es un proyecto individual: una infraestructura personal de conocimiento para la forma en que estudio y construyo software con herramientas de IA."
+        }
+      ]
+    },
+    "problem": {
+      "title": { "en": "Knowledge lives in too many places.", "es": "El conocimiento vive en demasiados lugares." },
+      "paragraphs": [
+        {
+          "en": "Technical knowledge is usually scattered across notes, books, documentation, conversations and different AI tools. Context ends up split between tools that don't share it.",
+          "es": "El conocimiento técnico suele estar disperso entre notas, libros, documentación, conversaciones y distintas herramientas de IA. El contexto termina dividido entre herramientas que no lo comparten."
+        }
+      ]
+    },
+    "solution": {
+      "title": { "en": "Centralize once, expose everywhere.", "es": "Centralizar una vez, exponer en todas partes." },
+      "paragraphs": [
+        {
+          "en": "I’m designing a knowledge system that centralizes information and exposes it through retrieval, memory and interoperable AI interfaces, using RAG, structured memory and MCP.",
+          "es": "Estoy diseñando un sistema de conocimiento que centraliza información y la expone mediante recuperación, memoria e interfaces de IA interoperables, usando RAG, memoria estructurada y MCP."
+        }
+      ]
+    },
+    "architecture": {
+      "title": { "en": "The planned shape of the system.", "es": "La forma planeada del sistema." },
+      "paragraphs": [
+        {
+          "en": "A first sketch, not a final design: sources feed one knowledge base; retrieval and memory sit on top; MCP exposes it to the AI tools I use.",
+          "es": "Un primer boceto, no un diseño final: las fuentes alimentan una base de conocimiento; encima viven la recuperación y la memoria; MCP la expone a las herramientas de IA que utilizo."
+        }
+      ],
+      "flow": {
+        "direction": "vertical",
+        "label": {
+          "en": "Planned architecture: sources, knowledge base, RAG and memory, MCP, AI tools.",
+          "es": "Arquitectura planeada: fuentes, base de conocimiento, RAG y memoria, MCP, herramientas de IA."
+        },
+        "stages": [
+          [
+            { "label": { "en": "BOOKS", "es": "LIBROS" } },
+            { "label": { "en": "NOTES", "es": "NOTAS" } },
+            { "label": "DOCS" },
+            { "label": { "en": "PROJECTS", "es": "PROYECTOS" } }
+          ],
+          [{ "label": { "en": "KNOWLEDGE BASE", "es": "BASE DE CONOCIMIENTO" }, "sub": "PostgreSQL · vector search", "accent": true }],
+          [{ "label": "RAG", "sub": { "en": "retrieval", "es": "recuperación" } }, { "label": { "en": "MEMORY", "es": "MEMORIA" }, "sub": { "en": "structured", "es": "estructurada" } }],
+          [{ "label": "MCP" }],
+          [{ "label": { "en": "AI TOOLS", "es": "HERRAMIENTAS DE IA" } }]
+        ]
+      }
+    },
+    "stack": {
+      "title": { "en": "Tools I'm evaluating for each responsibility.", "es": "Herramientas que evalúo para cada responsabilidad." },
+      "groups": [
+        { "name": { "en": "Services", "es": "Servicios" }, "items": ["Python", "APIs"] },
+        { "name": { "en": "Retrieval & memory", "es": "Recuperación y memoria" }, "items": ["RAG", "Vector Search", "PostgreSQL"] },
+        { "name": { "en": "Interoperability", "es": "Interoperabilidad" }, "items": ["MCP"] }
+      ]
+    }
+  }
+}

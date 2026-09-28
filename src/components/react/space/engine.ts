@@ -146,6 +146,9 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
     let surfaces: HTMLElement[] = [];
     let pulses: HTMLElement[] = [];
     let drifts: HTMLElement[] = [];
+    // Satellite labels: their width and the room around their orrery, measured
+    // on cache (after renders and resizes), not per frame.
+    const fit = new Map<HTMLElement, { w: number; lw: number; sl: number; sr: number }>();
     let blinks: HTMLElement[] = [];
     let spins: HTMLElement[] = [];
     let probe: HTMLElement | null = null;
@@ -157,6 +160,12 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
       pulses = q("[data-pulse]");
       drifts = q("[data-drift]");
       blinks = q("[data-blink]");
+      fit.clear();
+      for (const el of orbits) {
+        if (el.dataset.depth !== "tag" || !el.parentElement) continue;
+        const box = el.parentElement.getBoundingClientRect();
+        fit.set(el, { w: box.width, lw: el.offsetWidth, sl: box.left - 8, sr: window.innerWidth - box.right - 8 });
+      }
       spins = q("[data-spin]");
       probe = root.querySelector<HTMLElement>("[data-probe]");
       plen = 0;
@@ -268,7 +277,23 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
         const ay = ry * Math.sin(th);
         el.style.left = `${50 + ax * Math.cos(f) - ay * Math.sin(f)}%`;
         el.style.top = `${50 + ax * Math.sin(f) + ay * Math.cos(f)}%`;
-        if (d.depth) {
+        if (d.depth === "tag") {
+          // A satellite's label never goes behind the planet: it stays on top,
+          // opens toward the outside of the orbit, and is marked (for a gentler
+          // look) while its satellite is behind. Written only on change.
+          // Outward by default; inward when that would run off the screen.
+          const xr = ax * Math.cos(f) - ay * Math.sin(f);
+          let side = xr < 0 ? "l" : "r";
+          const m = fit.get(el);
+          if (m) {
+            const px = ((50 + xr) / 100) * m.w;
+            if (side === "r" && px + 12 + m.lw > m.w + m.sr) side = "l";
+            else if (side === "l" && px - 12 - m.lw < -m.sl) side = "r";
+          }
+          const behind = Math.sin(th) > 0 ? "0" : "1";
+          if (d.side !== side) d.side = side;
+          if (d.behind !== behind) d.behind = behind;
+        } else if (d.depth) {
           // Behind the planet: under it and dimmed.
           const front = Math.sin(th) > 0;
           el.style.zIndex = front ? "4" : "1";
@@ -311,6 +336,7 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
     setupStars();
     let raf = 0;
     const onResize = () => {
+      dirty.current = true; // re-measure label room
       // Mobile browsers resize while the address bar slides; don't reshuffle the sky for that.
       if (window.innerWidth === W && Math.abs(window.innerHeight - H) < 160) return;
       setupStars();

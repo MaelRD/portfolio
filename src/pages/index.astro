@@ -1,8 +1,11 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import SpaceApp from "../components/react/space/SpaceApp";
+
+const projects = (await getCollection("projects")).map((e) => e.data).sort((a, b) => a.order - b.order);
 ---
 
-<Layout space>
-  <SpaceApp client:load />
+<Layout>
+  <SpaceApp client:load projects={projects} />
 </Layout>

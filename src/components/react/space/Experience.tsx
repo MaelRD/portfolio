@@ -20,25 +20,24 @@ export default function Experience({ lang }: { lang: Lang }) {
               </span>
               <ol className="log">
                 {o.roles.map((r) => (
-                  <li key={r.title} className="spotlight panel entry" data-current={r.current ? "" : undefined}>
+                  <li key={r.title.en} className="spotlight panel entry" data-current={r.current ? "" : undefined}>
                     <span className="entry__dot" aria-hidden="true" />
                     <p className="entry__when">
                       <span>{r.year[lang]}</span>
-                      <span>{r.dates[lang]}</span>
+                      <span>{r.period[lang]}</span>
                       {r.current && <span className="badge-now">{EXPERIENCE_TEXT.current[lang]}</span>}
                     </p>
                     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                      <h4>{r.title}</h4>
-                      <span className="entry__sub">{r.sub[lang]}</span>
+                      <h4>{r.title[lang]}</h4>
                     </div>
-                    <p className="entry__summary">{r.summary[lang]}</p>
+                    <p className="entry__summary">{r.context[lang]}</p>
                     <ul className="bullets">
-                      {r.bullets.map((b) => (
+                      {r.contributions.map((b) => (
                         <li key={b.en}>{b[lang]}</li>
                       ))}
                     </ul>
                     <ul className="chips" style={{ gap: 6 }}>
-                      {r.tech.map((t) => (
+                      {r.stack.map((t) => (
                         <li key={t} className="chip chip--sm">
                           {t}
                         </li>
