@@ -151,10 +151,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .znav[data-scrolled] .znav__side { opacity: 0; translate: 0 -10px; pointer-events: none; visibility: hidden; transition: opacity 0.25s var(--ease), translate 0.25s var(--ease), visibility 0s 0.25s; }
 
 .zpill--side { gap: 8px; padding: 9px 16px; font-size: 14px; font-weight: 500; white-space: nowrap; }
-.zstatus { margin: 0; }
-.zstatus .dot-live { width: 9px; height: 9px; background: var(--green); box-shadow: 0 0 8px var(--green); }
-.zemail { cursor: pointer; font: inherit; font-size: 14px; font-weight: 500; color: var(--glass-ink) !important; transition: border-color 0.2s; }
-@media (hover: hover) and (pointer: fine) { .zemail:hover { border-color: rgba(255, 255, 255, 0.34); } }
 
 .znav__menu { gap: 4px; padding: 5px; }
 .zlogo {
@@ -242,8 +238,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .zsheet__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .zsheet .zlang { box-shadow: none; }
   .zsheet__cv { font-size: 14px; font-weight: 600; color: var(--glass-ink) !important; text-decoration: underline; text-underline-offset: 3px; }
-  .zsheet .zemail { justify-content: center; box-shadow: none; }
-  .zsheet .zemail::before { display: none; }
 }
 @media (max-width: 760px) {
   .znav { padding: 0 16px; }
@@ -1055,8 +1049,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .zsheet__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .zsheet .zlang { box-shadow: none; }
   .zsheet__cv { font-size: 14px; font-weight: 600; color: var(--glass-ink) !important; text-decoration: underline; text-underline-offset: 3px; }
-  .zsheet .zemail { justify-content: center; box-shadow: none; }
-  .zsheet .zemail::before { display: none; }
 }
 @media (min-width: 761px) and (max-width: 880px) {
   .znav { padding: 0 16px; }

@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { Check, Copy, Menu, X } from "lucide-react";
-import { CONTACT, CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
-import { HERO, NAV, UI_TEXT, type Lang } from "../../../data/space";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
+import { NAV, UI_TEXT, type Lang } from "../../../data/space";
 
-// Floating pill navigation (after zenwood.studio): availability on the left,
-// the site menu in the middle, language and a copy-to-clipboard email on the
-// right. Once the page scrolls, the side pills step away and only the menu
+// Floating pill navigation (after zenwood.studio): the site menu in the
+// middle, language on the right. Once the page scrolls, the side pills step away and only the menu
 // stays. On narrow screens the menu pill carries a button that opens the rest.
 
 const LINKS = NAV.filter((n) => n.id !== "contact");
@@ -19,24 +18,6 @@ function useScrolled(threshold = 60) {
     return () => window.removeEventListener("scroll", on);
   }, [threshold]);
   return scrolled;
-}
-
-function useCopy(text: string) {
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<number>();
-  useEffect(() => () => window.clearTimeout(timer.current), []);
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // No clipboard access (insecure context, denied): fall back to the mail app.
-      window.location.href = `mailto:${text}`;
-    }
-  };
-  return [copied, copy] as const;
 }
 
 function LangSwitch({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
@@ -64,7 +45,6 @@ export default function SpaceNav({
   base?: string;
 }) {
   const scrolled = useScrolled();
-  const [copied, copy] = useCopy(CONTACT.email);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -74,24 +54,10 @@ export default function SpaceNav({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const emailButton = (
-    <button type="button" className="zpill zpill--side zemail" onClick={copy} aria-label={`${UI_TEXT.copyEmail[lang]}: ${CONTACT.email}`}>
-      {copied ? <Check size={16} strokeWidth={2.2} aria-hidden /> : <Copy size={16} strokeWidth={2} aria-hidden />}
-      <span>{copied ? UI_TEXT.copied[lang] : CONTACT.email}</span>
-      <span className="sr-only" aria-live="polite">
-        {copied ? UI_TEXT.copied[lang] : ""}
-      </span>
-    </button>
-  );
-
   return (
     <header id="site-nav" className="znav" data-scrolled={scrolled ? "" : undefined} data-open={open ? "" : undefined}>
-      <div className="znav__side znav__side--left">
-        <p className="zpill zpill--side zstatus">
-          <span className="dot-live" data-blink aria-hidden="true" />
-          {HERO.status[lang].toLowerCase()}
-        </p>
-      </div>
+      {/* Empty left column keeps the menu centred in the three-column grid. */}
+      <div className="znav__side znav__side--left" />
 
       <nav className="zpill znav__menu" aria-label={UI_TEXT.nav[lang]}>
         <a href={base || "#hero"} className="zlogo" aria-label={UI_TEXT.home[lang]}>
@@ -128,7 +94,6 @@ export default function SpaceNav({
 
       <div className="znav__side znav__side--right">
         <LangSwitch lang={lang} setLang={setLang} />
-        {emailButton}
       </div>
 
       {/* Narrow screens: everything the side pills hold, in one sheet. */}
@@ -148,7 +113,6 @@ export default function SpaceNav({
             {UI_TEXT.cvLabel[lang]}
           </a>
         </div>
-        {emailButton}
       </div>
     </header>
   );
