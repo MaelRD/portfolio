@@ -13,7 +13,6 @@ export default function IntentCard({ intent, lang }: { intent: (typeof INTENTS)[
         {intent.title[lang]}
       </h3>
       <p className="intent__text">{intent.text[lang]}</p>
-      <p className="intent__support">{intent.support[lang]}</p>
       <a href={intent.href} className="intent__cta stretch">
         {intent.cta[lang]} <span aria-hidden="true">→</span>
       </a>

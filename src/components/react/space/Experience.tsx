@@ -30,7 +30,11 @@ export default function Experience({ lang }: { lang: Lang }) {
                     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                       <h4>{r.title[lang]}</h4>
                     </div>
-                    <p className="entry__summary">{r.context[lang]}</p>
+                    {r.context.map((c) => (
+                      <p key={c.en} className="entry__summary">
+                        {c[lang]}
+                      </p>
+                    ))}
                     <ul className="bullets">
                       {r.contributions.map((b) => (
                         <li key={b.en}>{b[lang]}</li>

@@ -3,55 +3,100 @@ import { CONTACT, type Lang } from "@/data/content";
 import { STEPS_FORM as F, type Option } from "@/data/start";
 import { track } from "@/lib/analytics";
 import FormSummary from "./FormSummary";
-import ProjectFormStep from "./ProjectFormStep";
+import Question from "./ProjectFormStep";
 
-// Five steps, one question each: what, how today, the problem, who, review.
+// Five steps — the problem, how it works today, tools and team, project
+// context, contact — then a summary to confirm before sending.
 // Submitted to Netlify Forms (the static twin of this form lives in
 // start-a-project.astro so Netlify registers its fields at build time).
 // Answers are kept in sessionStorage so a reload doesn't lose a long answer;
-// they are cleared once sent.
+// they are cleared once sent, and never on an error.
 
 const FORM_NAME = "start-project"; // must match the static form in start-a-project.astro
 const TOTAL = 5;
-const DRAFT_KEY = "mael.start-project";
+const REVIEW = TOTAL; // the summary comes after the last step
+const DRAFT_KEY = "mael.start-project.v2";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 interface Answers {
   type: string;
   current: string;
-  problem: string;
+  pain: string;
+  tools: string[];
+  toolsOther: string;
+  team: string;
+  urgency: string;
+  budget: string;
   name: string;
   company: string;
   email: string;
-  budget: string;
+  phone: string;
 }
 type Errors = Partial<Record<keyof Answers, string>>;
 
-const EMPTY: Answers = { type: "", current: "", problem: "", name: "", company: "", email: "", budget: "" };
-const pad = (n: number) => String(n).padStart(2, "0");
+const EMPTY: Answers = { type: "", current: "", pain: "", tools: [], toolsOther: "", team: "", urgency: "", budget: "", name: "", company: "", email: "", phone: "" };
 const labelOf = (options: Option[], key: string, lang: Lang) => options.find((o) => o.key === key)?.label[lang] ?? "";
+const namesTool = (tools: string[]) => tools.some((t) => F.tools.named.includes(t));
 
 function validate(step: number, a: Answers, lang: Lang): Errors {
   const e: Errors = {};
-  if (step === 0 && !a.type) e.type = F.errors.choose[lang];
-  if (step === 1 && !a.current) e.current = F.errors.choose[lang];
-  if (step === 2 && a.problem.trim().length < 20) e.problem = F.errors.problem[lang];
+  if (step === 0 && !a.type) e.type = F.errors.type[lang];
+  if (step === 1) {
+    if (a.current.trim().length < 15) e.current = F.errors.current[lang];
+    if (a.pain.trim().length < 10) e.pain = F.errors.pain[lang];
+  }
+  if (step === 2) {
+    if (!a.tools.length) e.tools = F.errors.tools[lang];
+    if (!a.team) e.team = F.errors.team[lang];
+  }
   if (step === 3) {
+    if (!a.urgency) e.urgency = F.errors.urgency[lang];
+    if (!a.budget) e.budget = F.errors.budget[lang];
+  }
+  if (step === 4) {
     if (!a.name.trim()) e.name = F.errors.name[lang];
     if (!EMAIL_RE.test(a.email.trim())) e.email = F.errors.email[lang];
+    if (a.phone.replace(/\D/g, "").length < 10) e.phone = F.errors.phone[lang];
   }
   return e;
 }
 
-function Choices({ name, options, value, onChange, lang, invalid }: { name: keyof Answers; options: Option[]; value: string; onChange: (v: string) => void; lang: Lang; invalid: boolean }) {
+/** Selectable cards: one answer (radios) or several (checkboxes). */
+function Choices({
+  name,
+  options,
+  value,
+  onChange,
+  lang,
+  error,
+  multiple = false,
+}: {
+  name: keyof Answers;
+  options: Option[];
+  value: string | string[];
+  onChange: (v: string) => void;
+  lang: Lang;
+  error?: string;
+  multiple?: boolean;
+}) {
+  const on = (k: string) => (Array.isArray(value) ? value.includes(k) : value === k);
   return (
-    <div className="options">
+    <div className="options" data-multiple={multiple ? "" : undefined}>
       {options.map((o) => (
         <label key={o.key} className="option">
-          <input type="radio" name={name} value={o.key} checked={value === o.key} onChange={() => onChange(o.key)} aria-invalid={invalid || undefined} />
+          <input type={multiple ? "checkbox" : "radio"} name={name} value={o.key} checked={on(o.key)} onChange={() => onChange(o.key)} aria-invalid={error ? true : undefined} />
           <span>{o.label[lang]}</span>
         </label>
       ))}
+    </div>
+  );
+}
+
+/** A note that appears under a choice once it is picked; announced politely. */
+function Note({ show, children }: { show: boolean; children: string }) {
+  return (
+    <div aria-live="polite">
+      {show && <p className="fnote">{children}</p>}
     </div>
   );
 }
@@ -99,6 +144,7 @@ export default function StartProjectForm({ lang, onSent }: { lang: Lang; onSent:
     setA((prev) => ({ ...prev, [k]: v }));
     if (errors[k]) setErrors((prev) => ({ ...prev, [k]: undefined }));
   };
+  const toggleTool = (k: string) => set("tools", a.tools.includes(k) ? a.tools.filter((t) => t !== k) : [...a.tools, k]);
 
   const go = (next: number) => {
     moved.current = true;
@@ -107,21 +153,34 @@ export default function StartProjectForm({ lang, onSent }: { lang: Lang; onSent:
     setStep(next);
   };
 
+  const toolsText = (l: Lang) => {
+    const names = a.tools.map((t) => labelOf(F.tools.options, t, l)).join(", ");
+    return namesTool(a.tools) && a.toolsOther.trim() ? `${names} (${a.toolsOther.trim()})` : names;
+  };
+
   const send = async () => {
     setStatus("sending");
     const body = new URLSearchParams({
       "form-name": FORM_NAME,
       "bot-field": bot,
       project_type: labelOf(F.type.options, a.type, "en"),
-      current_process: labelOf(F.current.options, a.current, "en"),
-      problem: a.problem.trim(),
+      current_process: a.current.trim(),
+      pain_point: a.pain.trim(),
+      tools: a.tools.map((t) => labelOf(F.tools.options, t, "en")).join(", "),
+      tools_other: namesTool(a.tools) ? a.toolsOther.trim() : "",
+      team_size: labelOf(F.team.options, a.team, "en"),
+      urgency: labelOf(F.urgency.options, a.urgency, "en"),
+      budget: labelOf(F.budget.options, a.budget, "en"),
       name: a.name.trim(),
       company: a.company.trim(),
       email: a.email.trim(),
-      budget: labelOf(F.about.budgets, a.budget, "en"),
+      phone: a.phone.trim(),
       language: lang,
     });
     try {
+      // Netlify Forms only exists on Netlify; the dev server answers any POST
+      // with 200, which would fake a successful send.
+      if (import.meta.env.DEV) throw new Error("Netlify Forms is not available in development");
       const res = await fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() });
       if (!res.ok) throw new Error(String(res.status));
       track("Send Project", { type: a.type });
@@ -139,7 +198,7 @@ export default function StartProjectForm({ lang, onSent }: { lang: Lang; onSent:
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (status === "sending") return;
-    if (step === TOTAL - 1) {
+    if (step === REVIEW) {
       void send();
       return;
     }
@@ -153,24 +212,39 @@ export default function StartProjectForm({ lang, onSent }: { lang: Lang; onSent:
     go(step + 1);
   };
 
-  const fieldProps = (k: keyof Answers) => ({
+  /** Props for a text field answering question `id` (its heading labels it). */
+  const textProps = (k: keyof Answers, q: string, help = true) => ({
     id: `f-${k}`,
     name: k,
-    value: a[k],
+    value: a[k] as string,
+    "aria-labelledby": `${q}-title`,
+    "aria-invalid": errors[k] ? true : undefined,
+    "aria-describedby": [help && `${q}-help`, errors[k] && `${q}-error`].filter(Boolean).join(" ") || undefined,
+  });
+
+  /** Props for a labelled input in the contact step. */
+  const inputProps = (k: keyof Answers) => ({
+    id: `f-${k}`,
+    name: k,
+    value: a[k] as string,
     "aria-invalid": errors[k] ? true : undefined,
     "aria-describedby": errors[k] ? `f-${k}-error` : undefined,
+    onChange: (e: { target: { value: string } }) => set(k, e.target.value as Answers[typeof k]),
   });
+  const fieldError = (k: keyof Answers) =>
+    errors[k] && (
+      <p id={`f-${k}-error`} className="field-error" role="alert">
+        {errors[k]}
+      </p>
+    );
+
+  const reviewing = step === REVIEW;
 
   return (
     <form ref={formRef} className="pform" onSubmit={onSubmit} noValidate>
       <div className="pform__progress">
-        <p className="pform__count">
-          <span className="sr-only">
-            {F.nav.step[lang]} {step + 1} {F.nav.of[lang]} {TOTAL}:{" "}
-          </span>
-          <span aria-hidden="true">
-            {pad(step + 1)} / {pad(TOTAL)}
-          </span>
+        <p className="pform__count" aria-live="polite">
+          {reviewing ? F.nav.reviewStep[lang] : `${F.nav.step[lang]} ${step + 1} ${F.nav.of[lang]} ${TOTAL}`}
         </p>
         <ol className="pform__bar" aria-hidden="true">
           {Array.from({ length: TOTAL }, (_, i) => (
@@ -189,86 +263,99 @@ export default function StartProjectForm({ lang, onSent }: { lang: Lang; onSent:
 
       <div className="pform__step" key={step}>
         {step === 0 && (
-          <ProjectFormStep id="s-type" title={F.type.title[lang]} help={F.type.help[lang]} error={errors.type} headingRef={headingRef}>
-            <Choices name="type" options={F.type.options} value={a.type} onChange={(v) => set("type", v)} lang={lang} invalid={!!errors.type} />
-          </ProjectFormStep>
+          <Question id="q-type" group title={F.type.title[lang]} help={F.type.help[lang]} error={errors.type} headingRef={headingRef}>
+            <Choices name="type" options={F.type.options} value={a.type} onChange={(v) => set("type", v)} lang={lang} error={errors.type} />
+            <Note show={a.type === "not-sure"}>{F.type.notSure[lang]}</Note>
+          </Question>
         )}
 
         {step === 1 && (
-          <ProjectFormStep id="s-current" title={F.current.title[lang]} help={F.current.help[lang]} error={errors.current} headingRef={headingRef}>
-            <Choices name="current" options={F.current.options} value={a.current} onChange={(v) => set("current", v)} lang={lang} invalid={!!errors.current} />
-          </ProjectFormStep>
+          <>
+            <Question id="q-current" title={F.current.title[lang]} help={F.current.help[lang]} error={errors.current} headingRef={headingRef}>
+              <textarea {...textProps("current", "q-current")} rows={6} placeholder={F.current.placeholder[lang]} onChange={(e) => set("current", e.target.value)} />
+              <div className="fhints">
+                <p>{F.current.hintsLabel[lang]}</p>
+                <ul>
+                  {F.current.hints.map((h) => (
+                    <li key={h.en}>{h[lang]}</li>
+                  ))}
+                </ul>
+              </div>
+            </Question>
+            <Question id="q-pain" title={F.pain.title[lang]} help={F.pain.help[lang]} error={errors.pain}>
+              <textarea {...textProps("pain", "q-pain")} rows={4} placeholder={F.pain.placeholder[lang]} onChange={(e) => set("pain", e.target.value)} />
+            </Question>
+          </>
         )}
 
         {step === 2 && (
-          <ProjectFormStep id="s-problem" title={F.problem.title[lang]} help={F.problem.help[lang]} headingRef={headingRef}>
-            <div className="field">
-              <label htmlFor="f-problem" className="field__label">
-                {F.problem.label[lang]}
-              </label>
-              <textarea {...fieldProps("problem")} rows={7} placeholder={F.problem.placeholder[lang]} onChange={(e) => set("problem", e.target.value)} />
-              {errors.problem && (
-                <p id="f-problem-error" className="field-error" role="alert">
-                  {errors.problem}
-                </p>
+          <>
+            <Question id="q-tools" group title={F.tools.title[lang]} help={F.tools.help[lang]} error={errors.tools} headingRef={headingRef}>
+              <Choices name="tools" multiple options={F.tools.options} value={a.tools} onChange={toggleTool} lang={lang} error={errors.tools} />
+              {namesTool(a.tools) && (
+                <div className="field">
+                  <label htmlFor="f-toolsOther" className="field__label">
+                    {F.tools.which[lang]} <span className="field__opt">— {F.contact.optional[lang]}</span>
+                  </label>
+                  <input {...inputProps("toolsOther")} type="text" placeholder={F.tools.whichPlaceholder[lang]} />
+                </div>
               )}
-            </div>
-          </ProjectFormStep>
+            </Question>
+            <Question id="q-team" group title={F.team.title[lang]} help={F.team.help[lang]} error={errors.team}>
+              <Choices name="team" options={F.team.options} value={a.team} onChange={(v) => set("team", v)} lang={lang} error={errors.team} />
+            </Question>
+          </>
         )}
 
         {step === 3 && (
-          <ProjectFormStep id="s-about" title={F.about.title[lang]} headingRef={headingRef}>
-            <div className="fields">
-              <div className="field">
-                <label htmlFor="f-name" className="field__label">
-                  {F.about.name[lang]}
-                </label>
-                <input {...fieldProps("name")} type="text" autoComplete="name" onChange={(e) => set("name", e.target.value)} />
-                {errors.name && (
-                  <p id="f-name-error" className="field-error" role="alert">
-                    {errors.name}
-                  </p>
-                )}
-              </div>
-              <div className="field">
-                <label htmlFor="f-company" className="field__label">
-                  {F.about.company[lang]} <span className="field__opt">— {F.about.optional[lang]}</span>
-                </label>
-                <input {...fieldProps("company")} type="text" autoComplete="organization" onChange={(e) => set("company", e.target.value)} />
-              </div>
-              <div className="field">
-                <label htmlFor="f-email" className="field__label">
-                  {F.about.email[lang]}
-                </label>
-                <input {...fieldProps("email")} type="email" autoComplete="email" inputMode="email" onChange={(e) => set("email", e.target.value)} />
-                {errors.email && (
-                  <p id="f-email-error" className="field-error" role="alert">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-              <div className="field">
-                <label htmlFor="f-budget" className="field__label">
-                  {F.about.budget[lang]} <span className="field__opt">— {F.about.optional[lang]}</span>
-                </label>
-                <select {...fieldProps("budget")} aria-describedby="f-budget-help" onChange={(e) => set("budget", e.target.value)}>
-                  <option value="">—</option>
-                  {F.about.budgets.map((b) => (
-                    <option key={b.key} value={b.key}>
-                      {b.label[lang]}
-                    </option>
-                  ))}
-                </select>
-                <p id="f-budget-help" className="field__help">
-                  {F.about.budgetHelp[lang]}
-                </p>
-              </div>
-            </div>
-          </ProjectFormStep>
+          <>
+            <Question id="q-urgency" group title={F.urgency.title[lang]} help={F.urgency.help[lang]} error={errors.urgency} headingRef={headingRef}>
+              <Choices name="urgency" options={F.urgency.options} value={a.urgency} onChange={(v) => set("urgency", v)} lang={lang} error={errors.urgency} />
+            </Question>
+            <Question id="q-budget" group title={F.budget.title[lang]} help={F.budget.help[lang]} error={errors.budget}>
+              <Choices name="budget" options={F.budget.options} value={a.budget} onChange={(v) => set("budget", v)} lang={lang} error={errors.budget} />
+              <Note show={a.budget === "guidance"}>{F.budget.guidance[lang]}</Note>
+            </Question>
+          </>
         )}
 
         {step === 4 && (
-          <div className="fstep">
+          <Question id="q-contact" title={F.contact.title[lang]} help={F.contact.help[lang]} headingRef={headingRef}>
+            <div className="fields">
+              <div className="field">
+                <label htmlFor="f-name" className="field__label">
+                  {F.contact.name[lang]}
+                </label>
+                <input {...inputProps("name")} type="text" autoComplete="name" placeholder={F.contact.namePlaceholder[lang]} />
+                {fieldError("name")}
+              </div>
+              <div className="field">
+                <label htmlFor="f-company" className="field__label">
+                  {F.contact.company[lang]} <span className="field__opt">— {F.contact.optional[lang]}</span>
+                </label>
+                <input {...inputProps("company")} type="text" autoComplete="organization" placeholder={F.contact.companyPlaceholder[lang]} />
+              </div>
+              <div className="field">
+                <label htmlFor="f-email" className="field__label">
+                  {F.contact.email[lang]}
+                </label>
+                <input {...inputProps("email")} type="email" autoComplete="email" inputMode="email" autoCapitalize="off" spellCheck={false} placeholder={F.contact.emailPlaceholder[lang]} />
+                {fieldError("email")}
+              </div>
+              <div className="field">
+                <label htmlFor="f-phone" className="field__label">
+                  {F.contact.phone[lang]}
+                </label>
+                <input {...inputProps("phone")} type="tel" autoComplete="tel" inputMode="tel" placeholder={F.contact.phonePlaceholder[lang]} />
+                {fieldError("phone")}
+              </div>
+            </div>
+            <p className="field__help">{F.contact.privacy[lang]}</p>
+          </Question>
+        )}
+
+        {reviewing && (
+          <div className="fstep freview">
             <h2 ref={headingRef} tabIndex={-1} className="fstep__title">
               {F.review.title[lang]}
             </h2>
@@ -277,12 +364,13 @@ export default function StartProjectForm({ lang, onSent }: { lang: Lang; onSent:
               lang={lang}
               rows={[
                 { key: "type", value: labelOf(F.type.options, a.type, lang) },
-                { key: "current", value: labelOf(F.current.options, a.current, lang) },
-                { key: "problem", value: a.problem.trim() },
-                { key: "name", value: a.name.trim() },
-                { key: "company", value: a.company.trim() },
-                { key: "email", value: a.email.trim() },
-                { key: "budget", value: labelOf(F.about.budgets, a.budget, lang) },
+                { key: "pain", value: a.pain.trim() },
+                { key: "current", value: a.current.trim() },
+                { key: "tools", value: toolsText(lang) },
+                { key: "team", value: labelOf(F.team.options, a.team, lang) },
+                { key: "urgency", value: labelOf(F.urgency.options, a.urgency, lang) },
+                { key: "budget", value: labelOf(F.budget.options, a.budget, lang) },
+                { key: "contact", value: [a.name, a.company, a.email, a.phone].map((v) => v.trim()).filter(Boolean).join(" · ") },
               ]}
             />
             {status === "error" && (
@@ -295,25 +383,25 @@ export default function StartProjectForm({ lang, onSent }: { lang: Lang; onSent:
       </div>
 
       <div className="pform__nav">
-        {step === TOTAL - 1 ? (
+        {reviewing ? (
           <>
-            <button type="submit" className="btn btn--solid" disabled={status === "sending"} aria-busy={status === "sending" || undefined}>
-              {status === "sending" ? F.review.sending[lang] : F.review.send[lang]} <span aria-hidden="true">→</span>
-            </button>
             <button type="button" className="btn btn--line" onClick={() => go(0)}>
               {F.review.edit[lang]}
+            </button>
+            <button type="submit" className="btn btn--solid" disabled={status === "sending"} aria-busy={status === "sending" || undefined}>
+              {status === "sending" ? F.review.sending[lang] : F.review.send[lang]} <span aria-hidden="true">→</span>
             </button>
           </>
         ) : (
           <>
-            <button type="submit" className="btn btn--solid">
-              {F.nav.next[lang]} <span aria-hidden="true">→</span>
-            </button>
             {step > 0 && (
-              <button type="button" className="btn btn--ghost" onClick={() => go(step - 1)}>
+              <button type="button" className="btn btn--line" onClick={() => go(step - 1)}>
                 <span aria-hidden="true">←</span> {F.nav.back[lang]}
               </button>
             )}
+            <button type="submit" className="btn btn--solid">
+              {step === TOTAL - 1 ? F.nav.review[lang] : F.nav.next[lang]} <span aria-hidden="true">→</span>
+            </button>
           </>
         )}
       </div>

@@ -950,7 +950,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .field__label { font-size: 14px; font-weight: 600; }
 .field__opt { font-weight: 400; color: var(--dim); }
 .field__help { color: var(--dim); font-size: 13.5px; line-height: 1.5; }
-.space input:not([type="radio"]), .space textarea, .space select {
+.space input:not([type="radio"]):not([type="checkbox"]), .space textarea, .space select {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--line);
@@ -965,8 +965,8 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 }
 .space textarea { min-height: 170px; resize: vertical; }
 .space input::placeholder, .space textarea::placeholder { color: rgba(164, 159, 201, 0.7); }
-.space input:not([type="radio"]):focus-visible, .space textarea:focus-visible, .space select:focus-visible { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(125, 227, 255, 0.22); }
-.space [aria-invalid="true"]:not([type="radio"]) { border-color: rgba(253, 164, 175, 0.7); }
+.space input:not([type="radio"]):not([type="checkbox"]):focus-visible, .space textarea:focus-visible, .space select:focus-visible { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(125, 227, 255, 0.22); }
+.space [aria-invalid="true"]:not([type="radio"]):not([type="checkbox"]) { border-color: rgba(253, 164, 175, 0.7); }
 .field-error { color: #fda4af; font-size: 14px; line-height: 1.5; }
 .field-error a { color: #fda4af !important; text-decoration: underline; }
 .summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 8px 0 0; border-top: 1px solid var(--line-soft); }
@@ -1121,3 +1121,203 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .sat--label[data-side="l"] { transform: translate(calc(-100% - var(--dot)), -50%); }
 .sat__tag { transition: opacity 0.25s ease; }
 .sat--label[data-behind="1"] .sat__tag { opacity: 0.72; }
+
+
+/* ═════════════════════════════════════════════════════════════════════════
+   Portfolio brief, 2026-10: new sections and the mobile-first pass. Same
+   tokens and components as above; this block adds the new parts and tunes
+   spacing, type and touch targets across viewports (320px → ultrawide).
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── Fluid rhythm ────────────────────────────────────────────────────────── */
+.sec { padding: clamp(64px, 9vw, 104px) clamp(16px, 4vw, 24px); }
+.sec--tight { padding-top: clamp(40px, 6vw, 72px); padding-bottom: clamp(40px, 6vw, 72px); }
+.stack-40 { gap: clamp(28px, 4vw, 40px); }
+.stack-48 { gap: clamp(32px, 5vw, 48px); }
+.split { gap: clamp(32px, 5vw, 48px); }
+.h2 { font-size: clamp(32px, 5.4vw, 68px); line-height: 1.02; }
+.lede { font-size: clamp(16px, 1.5vw, 17px); max-width: 62ch; }
+.launch { padding: clamp(104px, 14vw, 120px) clamp(16px, 4vw, 24px) clamp(48px, 7vw, 72px); }
+.hero__grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); }
+.hero__copy { gap: clamp(18px, 3vw, 28px); }
+.name { font-size: clamp(52px, 9vw, 124px); }
+.hero__headline { font-size: clamp(20px, 2.2vw, 26px); }
+.hero__role span { font-size: clamp(11px, 1.2vw, 14px); }
+.hero__role::before { width: clamp(24px, 4vw, 48px); flex-shrink: 0; }
+.hero__status { display: flex; align-items: center; gap: 10px; color: var(--soft); font-size: 14.5px; line-height: 1.45; }
+.mission__title { font-size: clamp(28px, 4vw, 48px); }
+.phase__n { font-size: clamp(48px, 7vw, 72px); }
+.phase__name { font-size: clamp(28px, 3.6vw, 40px); }
+.phase__desc { font-size: clamp(16px, 1.6vw, 18px); max-width: 62ch; }
+.contact__title { font-size: clamp(36px, 6.4vw, 84px); }
+.constellation h3 { font-size: clamp(26px, 3.4vw, 36px); }
+
+/* Ultrawide: the content column stays readable; only the sky widens. */
+@media (min-width: 1800px) { .wrap { max-width: 1280px; } .hero__grid { max-width: 1320px; } }
+
+/* ── Phones ──────────────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  /* Primary actions fill the width and stack: easy to hit with a thumb. */
+  .hero__ctas { flex-direction: column; align-items: stretch; }
+  .hero__ctas .btn { justify-content: center; }
+  .hero__visual .orrery { max-width: 360px; }
+  .hero__grid { gap: 24px; }
+  .corner-loop { opacity: 0.55; }
+  .mission__story, .mission__arch { padding: 20px; }
+  .mission__arch { gap: 16px; }
+  .mission .btn { align-self: stretch !important; justify-content: center; }
+  .intent, .solution { padding: 20px; }
+  .phase { padding: 20px; gap: 20px; }
+  .tags { grid-template-columns: minmax(0, 1fr); }
+  .featured__cta { align-self: stretch; justify-content: center; }
+  .pull-quote { padding-left: 16px; }
+  .trajectory { min-height: 200px; margin-bottom: 8px; }
+}
+/* Very small phones (320–374px): trim decoration before trimming content. */
+@media (max-width: 374px) {
+  .sat--label { display: none; }
+  .corner-loop { display: none; }
+  .hero__visual .orrery { max-width: 300px; }
+  .worlds { gap: 8px; }
+  .world { padding: 12px; gap: 12px; }
+  .world .planet { width: 40px !important; height: 40px !important; }
+  .globe { max-width: 280px; }
+  .shell__label { font-size: 8px; letter-spacing: 0.04em; }
+}
+
+/* ── Touch: every control at least ~44px tall, no hover dependence ──────── */
+@media (pointer: coarse) {
+  .zlang button { min-width: 44px; min-height: 40px; }
+  .zmenu { width: 44px !important; height: 44px !important; }
+  .zlogo { width: 44px; height: 44px; }
+  .zcta { padding: 12px 18px; }
+  .waypoint { padding: 12px; }
+  .waypoint__dot { width: 20px; height: 20px; }
+  .pick { min-height: 48px; }
+  .btn { min-height: 48px; }
+  .option { min-height: 52px; }
+  .back-link { min-height: 44px; }
+  .sky-footer__links a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+/* ── Navigation sheet ────────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .zsheet ul a { min-height: 44px; display: flex !important; align-items: center; }
+  .zsheet { max-height: calc(100svh - 96px); overflow-y: auto; }
+}
+
+/* ── Problems ────────────────────────────────────────────────────────────── */
+.problem .solution__title { font-size: clamp(19px, 2vw, 22px); text-wrap: balance; }
+.problems__close { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; padding: clamp(20px, 3vw, 28px); border: 1px dashed var(--line); border-radius: 16px; }
+.problems__close p { flex: 1 1 340px; color: var(--soft); font-size: clamp(16px, 1.6vw, 18px); line-height: 1.55; max-width: 62ch; text-wrap: pretty; }
+@media (max-width: 560px) { .problems__close .btn { flex: 1 1 100%; justify-content: center; } }
+
+/* ── Featured case study ─────────────────────────────────────────────────── */
+.featured__problem, .featured__principle { display: flex; flex-direction: column; gap: 10px; max-width: 70ch; }
+.featured__problem p, .featured__principle p { color: var(--soft); font-size: clamp(16px, 1.6vw, 18px); line-height: 1.6; text-wrap: pretty; }
+.featured__problem .ba__label, .featured__principle .ba__label { font-weight: 400; }
+.ba__intro { color: var(--soft); font-size: 15px; line-height: 1.5; }
+.ba__side--approach { border: 1px solid var(--line); background: rgba(10, 5, 32, 0.6); }
+.ba__side--approach .ba__label { color: var(--violet); }
+.ba__side--approach .ba__list li::before { border-radius: 2px; background: var(--violet); }
+/* Three states fit side by side only on wide screens; below that they stack. */
+@media (min-width: 820px) and (max-width: 1179px) { .ba[data-steps="3"] { grid-template-columns: minmax(0, 1fr); } .ba[data-steps="3"] .ba__link { --draw: scaleY(0); justify-self: center; width: 1px; height: 44px; margin: 0; transform-origin: top; } .ba[data-steps="3"] .ba__link::after { left: 50%; right: auto; top: auto; bottom: -1px; translate: -50% 0; border: 5px solid transparent; border-top: 6px solid rgba(125, 227, 255, 0.8); border-bottom: 0; } }
+@media (min-width: 1180px) { .ba[data-steps="3"] { grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr) 56px minmax(0, 1fr); } }
+.ba[data-state="armed"] .ba__side--approach { opacity: 0.5; }
+.ba[data-state="on"] .ba__side--approach { transition: opacity 0.4s var(--ease) 0.35s; }
+
+/* ── Mid-page call to action ─────────────────────────────────────────────── */
+.mid-cta { display: grid; gap: 20px 48px; padding: clamp(24px, 4vw, 48px); grid-template-columns: minmax(0, 1fr); background: radial-gradient(120% 140% at 0% 0%, rgba(124, 58, 237, 0.18), transparent 60%), var(--panel); }
+@media (min-width: 900px) { .mid-cta { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; } .mid-cta .hero__ctas { grid-column: 2; } }
+.mid-cta__title { font-weight: 700; font-size: clamp(26px, 3.6vw, 44px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }
+.mid-cta__body { display: flex; flex-direction: column; gap: 10px; }
+.mid-cta__body p { color: var(--soft); font-size: 16px; line-height: 1.6; text-wrap: pretty; }
+.mid-cta__body p:first-child { color: var(--ink); }
+
+/* ── System ──────────────────────────────────────────────────────────────── */
+.system__closing { display: flex; flex-direction: column; gap: 4px; margin-top: clamp(32px, 5vw, 56px) !important; padding-left: 20px; border-left: 2px solid var(--amber); font-family: var(--display); font-weight: 600; font-size: clamp(19px, 2vw, 24px); line-height: 1.35; }
+.system__closing span:first-child { color: var(--soft); }
+.readout { max-width: 500px; }
+@media (max-width: 560px) { .readout { padding: 16px; } .readout__title strong { font-size: 22px; } }
+
+/* ── Experience ──────────────────────────────────────────────────────────── */
+.entry__summary { max-width: 70ch; }
+@media (max-width: 560px) { .org__head h3 { font-size: 24px; } .entry h4 { font-size: 18px; } }
+
+/* ── About ───────────────────────────────────────────────────────────────── */
+.about__lead { font-family: var(--display); font-weight: 600; font-size: clamp(19px, 2vw, 23px); padding-left: 16px; border-left: 2px solid var(--cyan); }
+.about__langs { display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 1px dashed var(--line-soft); }
+.about__langs h3 { font-family: var(--mono); font-weight: 400; }
+.about__langs dl { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.about__langs dl > div { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 15px; line-height: 1.5; }
+.about__langs dt { font-weight: 600; min-width: 72px; }
+.about__langs dd { margin: 0; color: var(--soft); }
+.about__note { margin-top: 0 !important; }
+@media (max-width: 560px) { .levels li { padding: 18px; } .levels strong { font-size: 19px; } }
+
+/* ── Contact: two paths ──────────────────────────────────────────────────── */
+.paths { list-style: none; margin: 8px 0 0; padding: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 14px; text-align: left; }
+.path { display: flex; flex-direction: column; gap: 12px; padding: clamp(20px, 3vw, 32px); }
+.path h3 { font-weight: 700; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.15; }
+.path p { color: var(--soft); font-size: 16px; line-height: 1.6; text-wrap: pretty; }
+.path--project { border-color: rgba(125, 227, 255, 0.4); }
+.path__actions { margin-top: auto; padding-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; }
+.path__actions .btn { padding: 12px 18px; }
+.path .btn--signal { padding: 14px 24px; }
+@media (max-width: 560px) { .path__actions { flex-direction: column; align-items: stretch; } .path__actions .btn { justify-content: center; } }
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+/* The footer now carries name, availability and links; it sits in the flow at
+   the bottom of the horizon instead of floating over a fixed height. */
+.contact__horizon { height: auto; min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; }
+@media (max-width: 560px) { .contact__horizon { min-height: 300px; } }
+.sky-footer { position: relative; align-items: flex-end; gap: 16px 32px; padding: 24px clamp(16px, 4vw, 32px); padding-bottom: max(24px, env(safe-area-inset-bottom)); letter-spacing: 0.04em; }
+.sky-footer > div { display: flex; flex-direction: column; gap: 6px; }
+.sky-footer__who strong { font-family: var(--display); font-size: 15px; letter-spacing: 0; color: var(--ink); }
+.sky-footer__who > span:not(.sky-footer__status) { font-size: 12px; }
+.sky-footer__status { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; color: var(--soft); }
+.sky-footer__end { align-items: flex-end; }
+.sky-footer__links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.sky-footer__links a { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink) !important; text-decoration: underline; text-decoration-color: rgba(167, 139, 250, 0.45); text-underline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) { .sky-footer__links a:hover { text-decoration-color: var(--cyan); } }
+.sky-footer small { font-size: 11px; letter-spacing: 0.08em; }
+@media (max-width: 640px) { .sky-footer__end { align-items: flex-start; } }
+
+/* ── Start a project ─────────────────────────────────────────────────────── */
+.start { padding-top: clamp(112px, 14vw, 136px); }
+.start__guide { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px dashed var(--line); border-radius: 14px; color: var(--soft); font-size: 15.5px; line-height: 1.55; }
+.start__guide-title { font-weight: 700; font-size: 19px; line-height: 1.25; color: var(--ink); }
+.start__guide ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; }
+.start__guide li::marker { font-family: var(--mono); color: var(--cyan); }
+@media (max-width: 999px) { .start__grid { gap: 28px; } }
+
+.pform__count { white-space: nowrap; }
+/* Progress stays in view while answering on a phone (below the floating nav). */
+@media (max-width: 999px) {
+  .pform__progress { position: sticky; top: calc(max(20px, env(safe-area-inset-top)) + 58px); z-index: 3; margin: -8px calc(-1 * clamp(22px, 3.4vw, 40px)) 0; padding: 12px clamp(22px, 3.4vw, 40px); background: rgba(10, 5, 32, 0.96); border-bottom: 1px solid var(--line-soft); }
+}
+.pform__step { display: flex; flex-direction: column; gap: 36px; }
+.fstep__title--sub { font-size: clamp(22px, 2.4vw, 28px); }
+.fhints { display: flex; flex-direction: column; gap: 6px; color: var(--dim); font-size: 14px; line-height: 1.5; }
+.fhints ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.fhints li { padding: 3px 10px; border: 1px solid var(--line-soft); border-radius: 999px; }
+.fnote { padding: 12px 14px; border-left: 2px solid var(--cyan); background: rgba(125, 227, 255, 0.06); border-radius: 0 10px 10px 0; color: var(--soft); font-size: 15px; line-height: 1.55; }
+.options[data-multiple] .option input { border-radius: 4px; }
+.options[data-multiple] .option input:checked { background: var(--cyan); box-shadow: inset 0 0 0 3px var(--bg); }
+.option { line-height: 1.35; }
+.space textarea { min-height: 130px; }
+.freview .summary { margin-top: 4px; }
+@media (max-width: 560px) {
+  .options { grid-template-columns: minmax(0, 1fr); }
+  /* Back and continue side by side; continue takes the thumb's side and most of the width. */
+  .pform__nav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+  .pform__nav .btn { justify-content: center; }
+  .pform__nav .btn:only-child { grid-column: 1 / -1; }
+  .start__panel { padding: 20px; }
+  .pform__progress { margin-left: -20px !important; margin-right: -20px !important; padding-left: 20px !important; padding-right: 20px !important; }
+}
+@media (pointer: coarse) { .about__card .pc-contact-btn { min-height: 44px; padding-left: 16px; padding-right: 16px; } }
+/* Over the bright horizon the footer needs its own dark ground to keep contrast. */
+.contact__horizon .sky-footer { background: linear-gradient(180deg, rgba(3, 0, 20, 0) 0%, rgba(3, 0, 20, 0.72) 38%, rgba(3, 0, 20, 0.88) 100%); padding-top: 56px; }
+.sky-footer__who > span:not(.sky-footer__status), .sky-footer small { color: var(--soft); }
+.start__guide ol { list-style: decimal; }

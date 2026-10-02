@@ -21,7 +21,7 @@ function Success({ lang }: { lang: Lang }) {
         <a href="/" className="btn btn--line">
           <span aria-hidden="true">←</span> {S.back[lang]}
         </a>
-        <a href="/#work" className="btn btn--solid">
+        <a href="/#work" className="btn btn--solid" data-track="View Project" data-track-label="start-success">
           {S.projects[lang]} <span aria-hidden="true">→</span>
         </a>
       </div>
@@ -45,7 +45,18 @@ export default function StartProjectApp() {
               {START.title[lang]}
             </h1>
             <p className="lede">{START.intro[lang]}</p>
-            <p className="start__support">{START.support[lang]}</p>
+            {!sent && (
+              <div className="start__guide">
+                <h2 className="start__guide-title">{START.guide.title[lang]}</h2>
+                <p>{START.guide.lead[lang]}</p>
+                <ol>
+                  {START.guide.items.map((it) => (
+                    <li key={it.en}>{it[lang]}</li>
+                  ))}
+                </ol>
+                <p>{START.guide.close[lang]}</p>
+              </div>
+            )}
           </header>
 
           <div className="panel start__panel">{sent ? <Success lang={lang} /> : <StartProjectForm lang={lang} onSent={() => setSent(true)} />}</div>

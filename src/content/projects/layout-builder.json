@@ -15,38 +15,28 @@
     "es": "EN DESARROLLO"
   },
   "subtitle": {
-    "en": "A backend layer that connects web applications with enterprise services.",
-    "es": "Una capa backend que conecta aplicaciones web con servicios empresariales."
+    "en": "An integration layer between applications and business systems.",
+    "es": "Capa de integración entre aplicaciones y sistemas empresariales."
   },
   "summary": {
     "en": "A backend-for-frontend that keeps authentication, business operations and integrations behind one controlled API layer.",
     "es": "Un Backend for Frontend que mantiene autenticación, operaciones de negocio e integraciones detrás de una capa API controlada."
   },
   "problem": {
-    "en": "Frontend applications needed a clean way to communicate with the ERP and external services without coupling every integration directly to the interface.",
-    "es": "Las aplicaciones frontend necesitaban una forma limpia de comunicarse con el ERP y servicios externos sin acoplar cada integración directamente a la interfaz."
+    "en": "A Backend for Frontend designed to decouple web applications from an ERP and other external services.",
+    "es": "Backend for Frontend diseñado para desacoplar aplicaciones web de un ERP y otros servicios externos."
   },
   "solution": {
-    "en": "I built a backend-for-frontend architecture that centralizes authentication, business operations and integrations behind a controlled API layer.",
-    "es": "Construí una arquitectura Backend for Frontend que centraliza autenticación, operaciones de negocio e integraciones detrás de una capa API controlada."
+    "en": "It centralizes authentication, data transformation, integrations and communication through APIs and webhooks.",
+    "es": "Centraliza autenticación, transformación de información, integraciones y comunicación mediante APIs y webhooks."
   },
-  "stack": [
-    "Java 21",
-    "Quarkus",
-    "JWT",
-    "PostgreSQL",
-    "Odoo",
-    "Webhooks"
-  ],
+  "stack": ["Java 21", "Quarkus", "JWT", "REST", "Webhooks"],
   "capabilities": [
     "backend-apis",
     "system-integrations"
   ],
   "links": {
-    "cta": {
-      "en": "Explore architecture",
-      "es": "Explorar arquitectura"
-    }
+    "cta": { "en": "View project", "es": "Ver proyecto" }
   },
   "diagram": {
     "flow": {

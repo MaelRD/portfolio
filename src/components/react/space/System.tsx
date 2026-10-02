@@ -106,6 +106,13 @@ export default function System({ lang }: { lang: Lang }) {
           </div>
         </div>
       </div>
+      <div className="wrap">
+        <p className="system__closing">
+          {SYSTEM_TEXT.closing.map((c) => (
+            <span key={c.en}>{c[lang]}</span>
+          ))}
+        </p>
+      </div>
     </section>
   );
 }

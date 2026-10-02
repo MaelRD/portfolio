@@ -29,7 +29,7 @@ function toMission(p: Project, i: number) {
     n: String(i + 1).padStart(2, "0"),
     name: p.title,
     kind: p.category,
-    status: p.status,
+    status: p.statusPrefix ? bi(`${tx(p.statusPrefix, "es")} · ${p.status.es}`, `${tx(p.statusPrefix, "en")} · ${p.status.en}`) : p.status,
     tagline: p.subtitle,
     problem: p.problem,
     solution: p.solution,
@@ -86,16 +86,9 @@ export default function Work({ projects, lang }: { projects: Project[]; lang: La
               <span className="label">{T.status[lang]}</span>
               <span className="mission__status">{cur.status[lang]}</span>
             </div>
+            {/* Two paragraphs: what the project is up against, then what it does. */}
             <div className="mission__block">
-              <span className="label label--11" style={{ color: "var(--pink)" }}>
-                {T.problem[lang]}
-              </span>
               <p>{cur.problem[lang]}</p>
-            </div>
-            <div className="mission__block">
-              <span className="label label--11" style={{ color: "var(--green)" }}>
-                {T.solution[lang]}
-              </span>
               <p>{cur.solution[lang]}</p>
             </div>
             <ul className="chips">

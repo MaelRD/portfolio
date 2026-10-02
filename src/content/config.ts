@@ -57,6 +57,8 @@ const projects = defineCollection({
     category: bi,
     status: bi,
     year: z.string().optional(),
+    /** Shown before the status on the project card ("2026 · In development"). */
+    statusPrefix: text.optional(),
     role: bi.optional(),
     featured: z.boolean().default(false),
     stack: z.array(z.string()),

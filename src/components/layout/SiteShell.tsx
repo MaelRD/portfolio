@@ -1,9 +1,10 @@
 import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 import type { Lang } from "@/data/content";
-import { FOOTER, UI_TEXT } from "@/data/space";
+import { UI_TEXT } from "@/data/space";
 import { listenForTrackedClicks } from "@/lib/analytics";
 import { useSpaceEngine } from "../react/space/engine";
 import SpaceNav from "../react/space/SpaceNav";
+import Footer from "../react/space/Footer";
 import "../../styles/space.css";
 
 /**
@@ -72,13 +73,7 @@ export default function SiteShell({
         {children}
       </main>
 
-      <footer className="sky-footer sky-footer--page">
-        <span>{FOOTER.copyright[lang].toUpperCase()}</span>
-        <span>
-          <span className="dot-live" data-blink aria-hidden="true" />
-          {FOOTER.status[lang].toUpperCase()}
-        </span>
-      </footer>
+      <Footer lang={lang} page />
     </div>
   );
 }

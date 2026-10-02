@@ -1,5 +1,5 @@
 import type { Lang } from "@/data/content";
-import { SOLUTION_TEXT, type SOLUTIONS } from "@/data/space";
+import type { SOLUTIONS } from "@/data/space";
 import DataFlow from "../diagrams/DataFlow";
 
 type Solution = (typeof SOLUTIONS)[number];
@@ -21,15 +21,21 @@ export default function SolutionCard({ s, lang }: { s: Solution; lang: Lang }) {
       <h3 className="solution__title" id={titleId}>
         {s.title[lang]}
       </h3>
-      <p className="solution__desc">{s.desc[lang]}</p>
-      <div className="solution__problems">
-        <span className="label label--11">{SOLUTION_TEXT.problems[lang]}</span>
-        <ul>
-          {s.problems.map((p) => (
-            <li key={p.en}>{p[lang]}</li>
-          ))}
-        </ul>
-      </div>
+      {s.desc.map((d) => (
+        <p key={d.en} className="solution__desc">
+          {d[lang]}
+        </p>
+      ))}
+      {s.problems && (
+        <div className="solution__problems">
+          {s.listLabel && <span className="label label--11">{s.listLabel[lang]}</span>}
+          <ul>
+            {s.problems.map((p) => (
+              <li key={p.en}>{p[lang]}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </article>
   );
 }

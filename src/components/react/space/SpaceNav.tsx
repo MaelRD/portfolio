@@ -47,11 +47,20 @@ export default function SpaceNav({
   const scrolled = useScrolled();
   const [open, setOpen] = useState(false);
 
+  // The sheet never traps the page: Escape, a tap outside it or following a
+  // link closes it.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onDown = (e: PointerEvent) => {
+      if (!document.getElementById("site-nav")?.contains(e.target as Node)) setOpen(false);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+    };
   }, [open]);
 
   return (

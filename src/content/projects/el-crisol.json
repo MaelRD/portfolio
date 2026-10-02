@@ -2,26 +2,27 @@
   "title": "El Crisol",
   "slug": "el-crisol",
   "order": 3,
-  "role": { "en": "Solo project", "es": "Proyecto individual" },
+  "statusPrefix": { "en": "Personal project", "es": "Proyecto personal" },
+  "role": { "en": "Personal project", "es": "Proyecto personal" },
   "category": { "en": "KNOWLEDGE SYSTEM", "es": "SISTEMA DE CONOCIMIENTO" },
   "status": { "en": "BUILDING", "es": "EN CONSTRUCCIÓN" },
   "subtitle": {
-    "en": "A personal knowledge infrastructure designed around context, retrieval and AI.",
-    "es": "Una infraestructura personal de conocimiento diseñada alrededor de contexto, recuperación e IA."
+    "en": "A personal knowledge infrastructure for AI tools.",
+    "es": "Infraestructura personal de conocimiento para herramientas de IA."
   },
   "summary": {
     "en": "A concept I'm building: a knowledge system that centralizes information and exposes it to AI tools.",
     "es": "Un concepto que estoy construyendo: un sistema de conocimiento que centraliza información y la expone a herramientas de IA."
   },
   "problem": {
-    "en": "Technical knowledge is usually scattered across notes, books, documentation, conversations and different AI tools.",
-    "es": "El conocimiento técnico suele estar disperso entre notas, libros, documentación, conversaciones y distintas herramientas de IA."
+    "en": "Exploring an architecture that centralizes knowledge and lets different AI tools query it through RAG, vector search and MCP.",
+    "es": "Exploración de una arquitectura para centralizar conocimiento y permitir que diferentes herramientas de inteligencia artificial consulten información mediante RAG, búsqueda vectorial y MCP."
   },
   "solution": {
-    "en": "I’m designing a knowledge system that centralizes information and exposes it through retrieval, memory and interoperable AI interfaces.",
-    "es": "Estoy diseñando un sistema de conocimiento que centraliza información y la expone mediante recuperación, memoria e interfaces de IA interoperables."
+    "en": "The project also works as a lab for studying architecture, information retrieval and systems integration.",
+    "es": "El proyecto funciona también como laboratorio para estudiar arquitectura, recuperación de información e integración entre sistemas."
   },
-  "stack": ["Python", "RAG", "Vector Search", "MCP", "APIs", "PostgreSQL"],
+  "stack": ["RAG", "Vector Search", "MCP", "APIs", "IA"],
   "capabilities": ["backend-apis"],
   "links": {
     "cta": { "en": "View concept", "es": "Ver concepto" }

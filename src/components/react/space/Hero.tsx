@@ -1,5 +1,4 @@
 import { Fragment, type CSSProperties } from "react";
-import { CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
 import { HERO, type Lang } from "../../../data/space";
 import Name from "./Name";
 import CornerLoop from "./Loop";
@@ -17,21 +16,22 @@ export default function Hero({ lang }: { lang: Lang }) {
           </p>
           <p className="hero__headline">{HERO.statement[lang]}</p>
           <p className="hero__desc">{HERO.description[lang]}</p>
-          <div className="hero__ctas">
-            <a href="#work" className="btn btn--solid">
-              {HERO.ctaWork[lang]} <span aria-hidden="true">→</span>
-            </a>
-            <a href={START_PATH} className="btn btn--line" data-track="Start Project" data-track-label="hero">
-              {HERO.ctaStart[lang]} <span aria-hidden="true">↗</span>
-            </a>
-            <a href={CV_PATH} download={CV_FILENAME} className="btn btn--ghost" data-track="Download Resume" data-track-label="hero">
-              {HERO.ctaCv[lang]} <span aria-hidden="true">↓</span>
-            </a>
-          </div>
           <p className="hero__stack">
             <span className="sr-only">{HERO.stackLabel[lang]}: </span>
             {HERO.stack.join(" · ")}
           </p>
+          <p className="hero__status">
+            <span className="dot-live" data-blink aria-hidden="true" />
+            {HERO.status[lang]}
+          </p>
+          <div className="hero__ctas">
+            <a href="#work" className="btn btn--solid">
+              {HERO.ctaWork[lang]} <span aria-hidden="true">→</span>
+            </a>
+            <a href="#contact" className="btn btn--line" data-track="Contact" data-track-label="hero">
+              {HERO.ctaTalk[lang]} <span aria-hidden="true">↓</span>
+            </a>
+          </div>
         </div>
 
         <div className="hero__visual">

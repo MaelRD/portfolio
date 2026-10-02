@@ -4,6 +4,7 @@
   "order": 1,
   "featured": true,
   "year": "2026",
+  "statusPrefix": "2026",
   "role": {
     "en": "Full Stack development",
     "es": "Desarrollo Full Stack"
@@ -25,31 +26,21 @@
     "es": "Una mirada más profunda a cómo un proceso manual de costeo se convirtió en un sistema Full Stack integrado con un ERP."
   },
   "problem": {
-    "en": "The quoting process required manually combining data from several areas while the calculations stayed in a spreadsheet.",
-    "es": "El proceso de cotización requería reunir a mano información de varias áreas mientras los cálculos permanecían en una hoja de cálculo."
+    "en": "A critical quoting process depended on a spreadsheet full of formulas, manual entry and business rules that were hard to maintain.",
+    "es": "Un proceso crítico de cotización dependía de una hoja de cálculo con fórmulas, captura manual y reglas de negocio difíciles de mantener."
   },
   "solution": {
-    "en": "I designed a Full Stack application that centralizes quote lines, applies business rules and communicates directly with the ERP.",
-    "es": "Diseñé una aplicación Full Stack que centraliza las líneas de cotización, aplica reglas de negocio y se comunica directamente con el ERP."
+    "en": "GBS Builder turns that process into a web application connected to the ERP, centralizing information and moving the core rules into the system.",
+    "es": "GBS Builder transforma ese proceso en una aplicación web conectada al ERP, centralizando información y llevando las reglas principales al sistema."
   },
-  "stack": [
-    "Angular",
-    "Java 21",
-    "Quarkus",
-    "PostgreSQL",
-    "REST API",
-    "Odoo"
-  ],
+  "stack": ["Angular", "Java 21", "Quarkus", "PostgreSQL", "Odoo"],
   "capabilities": [
     "custom-business-software",
     "backend-apis",
     "system-integrations"
   ],
   "links": {
-    "cta": {
-      "en": "Explore case study",
-      "es": "Explorar caso de estudio"
-    }
+    "cta": { "en": "View project", "es": "Ver proyecto" }
   },
   "diagram": {
     "flow": {

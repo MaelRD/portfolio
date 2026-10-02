@@ -1,14 +1,9 @@
 import { CONTACT, CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
-import { CONTACT_TEXT as T, FOOTER, HEADS, UI_TEXT, type Lang } from "../../../data/space";
+import { CONTACT_TEXT as T, HEADS, UI_TEXT, type Lang } from "../../../data/space";
+import Footer from "./Footer";
 import { Planet, SURFACES } from "./ui";
 
 export default function Contact({ lang }: { lang: Lang }) {
-  const channels = [
-    { k: T.email[lang], v: CONTACT.email, href: `mailto:${CONTACT.email}` },
-    { k: T.github[lang], v: "github.com/MaelRD", href: CONTACT.github, external: true, track: "GitHub" },
-    { k: T.cv[lang], v: "cv.pdf", href: CV_PATH, download: true, track: "Download Resume" },
-  ];
-
   return (
     <section id="contact" className="signal" aria-labelledby="contact-title">
       <div className="contact__inner">
@@ -16,39 +11,40 @@ export default function Contact({ lang }: { lang: Lang }) {
           {HEADS.contact.title[lang]}
         </h2>
         <p className="contact__lede">{HEADS.contact.intro![lang]}</p>
-        <p className="contact__support">{T.support[lang]}</p>
-        <a href={START_PATH} className="btn btn--solid btn--signal" data-track="Start Project" data-track-label="open-channel">
-          {T.ctaStart[lang]} <span aria-hidden="true">→</span>
-        </a>
-        <ul className="channels">
-          {channels.map((c) => (
-            <li key={c.href}>
-              <a
-                className="spotlight channel"
-                href={c.href}
-                {...(c.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                {...(c.download ? { download: CV_FILENAME } : {})}
-                {...(c.track ? { "data-track": c.track, "data-track-label": "open-channel" } : {})}
-              >
-                <span className="label">
-                  {c.k} <span aria-hidden="true">↗</span>
-                </span>
-                <span>{c.v}</span>
-                {c.external && <span className="sr-only">{UI_TEXT.newTab[lang]}</span>}
+
+        <ul className="paths">
+          <li className="spotlight panel path">
+            <h3 id="path-talent">{T.talent.title[lang]}</h3>
+            <p>{T.talent.text[lang]}</p>
+            <div className="path__actions">
+              <a href={CV_PATH} download={CV_FILENAME} className="btn btn--solid" data-track="Download Resume" data-track-label="contact">
+                {T.talent.cv[lang]} <span aria-hidden="true">↓</span>
               </a>
-            </li>
-          ))}
+              <a href={CONTACT.github} target="_blank" rel="noopener noreferrer" className="btn btn--line" data-track="GitHub" data-track-label="contact">
+                {T.talent.github[lang]} <span aria-hidden="true">↗</span>
+                <span className="sr-only">{UI_TEXT.newTab[lang]}</span>
+              </a>
+              <a href={`mailto:${CONTACT.email}`} className="btn btn--line">
+                {T.talent.email[lang]}
+              </a>
+            </div>
+          </li>
+          <li className="spotlight panel path path--project">
+            <h3 id="path-project">{T.project.title[lang]}</h3>
+            {T.project.text.map((p) => (
+              <p key={p.en}>{p[lang]}</p>
+            ))}
+            <div className="path__actions">
+              <a href={START_PATH} className="btn btn--solid btn--signal" data-track="Start Project" data-track-label="open-channel">
+                {T.project.cta[lang]} <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </li>
         </ul>
       </div>
       <div className="contact__horizon">
         <Planet className="contact__world" surface={SURFACES.horizon} speed={5} />
-        <footer className="sky-footer">
-          <span>{FOOTER.copyright[lang].toUpperCase()}</span>
-          <span>
-            <span className="dot-live" data-blink aria-hidden="true" />
-            {FOOTER.status[lang].toUpperCase()}
-          </span>
-        </footer>
+        <Footer lang={lang} />
       </div>
     </section>
   );

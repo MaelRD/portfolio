@@ -12,12 +12,28 @@ export default function About({ lang }: { lang: Lang }) {
             <h2 className="h2" id="about-title">
               {HEADS.about.title[lang]}
             </h2>
-            <p className="about__lead">{ABOUT.lead[lang]}</p>
             {ABOUT.paragraphs.map((p) => (
               <p key={p.en} className="body">
                 {p[lang]}
               </p>
             ))}
+            <p className="about__lead">{ABOUT.question[lang]}</p>
+            {ABOUT.closing.map((p) => (
+              <p key={p.en} className="body">
+                {p[lang]}
+              </p>
+            ))}
+            <div className="about__langs">
+              <h3 className="label label--11">{ABOUT.languagesLabel[lang]}</h3>
+              <dl>
+                {ABOUT.languages.map((l) => (
+                  <div key={l.k.en}>
+                    <dt>{l.k[lang]}</dt>
+                    <dd>{l.v[lang]}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
 
           <div className="about__card">

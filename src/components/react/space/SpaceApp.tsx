@@ -17,9 +17,11 @@ import Contact from "./Contact";
 import IntentSelector from "../../intent/IntentSelector";
 import SolutionsGrid from "../../solutions/SolutionsGrid";
 import FeaturedCaseStudy from "../../case-study/FeaturedCaseStudy";
+import MidCta from "../../case-study/MidCta";
+import ProblemsGrid from "../../problems/ProblemsGrid";
 import "../../../styles/space.css";
 
-const SECTION_IDS = ["hero", "intent", "work", "solutions", "process", "system", "case-study", "stack", "experience", "about", "contact"];
+const SECTION_IDS = ["hero", "intent", "problems", "work", "solutions", "process", "case-study", "system", "stack", "experience", "about", "contact"];
 
 /**
  * Spotlight cards (after React Bits' SpotlightCard): any `.spotlight` element
@@ -102,11 +104,13 @@ export default function SpaceApp({ projects }: { projects: Project[] }) {
       <main id="main" tabIndex={-1}>
         <Hero lang={lang} />
         <IntentSelector lang={lang} />
+        <ProblemsGrid lang={lang} />
         <Work projects={projects} lang={lang} />
         <SolutionsGrid lang={lang} />
         <Process lang={lang} pathRef={pathRef} />
-        <System lang={lang} />
         <FeaturedCaseStudy lang={lang} />
+        <MidCta lang={lang} />
+        <System lang={lang} />
         <Stack lang={lang} />
         <Experience lang={lang} />
         <About lang={lang} />
