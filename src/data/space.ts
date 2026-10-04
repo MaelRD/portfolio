@@ -254,7 +254,6 @@ export const PROJECT_TEXT = {
 export const PLANETS: Record<string, { planet: string; glow: string }> = {
   "gbs-builder": { planet: "radial-gradient(circle at 32% 30%,#ffe7c7,#ff9f5a 38%,#9a3412 66%,#2a0a04 88%)", glow: "rgba(255,160,90,.45)" },
   "layout-builder": { planet: "radial-gradient(circle at 32% 30%,#d5fbff,#22d3ee 36%,#0e7490 64%,#021a24 88%)", glow: "rgba(34,211,238,.45)" },
-  "el-crisol": { planet: "radial-gradient(circle at 32% 30%,#fce7f3,#e879f9 34%,#7e22ce 62%,#1e0536 88%)", glow: "rgba(232,121,249,.45)" },
   "pos-tinta-negra": { planet: "radial-gradient(circle at 32% 30%,#f1f5f9,#94a3b8 36%,#334155 64%,#05080d 88%)", glow: "rgba(148,163,184,.45)" },
   "nova-dental": { planet: "radial-gradient(circle at 32% 30%,#e6fffa,#5eead4 36%,#0f766e 64%,#02201d 88%)", glow: "rgba(94,234,212,.45)" },
 };
