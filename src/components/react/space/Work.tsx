@@ -24,9 +24,8 @@ function toGraph(p: Project): ArchGraph {
   return { cols, edges };
 }
 
-function toMission(p: Project, i: number) {
+function toMission(p: Project) {
   return {
-    n: String(i + 1).padStart(2, "0"),
     name: p.title,
     kind: p.category,
     status: p.statusPrefix ? bi(`${tx(p.statusPrefix, "es")} · ${p.status.es}`, `${tx(p.statusPrefix, "en")} · ${p.status.en}`) : p.status,
@@ -68,7 +67,7 @@ export default function Work({ projects, lang }: { projects: Project[]; lang: La
                 <Planet size={54} bg={p.planet} glow={`0 0 24px ${p.glow}`} surface={SURFACES.small} speed={10} />
                 <span className="world__text">
                   <span className="label label--11">
-                    {p.n} · {p.kind[lang]}
+                    {p.kind[lang]}
                   </span>
                   <span className="world__name">{p.name}</span>
                 </span>
