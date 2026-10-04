@@ -1,7 +1,7 @@
 {
   "title": "POS Tinta Negra",
   "slug": "pos-tinta-negra",
-  "order": 4,
+  "order": 2,
   "statusPrefix": "Demo",
   "role": { "en": "Full Stack development", "es": "Desarrollo Full Stack" },
   "category": { "en": "POINT OF SALE", "es": "PUNTO DE VENTA" },
