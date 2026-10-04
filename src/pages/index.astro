@@ -8,4 +8,21 @@ const projects = (await getCollection("projects")).map((e) => e.data).sort((a, b
 
 <Layout>
   <SpaceApp client:load projects={projects} />
+
+  <!--
+    Netlify Forms registers a form from static HTML at deploy time. The
+    contact form on the page (ContactForm.tsx) posts to this same name with
+    these same fields.
+  -->
+  <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="contact" />
+    <input name="bot-field" />
+    <input name="name" />
+    <input name="company" />
+    <input name="email" type="email" />
+    <input name="whatsapp" type="tel" />
+    <input name="need" />
+    <textarea name="message"></textarea>
+    <input name="language" />
+  </form>
 </Layout>

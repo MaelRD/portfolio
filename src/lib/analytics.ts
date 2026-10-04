@@ -10,6 +10,7 @@ export type TrackEvent =
   | "Download Resume"
   | "GitHub"
   | "Send Project"
+  | "Send Message"
   | "Language Change";
 
 type Props = Record<string, string>;

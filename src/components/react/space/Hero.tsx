@@ -1,12 +1,55 @@
-import { Fragment, type CSSProperties } from "react";
+import { Fragment, useEffect, useRef, type CSSProperties } from "react";
 import { HERO, type Lang } from "../../../data/space";
 import Name from "./Name";
 import CornerLoop from "./Loop";
 import { Planet, SURFACES } from "./ui";
+import BackgroundBeams from "../../aceternity/BackgroundBeams";
+import { CTAButton } from "../../kit";
+import { HERO_CTA } from "../../../data/v2";
+
+/**
+ * The orrery leans a few degrees toward the pointer, as if lit from where the
+ * visitor is looking. Mouse and trackpad only; still under reduced motion.
+ */
+function useTilt() {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    let ok = false;
+    try {
+      ok = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches;
+    } catch {
+      /* matchMedia unavailable */
+    }
+    if (!el || !ok) return;
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+    const apply = () => {
+      raf = 0;
+      el.style.setProperty("--tx", x.toFixed(3));
+      el.style.setProperty("--ty", y.toFixed(3));
+    };
+    const onMove = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      x = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2)));
+      y = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2)));
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+  return ref;
+}
 
 export default function Hero({ lang }: { lang: Lang }) {
+  const tiltRef = useTilt();
   return (
     <section id="hero" className="launch" aria-labelledby="hero-title">
+      <BackgroundBeams />
       <CornerLoop lang={lang} />
       <div className="hero__grid">
         <div className="hero__copy">
@@ -25,17 +68,18 @@ export default function Hero({ lang }: { lang: Lang }) {
             {HERO.status[lang]}
           </p>
           <div className="hero__ctas">
-            <a href="#work" className="btn btn--solid">
-              {HERO.ctaWork[lang]} <span aria-hidden="true">→</span>
-            </a>
-            <a href="#contact" className="btn btn--line" data-track="Contact" data-track-label="hero">
-              {HERO.ctaTalk[lang]} <span aria-hidden="true">↓</span>
-            </a>
+            <CTAButton href="#contact" moving data-track="Contact" data-track-label="hero">
+              {HERO_CTA.talk[lang]}
+            </CTAButton>
+            <CTAButton href="#work" variant="line" arrow="↓">
+              {HERO_CTA.work[lang]}
+            </CTAButton>
           </div>
         </div>
 
         <div className="hero__visual">
           <figure
+            ref={tiltRef}
             className="orrery"
             role="img"
             aria-label={HERO.orbitLabel[lang]}
@@ -84,23 +128,10 @@ export default function Hero({ lang }: { lang: Lang }) {
                   <div className="sat" style={{ ["--k" as string]: i } as CSSProperties} aria-hidden="true" data-depth="1" {...orbit}>
                     <span className="sat__dot" style={{ width: o.size, height: o.size, ["--c" as string]: o.color } as CSSProperties} />
                   </div>
-                  {/* Its label: always on top, opening toward the outside of the orbit. */}
-                  <div
-                    className="sat sat--label"
-                    style={{ ["--k" as string]: i, ["--dot" as string]: `${o.size / 2 + 6}px` } as CSSProperties}
-                    aria-hidden="true"
-                    data-depth="tag"
-                    {...orbit}
-                  >
-                    <span className="sat__tag" style={{ borderColor: `color-mix(in srgb, ${o.color} 40%, transparent)` }}>
-                      {o.label[lang]}
-                    </span>
-                  </div>
                 </Fragment>
               );
             })}
           </figure>
-
         </div>
       </div>
     </section>

@@ -7,21 +7,28 @@ import type { Project } from "@/lib/projects";
 import { useSpaceEngine } from "./engine";
 import SpaceNav from "./SpaceNav";
 import Hero from "./Hero";
-import Work from "./Work";
 import Process from "./Process";
-import System from "./System";
-import About from "./About";
-import Stack from "./Stack";
-import Experience from "./Experience";
-import Contact from "./Contact";
-import IntentSelector from "../../intent/IntentSelector";
-import SolutionsGrid from "../../solutions/SolutionsGrid";
-import FeaturedCaseStudy from "../../case-study/FeaturedCaseStudy";
-import MidCta from "../../case-study/MidCta";
-import ProblemsGrid from "../../problems/ProblemsGrid";
+import Footer from "./Footer";
+import { Planet, SURFACES } from "./ui";
+import FloatingDock from "../../sections/FloatingDock";
+import QuickStats from "../../sections/QuickStats";
+import AudienceSelector from "../../sections/AudienceSelector";
+import FeaturedProjects from "../../sections/FeaturedProjects";
+import ProjectGallery from "../../sections/ProjectGallery";
+import ServicesBento from "../../sections/ServicesBento";
+import SolutionMarquee from "../../sections/SolutionMarquee";
+import BeforeAfter from "../../sections/BeforeAfter";
+import ProjectConfigurator from "../../sections/ProjectConfigurator";
+import SystemArchitecture from "../../sections/SystemArchitecture";
+import TechStack from "../../sections/TechStack";
+import Experience from "../../sections/Experience";
+import About from "../../sections/About";
+import ContactCTA from "../../sections/ContactCTA";
+import ContactForm from "../../sections/ContactForm";
 import "../../../styles/space.css";
+import "../../../styles/v2.css";
 
-const SECTION_IDS = ["hero", "intent", "problems", "work", "solutions", "process", "case-study", "system", "stack", "experience", "about", "contact"];
+const SECTION_IDS = ["hero", "audience", "work", "interfaces", "solutions", "build", "before-after", "configurator", "process", "system", "stack", "experience", "about", "cta", "contact"];
 
 /**
  * Spotlight cards (after React Bits' SpotlightCard): any `.spotlight` element
@@ -103,19 +110,28 @@ export default function SpaceApp({ projects }: { projects: Project[] }) {
 
       <main id="main" tabIndex={-1}>
         <Hero lang={lang} />
-        <IntentSelector lang={lang} />
-        <ProblemsGrid lang={lang} />
-        <Work projects={projects} lang={lang} />
-        <SolutionsGrid lang={lang} />
+        <QuickStats lang={lang} projects={projects.length} />
+        <AudienceSelector lang={lang} />
+        <FeaturedProjects projects={projects} lang={lang} />
+        <ProjectGallery lang={lang} />
+        <ServicesBento lang={lang} />
+        <SolutionMarquee lang={lang} />
+        <BeforeAfter lang={lang} />
+        <ProjectConfigurator lang={lang} />
         <Process lang={lang} pathRef={pathRef} />
-        <FeaturedCaseStudy lang={lang} />
-        <MidCta lang={lang} />
-        <System lang={lang} />
-        <Stack lang={lang} />
+        <SystemArchitecture lang={lang} />
+        <TechStack lang={lang} />
         <Experience lang={lang} />
         <About lang={lang} />
-        <Contact lang={lang} />
+        <ContactCTA lang={lang} />
+        <ContactForm lang={lang} />
       </main>
+
+      <div className="contact__horizon">
+        <Planet className="contact__world" surface={SURFACES.horizon} speed={5} />
+        <Footer lang={lang} />
+      </div>
+      <FloatingDock lang={lang} active={active} label={UI_TEXT.nav[lang]} />
     </div>
   );
 }

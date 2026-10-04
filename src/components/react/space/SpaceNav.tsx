@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { CV_FILENAME, CV_PATH, START_PATH } from "../../../data/content";
+import { CV_FILENAME, CV_PATH } from "../../../data/content";
 import { NAV, UI_TEXT, type Lang } from "../../../data/space";
 
 // Floating pill navigation (after zenwood.studio): the site menu in the
@@ -86,7 +86,7 @@ export default function SpaceNav({
             </a>
           </li>
         </ul>
-        <a href={START_PATH} className="zcta" data-track="Start Project" data-track-label="nav">
+        <a href={`${base}#contact`} className="zcta" data-track="Contact" data-track-label="nav">
           {UI_TEXT.cta[lang]}
         </a>
         <button

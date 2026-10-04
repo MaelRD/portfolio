@@ -30,13 +30,22 @@
     "en": "It centralizes authentication, data transformation, integrations and communication through APIs and webhooks.",
     "es": "Centraliza autenticación, transformación de información, integraciones y comunicación mediante APIs y webhooks."
   },
-  "stack": ["Java 21", "Quarkus", "JWT", "REST", "Webhooks"],
+  "stack": [
+    "Java 21",
+    "Quarkus",
+    "JWT",
+    "REST",
+    "Webhooks"
+  ],
   "capabilities": [
     "backend-apis",
     "system-integrations"
   ],
   "links": {
-    "cta": { "en": "View project", "es": "Ver proyecto" }
+    "cta": {
+      "en": "View project",
+      "es": "Ver proyecto"
+    }
   },
   "diagram": {
     "flow": {
@@ -375,5 +384,7 @@
         }
       ]
     }
-  }
+  },
+  "assets": "layout-builder",
+  "showcase": "tool"
 }

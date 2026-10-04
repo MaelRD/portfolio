@@ -3,9 +3,18 @@
   "slug": "pos-tinta-negra",
   "order": 2,
   "statusPrefix": "Demo",
-  "role": { "en": "Full Stack development", "es": "Desarrollo Full Stack" },
-  "category": { "en": "POINT OF SALE", "es": "PUNTO DE VENTA" },
-  "status": { "en": "LIVE DEMO", "es": "DEMO EN LÍNEA" },
+  "role": {
+    "en": "Full Stack development",
+    "es": "Desarrollo Full Stack"
+  },
+  "category": {
+    "en": "POINT OF SALE",
+    "es": "PUNTO DE VENTA"
+  },
+  "status": {
+    "en": "LIVE DEMO",
+    "es": "DEMO EN LÍNEA"
+  },
   "subtitle": {
     "en": "Point of sale for tattoo and piercing studios.",
     "es": "Punto de venta para estudios de tatuaje y perforación."
@@ -23,10 +32,19 @@
     "es": "El POS maneja ventas con ticket, sesiones de caja por registradora, inventario con alertas de bajo stock, clientes, proveedores y reportes, con roles que limitan lo que cada usuario puede hacer."
   },
   "cover": "/projects/pos-tinta-negra.jpg",
-  "stack": ["Angular", "Angular Material", "TypeScript"],
-  "capabilities": ["custom-business-software"],
+  "stack": [
+    "Angular",
+    "Angular Material",
+    "TypeScript"
+  ],
+  "capabilities": [
+    "custom-business-software"
+  ],
   "links": {
-    "cta": { "en": "View demo", "es": "Ver demo" },
+    "cta": {
+      "en": "View demo",
+      "es": "Ver demo"
+    },
     "live": "https://pos-tinta-negra-demo.netlify.app"
   },
   "diagram": {
@@ -38,18 +56,90 @@
       },
       "stages": [
         [
-          { "label": { "en": "SALES", "es": "VENTAS" } },
-          { "label": { "en": "CASH REGISTER", "es": "CAJA" } },
-          { "label": { "en": "INVENTORY", "es": "INVENTARIO" } }
+          {
+            "label": {
+              "en": "SALES",
+              "es": "VENTAS"
+            }
+          },
+          {
+            "label": {
+              "en": "CASH REGISTER",
+              "es": "CAJA"
+            }
+          },
+          {
+            "label": {
+              "en": "INVENTORY",
+              "es": "INVENTARIO"
+            }
+          }
         ],
-        [{ "label": "POS", "accent": true }],
         [
           {
-            "label": { "en": "TICKETS · REPORTS", "es": "TICKETS · REPORTES" },
-            "sub": { "en": "sales · stock · profit", "es": "ventas · stock · utilidad" }
+            "label": "POS",
+            "accent": true
+          }
+        ],
+        [
+          {
+            "label": {
+              "en": "TICKETS · REPORTS",
+              "es": "TICKETS · REPORTES"
+            },
+            "sub": {
+              "en": "sales · stock · profit",
+              "es": "ventas · stock · utilidad"
+            }
           }
         ]
       ]
     }
-  }
+  },
+  "assets": "tinta-negra",
+  "showcase": "tilt",
+  "images": [
+    {
+      "name": "desktop",
+      "alt": {
+        "es": "Dashboard del POS Tinta Negra: caja del turno, ventas del mes y ventas recientes",
+        "en": "Tinta Negra POS dashboard: shift register, monthly sales and recent sales"
+      }
+    },
+    {
+      "name": "sale",
+      "alt": {
+        "es": "Pantalla de punto de venta con catálogo de servicios y venta actual",
+        "en": "Point-of-sale screen with service catalog and current sale"
+      }
+    },
+    {
+      "name": "reports",
+      "alt": {
+        "es": "Reporte de ventas por día con gráfica de barras",
+        "en": "Daily sales report with a bar chart"
+      }
+    },
+    {
+      "name": "inventory",
+      "alt": {
+        "es": "Movimientos de inventario con entradas, salidas y stock",
+        "en": "Inventory movements with stock in, out and on hand"
+      }
+    },
+    {
+      "name": "customers",
+      "alt": {
+        "es": "Lista de clientes con teléfono, RFC y estado",
+        "en": "Customer list with phone, tax ID and status"
+      }
+    },
+    {
+      "name": "mobile",
+      "alt": {
+        "es": "Dashboard del POS en un teléfono",
+        "en": "POS dashboard on a phone"
+      }
+    }
+  ]
 }

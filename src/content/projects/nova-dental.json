@@ -3,9 +3,18 @@
   "slug": "nova-dental",
   "order": 1,
   "statusPrefix": "Demo",
-  "role": { "en": "Web development", "es": "Desarrollo web" },
-  "category": { "en": "WEBSITE", "es": "SITIO WEB" },
-  "status": { "en": "LIVE DEMO", "es": "DEMO EN LÍNEA" },
+  "role": {
+    "en": "Web development",
+    "es": "Desarrollo web"
+  },
+  "category": {
+    "en": "WEBSITE",
+    "es": "SITIO WEB"
+  },
+  "status": {
+    "en": "LIVE DEMO",
+    "es": "DEMO EN LÍNEA"
+  },
   "subtitle": {
     "en": "Website for a dental clinic, built to turn visits into appointments.",
     "es": "Sitio web para una clínica dental, pensado para convertir visitas en citas."
@@ -23,10 +32,18 @@
     "es": "El sitio presenta servicios, el proceso de cita y preguntas frecuentes, y envía cada solicitud a WhatsApp con el contexto ya escrito. Rápido, pensado primero para móvil y con datos estructurados para búsqueda local."
   },
   "cover": "/projects/nova-dental.jpg",
-  "stack": ["Astro", "SEO", "Schema.org", "WhatsApp"],
+  "stack": [
+    "Astro",
+    "SEO",
+    "Schema.org",
+    "WhatsApp"
+  ],
   "capabilities": [],
   "links": {
-    "cta": { "en": "View demo", "es": "Ver demo" },
+    "cta": {
+      "en": "View demo",
+      "es": "Ver demo"
+    },
     "live": "https://novadentist.netlify.app"
   },
   "diagram": {
@@ -38,13 +55,69 @@
       },
       "stages": [
         [
-          { "label": { "en": "SEARCH", "es": "BÚSQUEDA" } },
-          { "label": { "en": "SOCIAL", "es": "REDES" } },
-          { "label": { "en": "REFERRALS", "es": "RECOMENDACIONES" } }
+          {
+            "label": {
+              "en": "SEARCH",
+              "es": "BÚSQUEDA"
+            }
+          },
+          {
+            "label": {
+              "en": "SOCIAL",
+              "es": "REDES"
+            }
+          },
+          {
+            "label": {
+              "en": "REFERRALS",
+              "es": "RECOMENDACIONES"
+            }
+          }
         ],
-        [{ "label": { "en": "WEBSITE", "es": "SITIO WEB" }, "accent": true }],
-        [{ "label": "WHATSAPP", "sub": { "en": "appointment", "es": "cita" } }]
+        [
+          {
+            "label": {
+              "en": "WEBSITE",
+              "es": "SITIO WEB"
+            },
+            "accent": true
+          }
+        ],
+        [
+          {
+            "label": "WHATSAPP",
+            "sub": {
+              "en": "appointment",
+              "es": "cita"
+            }
+          }
+        ]
       ]
     }
-  }
+  },
+  "assets": "nova-dental",
+  "showcase": "laptop",
+  "images": [
+    {
+      "name": "desktop",
+      "alt": {
+        "es": "Portada de Nova Dental: \"Tu sonrisa merece atención sin complicaciones\" con botón para agendar por WhatsApp",
+        "en": "Nova Dental homepage: \"Your smile deserves care without complications\" with a WhatsApp booking button"
+      }
+    },
+    {
+      "name": "mobile",
+      "alt": {
+        "es": "Nova Dental en un teléfono, con el botón de agendar por WhatsApp",
+        "en": "Nova Dental on a phone, with the WhatsApp booking button"
+      }
+    },
+    {
+      "name": "detail",
+      "alt": {
+        "es": "Sección \"¿Por qué elegir Nova Dental?\" del sitio",
+        "en": "\"Why choose Nova Dental?\" section of the site"
+      }
+    }
+  ]
 }

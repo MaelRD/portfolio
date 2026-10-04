@@ -33,14 +33,23 @@
     "en": "GBS Builder turns that process into a web application connected to the ERP, centralizing information and moving the core rules into the system.",
     "es": "GBS Builder transforma ese proceso en una aplicación web conectada al ERP, centralizando información y llevando las reglas principales al sistema."
   },
-  "stack": ["Angular", "Java 21", "Quarkus", "PostgreSQL", "Odoo"],
+  "stack": [
+    "Angular",
+    "Java 21",
+    "Quarkus",
+    "PostgreSQL",
+    "Odoo"
+  ],
   "capabilities": [
     "custom-business-software",
     "backend-apis",
     "system-integrations"
   ],
   "links": {
-    "cta": { "en": "View project", "es": "Ver proyecto" }
+    "cta": {
+      "en": "View project",
+      "es": "Ver proyecto"
+    }
   },
   "diagram": {
     "flow": {
@@ -569,5 +578,13 @@
         }
       ]
     }
-  }
+  },
+  "assets": "gbs",
+  "showcase": "pipeline",
+  "pipeline": [
+    "EXCEL",
+    "GBS",
+    "API",
+    "ERP"
+  ]
 }

@@ -1,0 +1,94 @@
+{
+  "gbs": {},
+  "layout-builder": {},
+  "nova-dental": {
+    "desktop": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "detail": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "mobile": {
+      "width": 780,
+      "height": 1688,
+      "widths": [
+        480,
+        780
+      ]
+    }
+  },
+  "tinta-negra": {
+    "customers": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "desktop": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "inventory": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "mobile": {
+      "width": 780,
+      "height": 1688,
+      "widths": [
+        480,
+        780
+      ]
+    },
+    "reports": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "sale": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    }
+  }
+}

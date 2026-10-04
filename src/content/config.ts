@@ -64,6 +64,14 @@ const projects = defineCollection({
     stack: z.array(z.string()),
     capabilities: z.array(z.string()).default([]),
     cover: z.string().optional(),
+    /** Folder under assets/projects (and public/projects) holding this project's screenshots. */
+    assets: z.string().optional(),
+    /** Screenshots by name (desktop, mobile, dashboard, detail…), first is the main one. See `npm run images`. */
+    images: z.array(z.object({ name: z.string(), alt: bi })).default([]),
+    /** How the home page shows the project: a laptop that opens on scroll, a tilting window, or a window with a small pipeline. */
+    showcase: z.enum(["laptop", "tilt", "pipeline", "tool"]).default("tool"),
+    /** The few steps the pipeline showcase draws (e.g. Excel → GBS → API → ERP). */
+    pipeline: z.array(text).optional(),
     links: z.object({
       /** Label of the call to action that opens the case study. */
       cta: bi,
