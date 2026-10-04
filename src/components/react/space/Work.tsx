@@ -35,8 +35,11 @@ function toMission(p: Project, i: number) {
     solution: p.solution,
     stack: p.stack,
     arch: toGraph(p),
-    href: caseStudyPath(p.slug),
+    // Without a case study there is no /work page, so the call to action opens the live demo.
+    href: p.caseStudy ? caseStudyPath(p.slug) : (p.links.live ?? caseStudyPath(p.slug)),
+    external: !p.caseStudy && !!p.links.live,
     slug: p.slug,
+    cover: p.cover,
     cta: p.links.cta,
     ...(PLANETS[p.slug] ?? PLANETS["gbs-builder"]),
   };
@@ -98,7 +101,14 @@ export default function Work({ projects, lang }: { projects: Project[]; lang: La
                 </li>
               ))}
             </ul>
-            <a href={cur.href} className="btn btn--solid" style={{ alignSelf: "flex-start", padding: "12px 20px" }} data-track="View Project" data-track-label={cur.slug}>
+            <a
+              href={cur.href}
+              className="btn btn--solid"
+              style={{ alignSelf: "flex-start", padding: "12px 20px" }}
+              data-track="View Project"
+              data-track-label={cur.slug}
+              {...(cur.external && { target: "_blank", rel: "noopener noreferrer" })}
+            >
               {cur.cta[lang]} <span aria-hidden="true">↗</span>
             </a>
           </div>
@@ -111,6 +121,20 @@ export default function Work({ projects, lang }: { projects: Project[]; lang: La
               surface={SURFACES.large}
               speed={9}
             />
+            {cur.cover && (
+              <div className="mission__preview swap" key={`p${sel}`}>
+                <span className="label label--11">{T.preview[lang]}</span>
+                <a
+                  href={cur.href}
+                  className="shot"
+                  data-track="View Project"
+                  data-track-label={`preview:${cur.slug}`}
+                  {...(cur.external && { target: "_blank", rel: "noopener noreferrer" })}
+                >
+                  <img src={cur.cover} alt={`${T.preview[lang]}: ${cur.name}`} width={1440} height={900} loading="lazy" decoding="async" />
+                </a>
+              </div>
+            )}
             <span className="label label--11" style={{ position: "relative" }}>
               {T.arch[lang]}
             </span>

@@ -40,8 +40,10 @@ export function Planet({
 export const SURFACES = {
   small:
     "radial-gradient(ellipse 20px 6px at 25% 35%,rgba(255,255,255,.6),transparent 70%),radial-gradient(ellipse 26px 8px at 70% 65%,rgba(0,0,0,.5),transparent 70%)|80px 100%",
+  // Hero: soft cloud belts of uneven width (no hard stops, so no venetian-blind
+  // stripes), plus a few storms drifting with them.
   hero:
-    "radial-gradient(ellipse 50px 14px at 20% 30%,rgba(255,255,255,.55),transparent 70%),radial-gradient(ellipse 70px 18px at 70% 58%,rgba(0,0,0,.5),transparent 70%),radial-gradient(ellipse 36px 10px at 45% 78%,rgba(255,255,255,.4),transparent 70%),repeating-linear-gradient(180deg,rgba(255,255,255,.18) 0 5px,transparent 5px 16px,rgba(0,0,0,.2) 16px 20px,transparent 20px 30px)|260px 100%",
+    "radial-gradient(ellipse 50px 12px at 20% 31%,rgba(255,255,255,.5),transparent 70%),radial-gradient(ellipse 70px 16px at 70% 58%,rgba(0,0,0,.45),transparent 70%),radial-gradient(ellipse 36px 9px at 45% 79%,rgba(255,255,255,.35),transparent 70%),linear-gradient(180deg,transparent 4%,rgba(255,255,255,.16) 12%,transparent 19%,rgba(0,0,0,.22) 28%,transparent 36%,rgba(255,255,255,.12) 44%,rgba(255,255,255,.05) 52%,rgba(0,0,0,.2) 61%,transparent 70%,rgba(255,255,255,.1) 80%,transparent 88%,rgba(0,0,0,.18) 95%)|260px 100%",
   large:
     "radial-gradient(ellipse 80px 22px at 20% 30%,rgba(255,255,255,.55),transparent 70%),radial-gradient(ellipse 120px 30px at 70% 60%,rgba(0,0,0,.5),transparent 70%),radial-gradient(ellipse 60px 16px at 45% 80%,rgba(255,255,255,.4),transparent 70%),repeating-linear-gradient(180deg,rgba(255,255,255,.14) 0 8px,transparent 8px 26px)|420px 100%",
   earth:

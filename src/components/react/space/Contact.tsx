@@ -20,11 +20,11 @@ export default function Contact({ lang }: { lang: Lang }) {
               <a href={CV_PATH} download={CV_FILENAME} className="btn btn--solid" data-track="Download Resume" data-track-label="contact">
                 {T.talent.cv[lang]} <span aria-hidden="true">↓</span>
               </a>
-              <a href={CONTACT.github} target="_blank" rel="noopener noreferrer" className="btn btn--line" data-track="GitHub" data-track-label="contact">
+              <a href={CONTACT.github} target="_blank" rel="noopener noreferrer" className="btn btn--ghost" data-track="GitHub" data-track-label="contact">
                 {T.talent.github[lang]} <span aria-hidden="true">↗</span>
                 <span className="sr-only">{UI_TEXT.newTab[lang]}</span>
               </a>
-              <a href={`mailto:${CONTACT.email}`} className="btn btn--line">
+              <a href={`mailto:${CONTACT.email}`} className="btn btn--ghost">
                 {T.talent.email[lang]}
               </a>
             </div>

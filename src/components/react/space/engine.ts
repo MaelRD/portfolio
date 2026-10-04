@@ -148,7 +148,7 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
     let drifts: HTMLElement[] = [];
     // Satellite labels: their width and the room around their orrery, measured
     // on cache (after renders and resizes), not per frame.
-    const fit = new Map<HTMLElement, { w: number; lw: number; sl: number; sr: number }>();
+    const fit = new Map<HTMLElement, { w: number; lw: number; lh: number; sl: number; sr: number }>();
     let blinks: HTMLElement[] = [];
     let spins: HTMLElement[] = [];
     let probe: HTMLElement | null = null;
@@ -164,7 +164,7 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
       for (const el of orbits) {
         if (el.dataset.depth !== "tag" || !el.parentElement) continue;
         const box = el.parentElement.getBoundingClientRect();
-        fit.set(el, { w: box.width, lw: el.offsetWidth, sl: box.left - 8, sr: window.innerWidth - box.right - 8 });
+        fit.set(el, { w: box.width, lw: el.offsetWidth, lh: el.offsetHeight, sl: box.left - 8, sr: window.innerWidth - box.right - 8 });
       }
       spins = q("[data-spin]");
       probe = root.querySelector<HTMLElement>("[data-probe]");
@@ -267,6 +267,7 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
         }
       }
 
+      const tags: { el: HTMLElement; x0: number; x1: number; y: number; h: number }[] = [];
       for (const el of orbits) {
         const d = el.dataset;
         const rx = +d.orbit!;
@@ -291,6 +292,12 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
             else if (side === "l" && px - 12 - m.lw < -m.sl) side = "r";
           }
           const behind = Math.sin(th) > 0 ? "0" : "1";
+          if (m) {
+            const px = ((50 + xr) / 100) * m.w;
+            const dot = parseFloat(el.style.getPropertyValue("--dot")) || 0;
+            const x0 = side === "r" ? px + dot : px - dot - m.lw;
+            tags.push({ el, x0, x1: x0 + m.lw, y: ((50 + ax * Math.sin(f) + ay * Math.cos(f)) / 100) * m.w, h: m.lh });
+          }
           if (d.side !== side) d.side = side;
           if (d.behind !== behind) d.behind = behind;
         } else if (d.depth) {
@@ -299,6 +306,20 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
           el.style.zIndex = front ? "4" : "1";
           el.style.opacity = front ? "1" : "0.5";
         }
+      }
+      // Labels from neighbouring orbits can line up: settle any that overlap
+      // by sliding the lower one down until it clears (the label's transform
+      // transition turns the nudge into a glide). Written only on change.
+      tags.sort((p, q) => p.y - q.y);
+      const placed: { x0: number; x1: number; y: number; h: number }[] = [];
+      for (const tg of tags) {
+        let y = tg.y;
+        for (const o of placed) {
+          if (tg.x0 < o.x1 + 6 && tg.x1 > o.x0 - 6 && Math.abs(y - o.y) < (tg.h + o.h) / 2 + 4) y = o.y + (tg.h + o.h) / 2 + 4;
+        }
+        placed.push({ x0: tg.x0, x1: tg.x1, y, h: tg.h });
+        const ny = `${Math.round(y - tg.y)}px`;
+        if (tg.el.style.getPropertyValue("--ny") !== ny) tg.el.style.setProperty("--ny", ny);
       }
       for (const el of surfaces) el.style.backgroundPosition = `${((tt * +el.dataset.surface!) / 1000) % 4000}px 0`;
       for (const el of pulses) {

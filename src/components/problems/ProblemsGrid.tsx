@@ -4,28 +4,29 @@ import { HEADS, PROBLEMS, PROBLEMS_TEXT } from "@/data/space";
 import { Head } from "../react/space/ui";
 
 // Scenarios a potential client may recognize, before any talk of solutions.
-// Same card language as the solutions grid, without the diagram.
+// Set as an editorial index rather than another card grid: the heading holds
+// its place on the left while the scenarios read down the right like a list
+// of symptoms.
 
 export default function ProblemsGrid({ lang }: { lang: Lang }) {
   return (
     <section id="problems" className="sec" aria-labelledby="problems-title">
       <div className="wrap stack-40">
-        <Head head={HEADS.problems} lang={lang} id="problems-title" />
-        <ul className="solutions problems">
-          {PROBLEMS.map((p, i) => (
-            <li key={p.title.en}>
-              <article className="spotlight panel solution problem" aria-labelledby={`problem-${i}`}>
-                <span className="solution__n" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="solution__title" id={`problem-${i}`}>
+        <div className="symptoms">
+          <div className="symptoms__head">
+            <Head head={HEADS.problems} lang={lang} id="problems-title" />
+          </div>
+          <ul className="symptoms__list">
+            {PROBLEMS.map((p, i) => (
+              <li key={p.title.en} className="symptom">
+                <h3 className="symptom__title" id={`problem-${i}`}>
                   {p.title[lang]}
                 </h3>
-                <p className="solution__desc">{p.text[lang]}</p>
-              </article>
-            </li>
-          ))}
-        </ul>
+                <p className="symptom__text">{p.text[lang]}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className="problems__close">
           <p>{PROBLEMS_TEXT.closing[lang]}</p>
           <a href={START_PATH} className="btn btn--solid" data-track="Start Project" data-track-label="problems">

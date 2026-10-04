@@ -43,7 +43,20 @@ export default function Hero({ lang }: { lang: Lang }) {
           >
             <div className="orrery__glow" />
             <svg viewBox="0 0 100 100" aria-hidden="true">
-              <g transform="rotate(-14 50 50)" fill="none" stroke="rgba(167,139,250,.38)" strokeWidth=".22">
+              {/* Orbits brighten toward the viewer: the far side (top of each
+                  ellipse) fades back, the near side comes forward. */}
+              <defs>
+                <linearGradient id="orbit-depth" gradientUnits="userSpaceOnUse" x1="0" y1="31" x2="0" y2="69">
+                  <stop offset="0" stopColor="#A78BFA" stopOpacity=".14" />
+                  <stop offset=".55" stopColor="#A78BFA" stopOpacity=".38" />
+                  <stop offset="1" stopColor="#C4B5FD" stopOpacity=".7" />
+                </linearGradient>
+                <linearGradient id="orbit-depth-outer" gradientUnits="userSpaceOnUse" x1="0" y1="31" x2="0" y2="69">
+                  <stop offset="0" stopColor="#7DE3FF" stopOpacity=".1" />
+                  <stop offset="1" stopColor="#7DE3FF" stopOpacity=".5" />
+                </linearGradient>
+              </defs>
+              <g transform="rotate(-14 50 50)" fill="none" stroke="url(#orbit-depth)" strokeWidth=".22">
                 {HERO.orbits.map((o, i) => (
                   <ellipse
                     key={o.rx}
@@ -52,14 +65,16 @@ export default function Hero({ lang }: { lang: Lang }) {
                     rx={o.rx}
                     ry={o.ry}
                     strokeDasharray={i % 2 ? ".8 1.2" : undefined}
-                    stroke={i === HERO.orbits.length - 1 ? "rgba(125,227,255,.3)" : undefined}
+                    stroke={i === HERO.orbits.length - 1 ? "url(#orbit-depth-outer)" : undefined}
                     style={{ ["--k" as string]: i } as CSSProperties}
                   />
                 ))}
               </g>
             </svg>
             <div className="orrery__ring orrery__ring--back" />
-            <Planet className="orrery__planet" style={{ position: "absolute" }} surface={SURFACES.hero} speed={14} />
+            <Planet className="orrery__planet" style={{ position: "absolute" }} surface={SURFACES.hero} speed={14}>
+              <span className="orrery__rim" />
+            </Planet>
             <div className="orrery__ring orrery__ring--front" />
             {HERO.orbits.map((o, i) => {
               const orbit = { "data-orbit": o.rx, "data-ry": o.ry, "data-tilt": "-14", "data-speed": o.speed, "data-phase": o.phase };
@@ -67,7 +82,7 @@ export default function Hero({ lang }: { lang: Lang }) {
                 <Fragment key={o.rx}>
                   {/* The satellite: passes behind the planet. */}
                   <div className="sat" style={{ ["--k" as string]: i } as CSSProperties} aria-hidden="true" data-depth="1" {...orbit}>
-                    <span className="sat__dot" style={{ width: o.size, height: o.size, background: o.color, boxShadow: `0 0 12px ${o.color}` }} />
+                    <span className="sat__dot" style={{ width: o.size, height: o.size, ["--c" as string]: o.color } as CSSProperties} />
                   </div>
                   {/* Its label: always on top, opening toward the outside of the orbit. */}
                   <div

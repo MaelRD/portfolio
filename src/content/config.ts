@@ -68,6 +68,8 @@ const projects = defineCollection({
       /** Label of the call to action that opens the case study. */
       cta: bi,
       repo: z.string().url().optional(),
+      /** Deployed demo. Without a case study, the call to action opens it. */
+      live: z.string().url().optional(),
     }),
     /** The diagram shown on the project card. */
     diagram: z.object({ flow, layers: z.array(z.string()).optional() }),

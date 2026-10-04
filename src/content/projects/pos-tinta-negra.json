@@ -1,0 +1,55 @@
+{
+  "title": "POS Tinta Negra",
+  "slug": "pos-tinta-negra",
+  "order": 4,
+  "statusPrefix": "Demo",
+  "role": { "en": "Full Stack development", "es": "Desarrollo Full Stack" },
+  "category": { "en": "POINT OF SALE", "es": "PUNTO DE VENTA" },
+  "status": { "en": "LIVE DEMO", "es": "DEMO EN LÍNEA" },
+  "subtitle": {
+    "en": "Point of sale for tattoo and piercing studios.",
+    "es": "Punto de venta para estudios de tatuaje y perforación."
+  },
+  "summary": {
+    "en": "A point of sale that brings a studio's sales, cash register, inventory and customers into one system.",
+    "es": "Un punto de venta que reúne ventas, caja, inventario y clientes de un estudio en un solo sistema."
+  },
+  "problem": {
+    "en": "A studio sells services and products at the same counter: tattoo sessions, piercings, jewelry and aftercare. Without a system, cash, stock and sales history end up in notebooks and memory.",
+    "es": "Un estudio vende servicios y productos en el mismo mostrador: sesiones de tatuaje, perforaciones, joyería y productos de cicatrización. Sin un sistema, la caja, el stock y el historial de ventas terminan en libretas y en la memoria."
+  },
+  "solution": {
+    "en": "The POS handles sales with tickets, cash sessions by register, inventory with low-stock alerts, customers, suppliers and reports, with roles that limit what each user can do.",
+    "es": "El POS maneja ventas con ticket, sesiones de caja por registradora, inventario con alertas de bajo stock, clientes, proveedores y reportes, con roles que limitan lo que cada usuario puede hacer."
+  },
+  "cover": "/projects/pos-tinta-negra.jpg",
+  "stack": ["Angular", "Angular Material", "TypeScript"],
+  "capabilities": ["custom-business-software"],
+  "links": {
+    "cta": { "en": "View demo", "es": "Ver demo" },
+    "live": "https://pos-tinta-negra-demo.netlify.app"
+  },
+  "diagram": {
+    "flow": {
+      "direction": "responsive",
+      "label": {
+        "en": "Sales, cash register and inventory feed the POS, which produces tickets and reports.",
+        "es": "Ventas, caja e inventario alimentan el POS, que genera tickets y reportes."
+      },
+      "stages": [
+        [
+          { "label": { "en": "SALES", "es": "VENTAS" } },
+          { "label": { "en": "CASH REGISTER", "es": "CAJA" } },
+          { "label": { "en": "INVENTORY", "es": "INVENTARIO" } }
+        ],
+        [{ "label": "POS", "accent": true }],
+        [
+          {
+            "label": { "en": "TICKETS · REPORTS", "es": "TICKETS · REPORTES" },
+            "sub": { "en": "sales · stock · profit", "es": "ventas · stock · utilidad" }
+          }
+        ]
+      ]
+    }
+  }
+}

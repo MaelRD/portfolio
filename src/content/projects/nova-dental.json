@@ -1,0 +1,50 @@
+{
+  "title": "Nova Dental",
+  "slug": "nova-dental",
+  "order": 5,
+  "statusPrefix": "Demo",
+  "role": { "en": "Web development", "es": "Desarrollo web" },
+  "category": { "en": "WEBSITE", "es": "SITIO WEB" },
+  "status": { "en": "LIVE DEMO", "es": "DEMO EN LÍNEA" },
+  "subtitle": {
+    "en": "Website for a dental clinic, built to turn visits into appointments.",
+    "es": "Sitio web para una clínica dental, pensado para convertir visitas en citas."
+  },
+  "summary": {
+    "en": "A clinic website where every section leads to booking an appointment over WhatsApp.",
+    "es": "Un sitio de clínica donde cada sección lleva a agendar una cita por WhatsApp."
+  },
+  "problem": {
+    "en": "Patients compare clinics from their phone and decide in seconds. If services, prices and how to book aren't clear right away, they leave without writing.",
+    "es": "Los pacientes comparan clínicas desde el teléfono y deciden en segundos. Si los servicios, las formas de pago y cómo agendar no quedan claros de inmediato, se van sin escribir."
+  },
+  "solution": {
+    "en": "The site presents services, the booking process and frequent questions, and sends each request to WhatsApp with the context already filled in. Fast, mobile-first and with structured data for local search.",
+    "es": "El sitio presenta servicios, el proceso de cita y preguntas frecuentes, y envía cada solicitud a WhatsApp con el contexto ya escrito. Rápido, pensado primero para móvil y con datos estructurados para búsqueda local."
+  },
+  "cover": "/projects/nova-dental.jpg",
+  "stack": ["Astro", "SEO", "Schema.org", "WhatsApp"],
+  "capabilities": [],
+  "links": {
+    "cta": { "en": "View demo", "es": "Ver demo" },
+    "live": "https://novadentist.netlify.app"
+  },
+  "diagram": {
+    "flow": {
+      "direction": "responsive",
+      "label": {
+        "en": "Search, social media and referrals bring patients to the site, which turns the visit into an appointment over WhatsApp.",
+        "es": "Búsqueda, redes sociales y recomendaciones llevan pacientes al sitio, que convierte la visita en una cita por WhatsApp."
+      },
+      "stages": [
+        [
+          { "label": { "en": "SEARCH", "es": "BÚSQUEDA" } },
+          { "label": { "en": "SOCIAL", "es": "REDES" } },
+          { "label": { "en": "REFERRALS", "es": "RECOMENDACIONES" } }
+        ],
+        [{ "label": { "en": "WEBSITE", "es": "SITIO WEB" }, "accent": true }],
+        [{ "label": "WHATSAPP", "sub": { "en": "appointment", "es": "cita" } }]
+      ]
+    }
+  }
+}

@@ -10,19 +10,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Page background & primary ink. The rest of the palette (violet, cyan,
-        // fuchsia, slate) already matches Tailwind's default scale almost
-        // exactly (violet-500 #8b5cf6, sky-400 #38bdf8, fuchsia-600 #c026d3),
-        // so we lean on those instead of re-declaring a parallel palette.
+        // Mirrors the custom properties on .space in src/styles/space.css,
+        // which is where the page design actually lives.
         bg: '#030014',
-        panel: '#07061A',
-        ink: '#F8FAFC',
-        dim: '#94A3B8',
+        panel: '#0A0520',
+        ink: '#EEEBFF',
+        dim: '#A49FC9',
       },
       fontFamily: {
-        sans: ['Geist', 'system-ui', 'sans-serif'],
-        heading: ['"Space Grotesk"', 'sans-serif'],
-        mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
+        // The families loaded in Layout.astro.
+        sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
+        heading: ['Syne', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       transitionTimingFunction: {
         smooth: 'cubic-bezier(0.4,0,0.2,1)',

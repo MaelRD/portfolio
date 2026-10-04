@@ -4,7 +4,7 @@ import { Head } from "./ui";
 export default function Experience({ lang }: { lang: Lang }) {
   return (
     <section id="experience" className="sec" aria-labelledby="experience-title">
-      <div className="wrap wrap--narrow stack-40">
+      <div className="wrap stack-40">
         <Head head={HEADS.experience} lang={lang} id="experience-title" />
         {ORGS.map((o) => (
           <div key={o.name} className="org">
