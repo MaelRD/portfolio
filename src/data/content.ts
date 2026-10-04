@@ -28,6 +28,8 @@ export const META = {
 };
 
 export const CONTACT = {
+  whatsapp: "https://wa.me/525610919906",
+  whatsappLabel: "+52 56 1091 9906",
   email: "marioyaelgg@gmail.com",
   github: "https://github.com/MaelRD",
   site: "https://maeldev.netlify.app/",

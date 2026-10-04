@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { ArrowUpRight, Mail, Send, CheckCircle2, MessageCircle } from "lucide-react";
 import { CONTACT, type Lang } from "@/data/content";
 import { CONTACT_FORM as F } from "@/data/v2";
 import { track } from "@/lib/analytics";
@@ -57,7 +58,10 @@ export default function ContactForm({ lang }: { lang: Lang }) {
     setSubmitted(true);
     const bad = Object.keys(errors) as (keyof Fields)[];
     if (bad.length) {
-      formRef.current?.querySelector<HTMLElement>(`[name="${bad[0]}"]`)?.focus();
+      const field = formRef.current?.querySelector<HTMLElement>(`[name="${bad[0]}"]`);
+      const details = field?.closest("details");
+      if (details) details.open = true;
+      field?.focus();
       return;
     }
     setStatus("loading");
@@ -106,14 +110,28 @@ export default function ContactForm({ lang }: { lang: Lang }) {
     <section id="contact" className="sec contact2" aria-labelledby="contact-title">
       <div className="wrap contact2__grid">
         <div className="contact2__intro">
-          <SectionHeader id="contact-title" title={F.title[lang]} intro={F.intro[lang]} />
+          <p className="contact2__availability"><span className="dot-live" aria-hidden="true" />{lang === "es" ? "Disponible para nuevos proyectos" : "Available for new projects"}</p>
+          <SectionHeader id="contact-title" title={lang === "es" ? "Hablemos de tu idea." : "Let’s talk about your idea."} intro={F.intro[lang]} />
           <p className="contact2__mail">
-            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+            <a href={`mailto:${CONTACT.email}`}><Mail size={19} aria-hidden="true" />{CONTACT.email}<ArrowUpRight size={18} aria-hidden="true" /></a>
           </p>
+          <p className="contact2__mail">
+            <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer">
+              <MessageCircle size={19} aria-hidden="true" />
+              WhatsApp · {CONTACT.whatsappLabel}
+              <ArrowUpRight size={18} aria-hidden="true" />
+              <span className="sr-only">{lang === "es" ? " (se abre en una pestaña nueva)" : " (opens in a new tab)"}</span>
+            </a>
+          </p>
+          <div className="contact2__next">
+            <h3>{lang === "es" ? "¿Qué sigue después?" : "What happens next?"}</h3>
+            <p>{lang === "es" ? "Reviso tu mensaje y te escribo para entender el contexto. Definimos juntos el siguiente paso." : "I review your message and get back to you to understand the context. We decide on the next step together."}</p>
+          </div>
         </div>
 
         {status === "success" ? (
           <div className="form2 form2--done" role="status">
+            <CheckCircle2 size={36} aria-hidden="true" />
             <h3>{F.success.title[lang]}</h3>
             <p>{F.success.text[lang]}</p>
             <button type="button" className="btn btn--line" onClick={reset}>
@@ -128,6 +146,7 @@ export default function ContactForm({ lang }: { lang: Lang }) {
                 Bot <input name="bot-field" tabIndex={-1} autoComplete="off" value={bot} onChange={(e) => setBot(e.target.value)} />
               </label>
             </p>
+            <div className="form2__heading"><h3>{lang === "es" ? "Cuéntame qué tienes en mente" : "Tell me what you have in mind"}</h3><p>{lang === "es" ? "Un poco de contexto es suficiente para empezar." : "A little context is enough to get started."}</p></div>
             <p className="form2__req">{F.required[lang]}</p>
             {submitted && Object.keys(errors).length > 0 && (
               <p ref={summaryRef} className="form2__summary" role="alert">
@@ -142,28 +161,9 @@ export default function ContactForm({ lang }: { lang: Lang }) {
                 {err("name")}
               </div>
               <div className="field">
-                <label htmlFor={id("company")}>
-                  {F.fields.company.label[lang]} {opt}
-                </label>
-                <input id={id("company")} name="company" autoComplete="organization" value={v.company} onChange={set("company")} placeholder={F.fields.company.placeholder[lang]} />
-              </div>
-            </div>
-
-            <div className="form2__row">
-              <div className="field">
                 <label htmlFor={id("email")}>{F.fields.email.label[lang]} *</label>
                 <input id={id("email")} name="email" type="email" inputMode="email" autoComplete="email" required value={v.email} onChange={set("email")} onBlur={blur("email")} placeholder={F.fields.email.placeholder[lang]} aria-invalid={!!show("email")} aria-describedby={described("email")} />
                 {err("email")}
-              </div>
-              <div className="field">
-                <label htmlFor={id("whatsapp")}>
-                  {F.fields.whatsapp.label[lang]} {opt}
-                </label>
-                <input id={id("whatsapp")} name="whatsapp" type="tel" inputMode="tel" autoComplete="tel" value={v.whatsapp} onChange={set("whatsapp")} onBlur={blur("whatsapp")} placeholder={F.fields.whatsapp.placeholder[lang]} aria-invalid={!!show("whatsapp")} aria-describedby={described("whatsapp", true)} />
-                <p className="field__hint" id={id("whatsapp-hint")}>
-                  {F.fields.whatsapp.hint[lang]}
-                </p>
-                {err("whatsapp")}
               </div>
             </div>
 
@@ -191,6 +191,28 @@ export default function ContactForm({ lang }: { lang: Lang }) {
               {err("message")}
             </div>
 
+            <details className="form2__optional" open={show("whatsapp") ? true : undefined}>
+              <summary>{lang === "es" ? "Añadir empresa o WhatsApp" : "Add company or WhatsApp"} <span>{F.optional[lang]}</span></summary>
+              <div className="form2__row">
+              <div className="field">
+                <label htmlFor={id("company")}>
+                  {F.fields.company.label[lang]} {opt}
+                </label>
+                <input id={id("company")} name="company" autoComplete="organization" value={v.company} onChange={set("company")} placeholder={F.fields.company.placeholder[lang]} />
+              </div>
+              <div className="field">
+                <label htmlFor={id("whatsapp")}>
+                  {F.fields.whatsapp.label[lang]} {opt}
+                </label>
+                <input id={id("whatsapp")} name="whatsapp" type="tel" inputMode="tel" autoComplete="tel" value={v.whatsapp} onChange={set("whatsapp")} onBlur={blur("whatsapp")} placeholder={F.fields.whatsapp.placeholder[lang]} aria-invalid={!!show("whatsapp")} aria-describedby={described("whatsapp", true)} />
+                <p className="field__hint" id={id("whatsapp-hint")}>
+                  {F.fields.whatsapp.hint[lang]}
+                </p>
+                {err("whatsapp")}
+              </div>
+              </div>
+            </details>
+
             {status === "error" && (
               <p className="form2__error" role="alert">
                 {F.errors.send[lang]} <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>.
@@ -198,7 +220,7 @@ export default function ContactForm({ lang }: { lang: Lang }) {
             )}
 
             <button type="submit" className="btn btn--solid form2__submit" disabled={status === "loading"} aria-busy={status === "loading" || undefined}>
-              {status === "loading" ? F.sending[lang] : F.submit[lang]} {status !== "loading" && <span aria-hidden="true">→</span>}
+              {status === "loading" ? F.sending[lang] : F.submit[lang]} {status !== "loading" && <Send size={18} aria-hidden="true" />}
             </button>
           </form>
         )}

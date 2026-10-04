@@ -9,12 +9,10 @@ import SpaceNav from "./SpaceNav";
 import Hero from "./Hero";
 import Process from "./Process";
 import Footer from "./Footer";
-import { Planet, SURFACES } from "./ui";
 import FloatingDock from "../../sections/FloatingDock";
 import QuickStats from "../../sections/QuickStats";
 import AudienceSelector from "../../sections/AudienceSelector";
 import FeaturedProjects from "../../sections/FeaturedProjects";
-import ProjectGallery from "../../sections/ProjectGallery";
 import ServicesBento from "../../sections/ServicesBento";
 import SolutionMarquee from "../../sections/SolutionMarquee";
 import BeforeAfter from "../../sections/BeforeAfter";
@@ -28,7 +26,7 @@ import ContactForm from "../../sections/ContactForm";
 import "../../../styles/space.css";
 import "../../../styles/v2.css";
 
-const SECTION_IDS = ["hero", "audience", "work", "interfaces", "solutions", "build", "before-after", "configurator", "process", "system", "stack", "experience", "about", "cta", "contact"];
+const SECTION_IDS = ["hero", "audience", "work", "solutions", "build", "before-after", "configurator", "process", "system", "stack", "experience", "about", "cta", "contact"];
 
 /**
  * Spotlight cards (after React Bits' SpotlightCard): any `.spotlight` element
@@ -113,7 +111,6 @@ export default function SpaceApp({ projects }: { projects: Project[] }) {
         <QuickStats lang={lang} projects={projects.length} />
         <AudienceSelector lang={lang} />
         <FeaturedProjects projects={projects} lang={lang} />
-        <ProjectGallery lang={lang} />
         <ServicesBento lang={lang} />
         <SolutionMarquee lang={lang} />
         <BeforeAfter lang={lang} />
@@ -127,10 +124,7 @@ export default function SpaceApp({ projects }: { projects: Project[] }) {
         <ContactForm lang={lang} />
       </main>
 
-      <div className="contact__horizon">
-        <Planet className="contact__world" surface={SURFACES.horizon} speed={5} />
-        <Footer lang={lang} />
-      </div>
+      <Footer lang={lang} />
       <FloatingDock lang={lang} active={active} label={UI_TEXT.nav[lang]} />
     </div>
   );

@@ -540,12 +540,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 
 /* ── Contact ─────────────────────────────────────────────────────────────── */
 .btn--signal { padding: 16px 28px; font-size: 16px; box-shadow: 0 0 40px rgba(167, 139, 250, 0.45); }
-.contact__horizon { position: relative; height: 340px; margin-top: 40px; }
-.contact__world { position: absolute !important; left: 50%; top: 120px; width: 1800px; height: 1800px; margin-left: -900px; background: radial-gradient(circle at 50% 4%, #c4b5fd, #7c3aed 7%, #2e1065 20%, #0b0426 38%, #030014 55%); box-shadow: 0 -20px 120px rgba(167, 139, 250, 0.5), 0 -2px 30px rgba(125, 227, 255, 0.35); }
-.sky-footer { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 20px 24px; padding-bottom: max(20px, env(safe-area-inset-bottom)); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--dim); }
-.sky-footer span { display: flex; align-items: center; gap: 8px; }
-.sky-footer .dot-live { width: 7px; height: 7px; box-shadow: none; }
-@media (max-width: 560px) { .contact__horizon { height: 260px; } .contact__world { top: 90px; } }
+
 
 /* ═════════════════════════════════════════════════════════════════════════
    New sections (portfolio brief, 2026-09). Everything above this line is the
@@ -583,7 +578,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 /* System readout: the example line under the responsibility. */
 
 /* Pages other than home: the sky footer sits in the flow, not on a planet. */
-.sky-footer--page { position: relative; z-index: 1; border-top: 1px solid var(--line-soft); }
+
 
 /* ── Diagrams: data flow ─────────────────────────────────────────────────── */
 /* Stages joined by connections; a multi-node stage is framed as a group.
@@ -966,21 +961,56 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .path .btn--signal { padding: 14px 24px; }
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
-/* The footer now carries name, availability and links; it sits in the flow at
-   the bottom of the horizon instead of floating over a fixed height. */
-.contact__horizon { height: auto; min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; }
-@media (max-width: 560px) { .contact__horizon { min-height: 300px; } }
-.sky-footer { position: relative; align-items: flex-end; gap: 16px 32px; padding: 24px clamp(16px, 4vw, 32px); padding-bottom: max(24px, env(safe-area-inset-bottom)); letter-spacing: 0.04em; }
-.sky-footer > div { display: flex; flex-direction: column; gap: 6px; }
-.sky-footer__who strong { font-family: var(--display); font-size: 15px; letter-spacing: 0; color: var(--ink); }
-.sky-footer__who > span:not(.sky-footer__status) { font-size: 12px; }
-.sky-footer__status { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 13px; letter-spacing: 0; color: var(--soft); }
-.sky-footer__end { align-items: flex-end; }
-.sky-footer__links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; }
-.sky-footer__links a { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink) !important; text-decoration: underline; text-decoration-color: rgba(167, 139, 250, 0.45); text-underline-offset: 4px; }
-@media (hover: hover) and (pointer: fine) { .sky-footer__links a:hover { text-decoration-color: var(--cyan); } }
-.sky-footer small { font-size: 11px; letter-spacing: 0.08em; }
-@media (max-width: 640px) { .sky-footer__end { align-items: flex-start; } }
+/* Four link columns above a contained planetary horizon. */
+.sky-footer {
+  position: relative;
+  z-index: 1;
+  overflow: clip;
+  border-top: 1px solid var(--line-soft);
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(124, 58, 237, 0.18), transparent 70%),
+    linear-gradient(180deg, rgba(3, 0, 20, 0.2), rgba(3, 0, 20, 0.45));
+  padding: 72px max(24px, calc((100% - 1280px) / 2)) 24px;
+  color: var(--dim);
+  font-family: var(--sans);
+}
+.sky-footer__grid { display: grid; grid-template-columns: minmax(260px, 2.4fr) repeat(4, minmax(0, 1fr)); gap: 32px; }
+.sky-footer__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.space .sky-footer__logo { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font-family: var(--display); font-size: 20px; font-weight: 700; }
+.sky-footer__brand p, .sky-footer__brand small { font-size: 13px; line-height: 1.7; }
+.sky-footer__status { display: flex; align-items: center; gap: 8px; }
+.sky-footer__status .dot-live { flex: 0 0 6px; width: 6px; height: 6px; box-shadow: none; }
+.space .sky-footer__column h2 { margin: 0 0 16px; font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink); }
+.sky-footer__column ul { list-style: none; padding: 0; margin: 0; }
+.space .sky-footer__column a { display: inline-flex; align-items: center; min-height: 40px; color: var(--dim); font-size: 14px; line-height: 1.5; transition: color 160ms ease; }
+.space .sky-footer a:hover { color: var(--cyan); }
+.sky-footer__horizon {
+  position: relative;
+  height: clamp(140px, 18vw, 240px);
+  margin-top: 48px;
+  overflow: clip;
+  pointer-events: none;
+}
+.sky-footer__planet {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  width: max(150%, 700px);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 4%, #c4b5fd, #7c3aed 7%, #2e1065 20%, #0b0426 38%, #030014 55%);
+  box-shadow: 0 -16px 48px rgba(167, 139, 250, 0.3), 0 -2px 16px rgba(125, 227, 255, 0.35);
+}
+@media (max-width: 1100px) {
+  .sky-footer__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sky-footer__brand { grid-column: 1 / -1; margin-bottom: 16px; }
+}
+@media (max-width: 640px) {
+  .sky-footer { padding-top: 40px; }
+  .sky-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
+  .space .sky-footer__column a { min-height: 44px; }
+  .sky-footer__horizon { margin-top: 32px; }
+}
 
 /* ── Start a project ─────────────────────────────────────────────────────── */
 .start { padding-top: clamp(112px, 14vw, 136px); }
@@ -1015,9 +1045,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .start__panel { padding: 20px; }
   .pform__progress { margin-left: -20px !important; margin-right: -20px !important; padding-left: 20px !important; padding-right: 20px !important; }
 }
-/* Over the bright horizon the footer needs its own dark ground to keep contrast. */
-.contact__horizon .sky-footer { background: linear-gradient(180deg, rgba(3, 0, 20, 0) 0%, rgba(3, 0, 20, 0.72) 38%, rgba(3, 0, 20, 0.88) 100%); padding-top: 56px; }
-.sky-footer__who > span:not(.sky-footer__status), .sky-footer small { color: var(--soft); }
 .start__guide ol { list-style: decimal; }
 
 

@@ -1,74 +1,40 @@
-import type { CSSProperties } from "react";
+import { ArrowUpRight, Blocks, Globe2, Workflow, Cable } from "lucide-react";
 import type { Lang } from "@/data/content";
 import { SERVICES, SERVICES_TEXT as T } from "@/data/v2";
-import { DeviceMockup, ProjectImage, SectionHeader } from "../kit";
+import { SectionHeader } from "../kit";
+import { PREFILL_EVENT } from "./ProjectConfigurator";
 
-// Four kinds of work in a bento grid (after Aceternity's Bento Grid), each
-// tile a different size and with its own picture: a real system screen, a
-// phone, a short workflow, a hub of connections. Pictures are aria-hidden;
-// the tile's text says the same thing.
-
-function Visual({ k }: { k: (typeof SERVICES)[number]["key"] }) {
-  switch (k) {
-    case "business":
-      return (
-        <div className="svc__shot" aria-hidden="true">
-          <ProjectImage project="tinta-negra" name="desktop" alt="" sizes="(min-width: 1024px) 720px, 90vw" />
-        </div>
-      );
-    case "web":
-      return (
-        <div className="svc__phone" aria-hidden="true">
-          <DeviceMockup>
-            <ProjectImage project="nova-dental" name="mobile" alt="" sizes="160px" />
-          </DeviceMockup>
-        </div>
-      );
-    case "automation":
-      return (
-        <ol className="svc__flow" aria-hidden="true">
-          {["FORM", "LEAD", "CRM", "WHATSAPP"].map((n, i) => (
-            <li key={n} style={{ ["--k" as string]: i } as CSSProperties}>
-              {n}
-            </li>
-          ))}
-        </ol>
-      );
-    case "integrations":
-      return (
-        <div className="svc__hub" aria-hidden="true">
-          {["ERP", "API", "DB", "AI", "CRM", "WHATSAPP"].map((n, i) => (
-            <span key={n} className="svc__spoke" style={{ ["--k" as string]: i } as CSSProperties}>
-              {n}
-            </span>
-          ))}
-          <span className="svc__core">SYSTEM</span>
-        </div>
-      );
-  }
-}
+const ICONS = { business: Blocks, web: Globe2, automation: Workflow, integrations: Cable };
+const NEEDS = { business: 1, web: 2, automation: 0, integrations: 3 };
 
 export default function ServicesBento({ lang }: { lang: Lang }) {
   return (
-    <section id="solutions" className="sec" aria-labelledby="solutions-title">
+    <section id="solutions" className="sec service-options" aria-labelledby="solutions-title">
       <div className="wrap stack-40">
         <SectionHeader id="solutions-title" title={T.title[lang]} intro={T.intro[lang]} />
-        <ul className="svc-grid">
-          {SERVICES.map((s) => (
-            <li key={s.key} className={`svc svc--${s.key}`}>
-              <div className="svc__text">
-                <p className="svc__kicker">{s.kicker[lang]}</p>
-                <h3 className="svc__title">{s.title[lang]}</h3>
-                <p className="svc__desc">{s.text[lang]}</p>
-                <ul className="svc__items">
-                  {s.items.map((it) => (
-                    <li key={it.en}>{it[lang]}</li>
-                  ))}
-                </ul>
-              </div>
-              <Visual k={s.key} />
-            </li>
-          ))}
+        <ul className="service-options__list">
+          {SERVICES.map((s) => {
+            const Icon = ICONS[s.key];
+            return (
+              <li key={s.key} className="service-option">
+                <div className="service-option__icon"><Icon size={26} strokeWidth={1.5} aria-hidden="true" /></div>
+                <div className="service-option__body">
+                  <h3>{s.title[lang]}</h3>
+                  <p>{s.text[lang]}</p>
+                  <ul className="service-option__examples">
+                    {s.items.slice(0, 4).map((item) => <li key={item.en}>{item[lang]}</li>)}
+                  </ul>
+                  <a className="service-option__link" href="#contact" onClick={() => {
+                    window.dispatchEvent(new CustomEvent(PREFILL_EVENT, { detail: { need: NEEDS[s.key], message: "" } }));
+                  }}>
+                    {lang === "es" ? "Hablemos de esta solución" : "Let's discuss this solution"}
+                    <ArrowUpRight size={17} aria-hidden="true" />
+                    <span className="sr-only">: {s.title[lang]}</span>
+                  </a>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
