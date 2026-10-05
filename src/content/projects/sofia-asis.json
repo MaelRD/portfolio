@@ -1,0 +1,121 @@
+{
+  "title": "Sofía · Recepcionista IA",
+  "slug": "sofia-asis",
+  "order": 3,
+  "statusPrefix": "Demo",
+  "role": {
+    "en": "Full Stack development",
+    "es": "Desarrollo Full Stack"
+  },
+  "category": {
+    "en": "AI ASSISTANT",
+    "es": "ASISTENTE CON IA"
+  },
+  "status": {
+    "en": "LIVE DEMO",
+    "es": "DEMO EN LÍNEA"
+  },
+  "subtitle": {
+    "en": "An AI receptionist that answers customers and books appointments 24/7.",
+    "es": "Una recepcionista con IA que atiende clientes y agenda citas 24/7."
+  },
+  "summary": {
+    "en": "An AI receptionist that answers on WhatsApp, books appointments in the agenda and hands the conversation to a person when needed.",
+    "es": "Una recepcionista con IA que responde por WhatsApp, registra citas en la agenda y pasa la conversación a una persona cuando hace falta."
+  },
+  "problem": {
+    "en": "Messages arrive at all hours and most ask the same things: prices, schedules, availability. If nobody answers quickly, the customer books somewhere else.",
+    "es": "Los mensajes llegan a cualquier hora y la mayoría preguntan lo mismo: precios, horarios, disponibilidad. Si nadie contesta rápido, el cliente agenda en otro lado."
+  },
+  "solution": {
+    "en": "Sofía answers with the business's own information and rules, gathers service, date and contact details, books the appointment and transfers to a person when the conversation needs it.",
+    "es": "Sofía responde con la información y las reglas del propio negocio, reúne servicio, fecha y datos de contacto, registra la cita y transfiere a una persona cuando la conversación lo necesita."
+  },
+  "stack": [
+    "React",
+    "Vite",
+    "Tailwind CSS",
+    "WhatsApp"
+  ],
+  "capabilities": [],
+  "links": {
+    "cta": {
+      "en": "View demo",
+      "es": "Ver demo"
+    },
+    "live": "https://sofiaasis.netlify.app"
+  },
+  "diagram": {
+    "flow": {
+      "direction": "responsive",
+      "label": {
+        "en": "Customer messages on WhatsApp reach Sofía, who answers and books the appointment in the agenda or hands off to a person.",
+        "es": "Los mensajes de clientes por WhatsApp llegan a Sofía, que responde y registra la cita en la agenda o pasa la conversación a una persona."
+      },
+      "stages": [
+        [
+          {
+            "label": "WHATSAPP",
+            "sub": {
+              "en": "customer",
+              "es": "cliente"
+            }
+          }
+        ],
+        [
+          {
+            "label": "SOFÍA",
+            "sub": {
+              "en": "AI receptionist",
+              "es": "recepcionista IA"
+            },
+            "accent": true
+          }
+        ],
+        [
+          {
+            "label": {
+              "en": "AGENDA",
+              "es": "AGENDA"
+            }
+          },
+          {
+            "label": {
+              "en": "PERSON",
+              "es": "PERSONA"
+            },
+            "sub": {
+              "en": "handoff",
+              "es": "transferencia"
+            }
+          }
+        ]
+      ]
+    }
+  },
+  "assets": "sofia-asis",
+  "showcase": "laptop",
+  "images": [
+    {
+      "name": "desktop",
+      "alt": {
+        "es": "Panel de Sofía: conversación de WhatsApp en la que la recepcionista agenda una limpieza dental, con el contexto de la cita a la derecha",
+        "en": "Sofía's panel: a WhatsApp conversation where the receptionist books a dental cleaning, with the appointment context on the right"
+      }
+    },
+    {
+      "name": "mobile",
+      "alt": {
+        "es": "Sofía en un teléfono, con el chat de la recepcionista virtual",
+        "en": "Sofía on a phone, with the virtual receptionist chat"
+      }
+    },
+    {
+      "name": "detail",
+      "alt": {
+        "es": "Agenda semanal de la clínica con las citas registradas por la IA",
+        "en": "The clinic's weekly agenda with the appointments booked by the AI"
+      }
+    }
+  ]
+}

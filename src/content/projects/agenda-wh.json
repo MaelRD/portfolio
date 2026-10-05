@@ -1,0 +1,116 @@
+{
+  "title": "Agenda",
+  "slug": "agenda-wh",
+  "order": 4,
+  "statusPrefix": "Demo",
+  "role": {
+    "en": "Full Stack development",
+    "es": "Desarrollo Full Stack"
+  },
+  "category": {
+    "en": "BOOKING SOFTWARE",
+    "es": "SOFTWARE DE CITAS"
+  },
+  "status": {
+    "en": "LIVE DEMO",
+    "es": "DEMO EN LÍNEA"
+  },
+  "subtitle": {
+    "en": "Agenda, online booking and WhatsApp reminders for businesses that work by appointment.",
+    "es": "Agenda, reservas en línea y recordatorios por WhatsApp para negocios que trabajan con citas."
+  },
+  "summary": {
+    "en": "One booking core that adapts to a dental clinic, a tattoo studio or a barbershop.",
+    "es": "Un mismo núcleo de agenda que se adapta a una clínica dental, un estudio de tatuajes o una barbería."
+  },
+  "problem": {
+    "en": "Appointments are handled by message and on paper: double bookings, no-shows and no record of each customer's history.",
+    "es": "Las citas se manejan por mensaje y en papel: empalmes, ausencias y ningún registro del historial de cada cliente."
+  },
+  "solution": {
+    "en": "A weekly calendar per professional, a booking link customers use on their own 24/7, automatic WhatsApp confirmations and reminders, and a mini CRM built with every visit.",
+    "es": "Un calendario semanal por profesional, un link de reservas que los clientes usan solos 24/7, confirmaciones y recordatorios automáticos por WhatsApp y un mini CRM que se arma con cada visita."
+  },
+  "stack": [
+    "React",
+    "Vite",
+    "Tailwind CSS",
+    "WhatsApp"
+  ],
+  "capabilities": [],
+  "links": {
+    "cta": {
+      "en": "View demo",
+      "es": "Ver demo"
+    },
+    "live": "https://agendawh.netlify.app"
+  },
+  "diagram": {
+    "flow": {
+      "direction": "responsive",
+      "label": {
+        "en": "Instagram, Google and the booking link bring customers to the agenda, which confirms and reminds each appointment over WhatsApp.",
+        "es": "Instagram, Google y el link de reservas llevan clientes a la agenda, que confirma y recuerda cada cita por WhatsApp."
+      },
+      "stages": [
+        [
+          {
+            "label": "INSTAGRAM"
+          },
+          {
+            "label": "GOOGLE"
+          },
+          {
+            "label": {
+              "en": "BOOKING LINK",
+              "es": "LINK DE RESERVAS"
+            }
+          }
+        ],
+        [
+          {
+            "label": {
+              "en": "AGENDA",
+              "es": "AGENDA"
+            },
+            "accent": true
+          }
+        ],
+        [
+          {
+            "label": "WHATSAPP",
+            "sub": {
+              "en": "confirmation · reminder",
+              "es": "confirmación · recordatorio"
+            }
+          }
+        ]
+      ]
+    }
+  },
+  "assets": "agenda-wh",
+  "showcase": "laptop",
+  "images": [
+    {
+      "name": "desktop",
+      "alt": {
+        "es": "Portada de la demo de Agenda: \"Tu agenda, tus reglas, tu forma de trabajar\" junto a una confirmación de cita por WhatsApp",
+        "en": "Agenda demo homepage: \"Your agenda, your rules, your way of working\" next to a WhatsApp appointment confirmation"
+      }
+    },
+    {
+      "name": "mobile",
+      "alt": {
+        "es": "La demo de Agenda en un teléfono, con los botones para abrir el panel o reservar",
+        "en": "The Agenda demo on a phone, with buttons to open the panel or book"
+      }
+    },
+    {
+      "name": "detail",
+      "alt": {
+        "es": "Panel de un estudio de uñas: citas de hoy, ingresos, ocupación y próximas citas",
+        "en": "A nail studio's panel: today's appointments, revenue, occupancy and upcoming appointments"
+      }
+    }
+  ]
+}

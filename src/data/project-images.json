@@ -1,7 +1,65 @@
 {
-  "gbs": {},
-  "layout-builder": {},
+  "agenda-wh": {
+    "desktop": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "detail": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "mobile": {
+      "width": 780,
+      "height": 1688,
+      "widths": [
+        480,
+        780
+      ]
+    }
+  },
   "nova-dental": {
+    "desktop": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "detail": {
+      "width": 2880,
+      "height": 1800,
+      "widths": [
+        480,
+        960,
+        1440,
+        2160
+      ]
+    },
+    "mobile": {
+      "width": 780,
+      "height": 1688,
+      "widths": [
+        480,
+        780
+      ]
+    }
+  },
+  "sofia-asis": {
     "desktop": {
       "width": 2880,
       "height": 1800,

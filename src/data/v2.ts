@@ -206,11 +206,20 @@ export const CONFIG_TEXT = {
   intro: bi("Dos preguntas rápidas. Nada se envía: solo te sugiere por dónde empezar.", "Two quick questions. Nothing is sent: it just suggests where to start."),
   q1: bi("¿Qué utilizas actualmente?", "What do you use today?"),
   q2: bi("¿Qué problema quieres solucionar?", "What problem do you want to solve?"),
+  step1: bi("HOY", "TODAY"),
+  step2: bi("PROBLEMA", "PROBLEM"),
+  step3: bi("PROPUESTA", "PROPOSAL"),
   multi: bi("Puedes elegir varias", "You can pick several"),
-  empty: bi("Elige al menos una opción de cada pregunta para ver una sugerencia.", "Pick at least one option in each question to see a suggestion."),
+  picked: (n: number) => bi(n === 1 ? "1 elegida" : `${n} elegidas`, n === 1 ? "1 picked" : `${n} picked`),
+  missing1: bi("Elige qué usas hoy", "Pick what you use today"),
+  missing2: bi("Elige qué quieres solucionar", "Pick what you want to solve"),
+  waiting: bi("Tu sugerencia aparece aquí en cuanto respondas las dos preguntas.", "Your suggestion appears here as soon as you answer both questions."),
+  diagram: bi("Tu proceso, de hoy a la propuesta", "Your process, from today to the proposal"),
   result: bi("Parece que podríamos explorar:", "Looks like we could explore:"),
+  build: bi("Podríamos construir", "We could build"),
   cta: bi("Cuéntame tu proceso", "Tell me about your process"),
   reset: bi("Empezar de nuevo", "Start over"),
+  jump: bi("Ver tu sugerencia", "See your suggestion"),
 };
 
 export const TOOLS: { key: ToolKey; label: Bi }[] = [
@@ -232,12 +241,33 @@ export const PAINS: { key: PainKey; label: Bi }[] = [
   { key: "new", label: bi("Quiero crear un sistema nuevo", "I want to build a new system") },
 ];
 
-export const AREAS: Record<Area, { name: Bi; why: Bi }> = {
-  automation: { name: bi("AUTOMATIZACIÓN", "AUTOMATION"), why: bi("Que las tareas repetitivas ocurran solas.", "Let repetitive tasks happen on their own.") },
-  internal: { name: bi("SISTEMA INTERNO", "INTERNAL SYSTEM"), why: bi("Un lugar único para la información y las reglas.", "One place for information and rules.") },
-  integration: { name: bi("INTEGRACIÓN", "INTEGRATION"), why: bi("Conectar lo que ya usas en vez de reemplazarlo.", "Connect what you already use instead of replacing it.") },
-  dashboard: { name: bi("DASHBOARD", "DASHBOARD"), why: bi("Ver el estado real de la operación sin armar reportes.", "See the real state of operations without building reports.") },
-  web: { name: bi("PLATAFORMA WEB", "WEB PLATFORM"), why: bi("Una aplicación a la medida de tu proceso.", "An application built around your process.") },
+/** Each area, why it fits, and a few systems from BUILDS it would lead to. */
+export const AREAS: Record<Area, { name: Bi; why: Bi; builds: Bi[] }> = {
+  automation: {
+    name: bi("AUTOMATIZACIÓN", "AUTOMATION"),
+    why: bi("Que las tareas repetitivas ocurran solas.", "Let repetitive tasks happen on their own."),
+    builds: [bi("Automatización WhatsApp", "WhatsApp automation"), bi("Seguimiento de clientes", "Customer follow-up"), bi("Reportes automáticos", "Automatic reports")],
+  },
+  internal: {
+    name: bi("SISTEMA INTERNO", "INTERNAL SYSTEM"),
+    why: bi("Un lugar único para la información y las reglas.", "One place for information and rules."),
+    builds: [bi("CRM", "CRM"), bi("Cotizador", "Quoting tool"), bi("Inventario", "Inventory")],
+  },
+  integration: {
+    name: bi("INTEGRACIÓN", "INTEGRATION"),
+    why: bi("Conectar lo que ya usas en vez de reemplazarlo.", "Connect what you already use instead of replacing it."),
+    builds: [bi("Integración con tu ERP", "ERP integration"), bi("APIs entre sistemas", "APIs between systems"), bi("Sincronización de datos", "Data sync")],
+  },
+  dashboard: {
+    name: bi("DASHBOARD", "DASHBOARD"),
+    why: bi("Ver el estado real de la operación sin armar reportes.", "See the real state of operations without building reports."),
+    builds: [bi("Dashboard de indicadores", "Metrics dashboard"), bi("Reportes por periodo", "Reports by period")],
+  },
+  web: {
+    name: bi("PLATAFORMA WEB", "WEB PLATFORM"),
+    why: bi("Una aplicación a la medida de tu proceso.", "An application built around your process."),
+    builds: [bi("Aplicación web a la medida", "Custom web application"), bi("Portal para clientes", "Customer portal")],
+  },
 };
 
 // ── System layers ───────────────────────────────────────────────────────────

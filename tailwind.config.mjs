@@ -19,9 +19,9 @@ export default {
       },
       fontFamily: {
         // The families loaded in Layout.astro.
-        sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
-        heading: ['Syne', 'sans-serif'],
-        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+        sans: ['Geist', 'system-ui', 'sans-serif'],
+        heading: ['Geist', 'system-ui', 'sans-serif'],
+        mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
       },
       transitionTimingFunction: {
         smooth: 'cubic-bezier(0.4,0,0.2,1)',

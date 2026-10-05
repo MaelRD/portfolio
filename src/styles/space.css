@@ -14,9 +14,9 @@
   --line: rgba(167, 139, 250, 0.22);
   --line-soft: rgba(167, 139, 250, 0.14);
   --panel: rgba(10, 5, 32, 0.84);
-  --display: 'Syne', 'Space Grotesk', sans-serif;
-  --mono: 'IBM Plex Mono', ui-monospace, monospace;
-  --sans: 'Instrument Sans', system-ui, sans-serif;
+  --display: 'Geist', system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, monospace;
+  --sans: 'Geist', system-ui, sans-serif;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   position: relative;

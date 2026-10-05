@@ -18,8 +18,8 @@ export default function Footer({ lang, page = false }: { lang: Lang; page?: bool
     { title: es ? "Proyectos" : "Projects", links: [
       { label: "Nova Dental", href: "https://novadentist.netlify.app/", external: true },
       { label: "Tinta Negra POS", href: "https://pos-tinta-negra-demo.netlify.app/", external: true },
-      { label: "GBS Builder", href: "/work/gbs-builder" },
-      { label: "LayoutBuilder", href: "/work/layout-builder" },
+      { label: "Sofía · Recepcionista IA", href: "https://sofiaasis.netlify.app/", external: true },
+      { label: "Agenda", href: "https://agendawh.netlify.app/", external: true },
     ] },
     { title: es ? "Perfil" : "Profile", links: [
       { label: es ? "Sobre mí" : "About me", href: home("about") },
