@@ -52,8 +52,7 @@ export default function SiteShell({
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pathRef = useRef<SVGPathElement>(null); // no process trajectory on these pages
-  useSpaceEngine(rootRef, canvasRef, pathRef);
+  useSpaceEngine(rootRef, canvasRef);
   useSpotlight(rootRef);
   useEffect(() => listenForTrackedClicks(), []);
 

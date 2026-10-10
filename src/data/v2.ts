@@ -1,7 +1,5 @@
 // Copy for the home page sections added in the 2026-10 restructure (quick
-// stats, audience, gallery, services bento, build showcase, before/after,
-// configurator, process timeline, system layers, stack, final CTA, contact
-// form). Same rules as content.ts: first person, concrete, no invented
+// stats, audience, services, expertise, experience, final CTA, contact form). Same rules as content.ts: first person, concrete, no invented
 // metrics, clients or results.
 
 import { bi, type Bi } from "./content";
@@ -12,14 +10,18 @@ import { bi, type Bi } from "./content";
 export const DOCK = [
   { id: "hero", icon: "home", label: bi("Inicio", "Home") },
   { id: "work", icon: "work", label: bi("Proyectos", "Work") },
-  { id: "solutions", icon: "solutions", label: bi("Soluciones", "Solutions") },
   { id: "experience", icon: "experience", label: bi("Experiencia", "Experience") },
+  { id: "solutions", icon: "solutions", label: bi("Soluciones", "Solutions") },
   { id: "contact", icon: "contact", label: bi("Contacto", "Contact") },
 ] as const;
 
 export const HERO_CTA = {
-  talk: bi("Cuéntame tu proyecto", "Tell me about your project"),
   work: bi("Ver proyectos", "View projects"),
+  talk: bi("Hablemos de tu proyecto", "Let's talk about your project"),
+  /** The quiet third path, for recruiters. */
+  recruiter: bi("¿Buscas perfil técnico?", "Hiring?"),
+  experience: bi("Ver experiencia", "View experience"),
+  cv: bi("Descargar CV", "Download resume"),
 };
 
 // ── Quick stats ─────────────────────────────────────────────────────────────
@@ -30,9 +32,7 @@ export const CAREER_START = new Date(2025, 2, 1);
 export const STATS_TEXT = {
   label: bi("En resumen", "At a glance"),
   years: bi("años de experiencia profesional", "years of professional experience"),
-  projects: bi("proyectos reales: demos en línea y sistemas internos", "real projects: live demos and internal systems"),
-  stack: bi("Java · Angular · PostgreSQL", "Java · Angular · PostgreSQL"),
-  stackSub: bi("stack principal, de la interfaz a los datos", "main stack, from interface to data"),
+  projects: bi("proyectos publicados como demo en línea", "projects published as live demos"),
   place: bi("México / remoto", "Mexico / remote"),
   placeSub: bi("disponible para trabajar en sitio o a distancia", "available on site or remotely"),
 };
@@ -84,256 +84,162 @@ export const WORK_TEXT = {
   problem: bi("PROBLEMA", "PROBLEM"),
   solution: bi("SOLUCIÓN", "SOLUTION"),
   status: bi("ESTADO", "STATUS"),
+  role: bi("MI ROL", "MY ROLE"),
+  kinds: {
+    demo: bi("PROYECTO DEMO", "DEMO PROJECT"),
+    personal: bi("PROYECTO PERSONAL", "PERSONAL PROJECT"),
+    professional: bi("EXPERIENCIA PROFESIONAL", "PROFESSIONAL WORK"),
+  },
   year: bi("AÑO", "YEAR"),
   schematic: bi("Interfaz · esquema", "Interface · schematic"),
   mobile: bi("Versión móvil", "Mobile version"),
 };
 
-// ── Gallery ─────────────────────────────────────────────────────────────────
+// ── Specialty band ──────────────────────────────────────────────────────────
 
-export const GALLERY_TEXT = {
-  eyebrow: bi("SELECTED INTERFACES", "SELECTED INTERFACES"),
-  title: bi("Interfaces reales, no maquetas.", "Real interfaces, not mockups."),
-  intro: bi("Capturas de los proyectos publicados.", "Screenshots from the published projects."),
-  open: bi("Abrir demo", "Open demo"),
+/** The scroll-linked type band (SpecialtyBand.tsx): specialties only, the stack lives in Expertise. Same words in both languages. */
+export const BAND = {
+  label: bi("Especialidades", "Specialties"),
+  specialties: ["SOFTWARE ENGINEERING", "FULL STACK", "APIs", "AUTOMATION", "SYSTEM DESIGN"],
 };
-
-/** Bento tiles, by project folder and image name (see src/data/project-images.json).
- *  TODO: add `year` once confirmed for Nova Dental and Tinta Negra (their project data has none). */
-export const GALLERY: { project: string; image: string; name: string; kind: Bi; /** Only when confirmed in the project data. */ year?: string; href?: string; size: "wide" | "tall" | "std" | "full" }[] = [
-  { project: "nova-dental", image: "desktop", name: "Nova Dental", kind: bi("Landing de conversión", "Conversion landing page"), href: "https://novadentist.netlify.app", size: "wide" },
-  { project: "tinta-negra", image: "mobile", name: "Tinta Negra POS", kind: bi("POS · móvil", "POS · mobile"), href: "https://pos-tinta-negra-demo.netlify.app", size: "tall" },
-  { project: "tinta-negra", image: "desktop", name: "Tinta Negra POS", kind: bi("Dashboard del estudio", "Studio dashboard"), href: "https://pos-tinta-negra-demo.netlify.app", size: "full" },
-  { project: "tinta-negra", image: "sale", name: "Punto de venta", kind: bi("Venta y cobro", "Sale & checkout"), href: "https://pos-tinta-negra-demo.netlify.app", size: "std" },
-  { project: "tinta-negra", image: "reports", name: "Reportes", kind: bi("Ventas por periodo", "Sales by period"), href: "https://pos-tinta-negra-demo.netlify.app", size: "std" },
-  { project: "tinta-negra", image: "inventory", name: "Inventario", kind: bi("Movimientos de stock", "Stock movements"), href: "https://pos-tinta-negra-demo.netlify.app", size: "std" },
-  { project: "nova-dental", image: "mobile", name: "Nova Dental", kind: bi("Móvil · agenda por WhatsApp", "Mobile · WhatsApp booking"), href: "https://novadentist.netlify.app", size: "std" },
-];
 
 // ── Services bento ──────────────────────────────────────────────────────────
 
 export const SERVICES_TEXT = {
-  title: bi("¿Qué quieres mejorar?", "What do you want to improve?"),
+  eyebrow: bi("CAPACIDADES", "CAPABILITIES"),
+  title: bi("Qué puedo construir.", "What I can build."),
   intro: bi(
-    "No necesitas llegar sabiendo qué tecnología necesitas. Partimos del proceso actual y decidimos qué tiene sentido construir.",
-    "You don't need to arrive knowing which technology you need. We start from the current process and decide what's worth building.",
+    "No necesitas saber qué tecnología usar: partimos de tu proceso actual y decidimos qué vale la pena construir.",
+    "You don't need to know which technology to use: we start from your current process and decide what's worth building.",
   ),
+  examples: bi("Ejemplos", "Examples"),
+  tech: bi("Con qué lo construyo", "What I build it with"),
+  demo: bi("Verlo en una demo", "See it in a demo"),
+  cta: bi("Hablemos de esto", "Let's talk about this"),
 };
 
-export const SERVICES: { key: "web" | "business" | "automation" | "integrations"; kicker: Bi; title: Bi; text: Bi; items: Bi[] }[] = [
-  {
-    key: "business",
-    kicker: bi("SISTEMAS PARA NEGOCIOS", "BUSINESS SYSTEMS"),
-    title: bi("Tu operación en un solo sistema.", "Your operation in one system."),
-    text: bi(
-      "Clientes, ventas, inventario y cotizaciones con las reglas de tu negocio dentro del software, no en una hoja de cálculo.",
-      "Customers, sales, inventory and quotes with your business rules inside the software, not in a spreadsheet.",
-    ),
-    items: [bi("CRM", "CRM"), bi("POS", "POS"), bi("Inventarios", "Inventory"), bi("Cotizadores", "Quoting tools"), bi("Dashboards", "Dashboards"), bi("ERP personalizados", "Custom ERP")],
-  },
+export type ServiceKey = "web" | "backend" | "erp" | "tools" | "ai";
+
+/**
+ * Capabilities, not logos: what each one solves for the business, a few
+ * examples, then the technologies. `demo` only where a published demo shows
+ * it; `need` is the contact form option it pre-selects (CONTACT_FORM.needs).
+ */
+export const SERVICES: { key: ServiceKey; kicker: Bi; title: Bi; text: Bi; items: Bi[]; tech: string[]; demo?: { name: string; href: string }; need: number }[] = [
   {
     key: "web",
-    kicker: bi("WEB & PLATAFORMAS", "WEB & PLATFORMS"),
-    title: bi("Presencia que convierte.", "A presence that converts."),
-    text: bi("Sitios y aplicaciones rápidas, pensadas primero para móvil.", "Fast sites and applications, designed mobile first."),
-    items: [bi("Landing Pages", "Landing pages"), bi("Sitios corporativos", "Corporate sites"), bi("Portales", "Portals"), bi("Aplicaciones Web", "Web applications")],
+    kicker: bi("APLICACIONES WEB Y PLATAFORMAS INTERNAS", "WEB APPS & INTERNAL PLATFORMS"),
+    title: bi("Tu operación en un solo sistema.", "Your operation in one system."),
+    text: bi(
+      "Clientes, ventas, citas o pedidos con las reglas de tu negocio dentro del software, no en una hoja de cálculo. Pensado primero para móvil.",
+      "Customers, sales, appointments or orders with your business rules inside the software, not in a spreadsheet. Designed mobile first.",
+    ),
+    items: [bi("CRM", "CRM"), bi("Agenda y reservas", "Scheduling & booking"), bi("Portales", "Portals"), bi("Sitios que convierten", "Sites that convert")],
+    tech: ["Angular", "React", "Astro", "TypeScript"],
+    demo: { name: "Agenda", href: "https://agendawh.netlify.app" },
+    need: 1,
   },
   {
-    key: "automation",
-    kicker: bi("AUTOMATIZACIÓN", "AUTOMATION"),
-    title: bi("Lo repetitivo, que lo haga el sistema.", "Let the system do the repetitive work."),
-    text: bi("Avisos, seguimientos y documentos que se generan solos.", "Alerts, follow-ups and documents that generate themselves."),
-    items: [bi("WhatsApp", "WhatsApp"), bi("Seguimiento", "Follow-up"), bi("Reportes", "Reports"), bi("Documentos", "Documents"), bi("Procesos administrativos", "Admin processes")],
-  },
-  {
-    key: "integrations",
-    kicker: bi("INTEGRACIONES", "INTEGRATIONS"),
+    key: "backend",
+    kicker: bi("BACKEND, APIS E INTEGRACIONES", "BACKEND, APIS & INTEGRATIONS"),
     title: bi("Herramientas que se hablan.", "Tools that talk to each other."),
-    text: bi("Conecto lo que ya usas para que la información no se capture dos veces.", "I connect what you already use so information isn't entered twice."),
-    items: [bi("APIs", "APIs"), bi("ERP", "ERP"), bi("Bases de datos", "Databases"), bi("Servicios externos", "External services"), bi("IA", "AI")],
+    text: bi(
+      "Servicios y APIs que validan, guardan y mueven la información entre sistemas, para que nada se capture dos veces.",
+      "Services and APIs that validate, store and move information between systems, so nothing is entered twice.",
+    ),
+    items: [bi("APIs REST", "REST APIs"), bi("Autenticación", "Authentication"), bi("Sincronización de datos", "Data sync"), bi("Servicios externos", "External services")],
+    tech: ["Java 21", "Quarkus", "Spring Boot", "PostgreSQL"],
+    need: 3,
+  },
+  {
+    key: "erp",
+    kicker: bi("ERP / ODOO Y AUTOMATIZACIÓN DE PROCESOS", "ERP / ODOO & PROCESS AUTOMATION"),
+    title: bi("Tu ERP, ajustado a cómo trabajas.", "Your ERP, fitted to how you work."),
+    text: bi(
+      "Vistas, reportes, automatizaciones e integraciones alrededor de Odoo: lo que hago a diario en producción.",
+      "Views, reports, automations and integrations around Odoo: what I do every day in production.",
+    ),
+    items: [bi("Módulos y vistas", "Modules & views"), bi("Reportes", "Reports"), bi("Migraciones de datos", "Data migrations"), bi("Flujos automáticos", "Automated workflows")],
+    tech: ["Odoo", "XML-RPC", "Python", "QWeb"],
+    need: 3,
+  },
+  {
+    key: "tools",
+    kicker: bi("DASHBOARDS, COTIZADORES Y HERRAMIENTAS OPERATIVAS", "DASHBOARDS, QUOTING & OPERATIONAL TOOLS"),
+    title: bi("Ver y decidir sin armar reportes.", "See and decide without building reports."),
+    text: bi(
+      "Punto de venta, inventario, cotizaciones con tus reglas de precio e indicadores que se actualizan solos.",
+      "Point of sale, inventory, quotes with your pricing rules and metrics that update themselves.",
+    ),
+    items: [bi("POS", "POS"), bi("Inventarios", "Inventory"), bi("Cotizadores", "Quoting tools"), bi("Dashboards", "Dashboards")],
+    tech: ["Angular", "Angular Material", "TypeScript", "PostgreSQL"],
+    demo: { name: "POS Tinta Negra", href: "https://pos-tinta-negra-demo.netlify.app" },
+    need: 1,
+  },
+  {
+    key: "ai",
+    kicker: bi("IA APLICADA Y AUTOMATIZACIONES", "APPLIED AI & AUTOMATION"),
+    title: bi("Lo repetitivo, que lo haga el sistema.", "Let the system do the repetitive work."),
+    text: bi(
+      "Asistentes que responden con la información de tu negocio, registran lo que hace falta y pasan la conversación a una persona cuando conviene.",
+      "Assistants that answer with your business's information, record what's needed and hand the conversation to a person when it makes sense.",
+    ),
+    items: [bi("Recepcionista por WhatsApp", "WhatsApp receptionist"), bi("Seguimiento", "Follow-up"), bi("Avisos", "Alerts"), bi("Documentos", "Documents")],
+    tech: ["React", "Python", "REST APIs"],
+    demo: { name: "Sofía", href: "https://sofiaasis.netlify.app" },
+    need: 0,
   },
 ];
-
-// ── What we can build ───────────────────────────────────────────────────────
-
-export const BUILD_TEXT = {
-  title: bi("¿Qué podemos construir?", "What can we build?"),
-  intro: bi("Algunos sistemas que resuelven problemas comunes de operación.", "Some systems that solve common operational problems."),
-  pause: bi("Pausar movimiento", "Pause motion"),
-  play: bi("Reanudar movimiento", "Resume motion"),
-};
-
-export const BUILDS: { icon: string; name: Bi; text: Bi }[] = [
-  { icon: "users", name: bi("CRM", "CRM"), text: bi("Clientes y seguimiento en un lugar", "Customers and follow-up in one place") },
-  { icon: "calendar", name: bi("Agenda", "Scheduling"), text: bi("Citas, horarios y recordatorios", "Appointments, slots and reminders") },
-  { icon: "pos", name: bi("POS", "POS"), text: bi("Ventas, caja y tickets", "Sales, register and receipts") },
-  { icon: "calculator", name: bi("Cotizador", "Quoting tool"), text: bi("Precios con tus reglas", "Pricing with your rules") },
-  { icon: "chart", name: bi("Dashboard", "Dashboard"), text: bi("Indicadores sin armar reportes", "Metrics without building reports") },
-  { icon: "box", name: bi("Inventario", "Inventory"), text: bi("Entradas, salidas y stock", "Stock in, out and on hand") },
-  { icon: "portal", name: bi("Portal para clientes", "Customer portal"), text: bi("Pedidos y estado en línea", "Orders and status online") },
-  { icon: "chat", name: bi("Automatización WhatsApp", "WhatsApp automation"), text: bi("Avisos y respuestas automáticas", "Automatic alerts and replies") },
-  { icon: "kanban", name: bi("Gestión de proyectos", "Project management"), text: bi("Tareas, responsables y avance", "Tasks, owners and progress") },
-  { icon: "erp", name: bi("ERP interno", "Internal ERP"), text: bi("Procesos de la empresa conectados", "Company processes, connected") },
-  { icon: "bot", name: bi("Agente de IA", "AI agent"), text: bi("Clasifica, resume y responde", "Classifies, summarizes, replies") },
-  { icon: "social", name: bi("Automatización de redes", "Social media automation"), text: bi("Borrador, aprobación y programación", "Draft, approval and scheduling") },
-  { icon: "plug", name: bi("Integraciones", "Integrations"), text: bi("APIs, ERP y servicios externos", "APIs, ERP and external services") },
-];
-
-// ── Before / after ──────────────────────────────────────────────────────────
-
-export const BEFORE_AFTER = {
-  title: bi("De procesos manuales a software.", "From manual processes to software."),
-  before: bi("ANTES", "BEFORE"),
-  after: bi("DESPUÉS", "AFTER"),
-  pairs: [
-    [bi("Excel", "Excel"), bi("Aplicación web", "Web application")],
-    [bi("WhatsApp", "WhatsApp"), bi("Automatización", "Automation")],
-    [bi("Captura manual", "Manual data entry"), bi("Flujos controlados", "Controlled workflows")],
-    [bi("Información dispersa", "Scattered information"), bi("Base de datos centralizada", "Centralized database")],
-    [bi("Seguimiento manual", "Manual follow-up"), bi("Integraciones", "Integrations")],
-    [bi("Reportes manuales", "Manual reports"), bi("Dashboards", "Dashboards")],
-  ] as [Bi, Bi][],
-};
-
-// ── Configurator ────────────────────────────────────────────────────────────
-
-export type ToolKey = "excel" | "whatsapp" | "sheets" | "erp" | "software" | "manual";
-export type PainKey = "time" | "duplicate" | "errors" | "followup" | "metrics" | "automate" | "new";
-export type Area = "automation" | "internal" | "integration" | "dashboard" | "web";
-
-export const CONFIG_TEXT = {
-  title: bi("Cuéntame cómo trabajas.", "Tell me how you work."),
-  intro: bi("Dos preguntas rápidas. Nada se envía: solo te sugiere por dónde empezar.", "Two quick questions. Nothing is sent: it just suggests where to start."),
-  q1: bi("¿Qué utilizas actualmente?", "What do you use today?"),
-  q2: bi("¿Qué problema quieres solucionar?", "What problem do you want to solve?"),
-  step1: bi("HOY", "TODAY"),
-  step2: bi("PROBLEMA", "PROBLEM"),
-  step3: bi("PROPUESTA", "PROPOSAL"),
-  multi: bi("Puedes elegir varias", "You can pick several"),
-  picked: (n: number) => bi(n === 1 ? "1 elegida" : `${n} elegidas`, n === 1 ? "1 picked" : `${n} picked`),
-  missing1: bi("Elige qué usas hoy", "Pick what you use today"),
-  missing2: bi("Elige qué quieres solucionar", "Pick what you want to solve"),
-  waiting: bi("Tu sugerencia aparece aquí en cuanto respondas las dos preguntas.", "Your suggestion appears here as soon as you answer both questions."),
-  diagram: bi("Tu proceso, de hoy a la propuesta", "Your process, from today to the proposal"),
-  result: bi("Parece que podríamos explorar:", "Looks like we could explore:"),
-  build: bi("Podríamos construir", "We could build"),
-  cta: bi("Cuéntame tu proceso", "Tell me about your process"),
-  reset: bi("Empezar de nuevo", "Start over"),
-  jump: bi("Ver tu sugerencia", "See your suggestion"),
-};
-
-export const TOOLS: { key: ToolKey; label: Bi }[] = [
-  { key: "excel", label: bi("Excel", "Excel") },
-  { key: "whatsapp", label: bi("WhatsApp", "WhatsApp") },
-  { key: "sheets", label: bi("Google Sheets", "Google Sheets") },
-  { key: "erp", label: bi("ERP", "ERP") },
-  { key: "software", label: bi("Software existente", "Existing software") },
-  { key: "manual", label: bi("Todo manual", "Everything by hand") },
-];
-
-export const PAINS: { key: PainKey; label: Bi }[] = [
-  { key: "time", label: bi("Pierdo demasiado tiempo", "I lose too much time") },
-  { key: "duplicate", label: bi("Información duplicada", "Duplicated information") },
-  { key: "errors", label: bi("Errores manuales", "Manual errors") },
-  { key: "followup", label: bi("Clientes sin seguimiento", "Customers without follow-up") },
-  { key: "metrics", label: bi("No tengo indicadores", "I have no metrics") },
-  { key: "automate", label: bi("Necesito automatizar", "I need to automate") },
-  { key: "new", label: bi("Quiero crear un sistema nuevo", "I want to build a new system") },
-];
-
-/** Each area, why it fits, and a few systems from BUILDS it would lead to. */
-export const AREAS: Record<Area, { name: Bi; why: Bi; builds: Bi[] }> = {
-  automation: {
-    name: bi("AUTOMATIZACIÓN", "AUTOMATION"),
-    why: bi("Que las tareas repetitivas ocurran solas.", "Let repetitive tasks happen on their own."),
-    builds: [bi("Automatización WhatsApp", "WhatsApp automation"), bi("Seguimiento de clientes", "Customer follow-up"), bi("Reportes automáticos", "Automatic reports")],
-  },
-  internal: {
-    name: bi("SISTEMA INTERNO", "INTERNAL SYSTEM"),
-    why: bi("Un lugar único para la información y las reglas.", "One place for information and rules."),
-    builds: [bi("CRM", "CRM"), bi("Cotizador", "Quoting tool"), bi("Inventario", "Inventory")],
-  },
-  integration: {
-    name: bi("INTEGRACIÓN", "INTEGRATION"),
-    why: bi("Conectar lo que ya usas en vez de reemplazarlo.", "Connect what you already use instead of replacing it."),
-    builds: [bi("Integración con tu ERP", "ERP integration"), bi("APIs entre sistemas", "APIs between systems"), bi("Sincronización de datos", "Data sync")],
-  },
-  dashboard: {
-    name: bi("DASHBOARD", "DASHBOARD"),
-    why: bi("Ver el estado real de la operación sin armar reportes.", "See the real state of operations without building reports."),
-    builds: [bi("Dashboard de indicadores", "Metrics dashboard"), bi("Reportes por periodo", "Reports by period")],
-  },
-  web: {
-    name: bi("PLATAFORMA WEB", "WEB PLATFORM"),
-    why: bi("Una aplicación a la medida de tu proceso.", "An application built around your process."),
-    builds: [bi("Aplicación web a la medida", "Custom web application"), bi("Portal para clientes", "Customer portal")],
-  },
-};
-
-// ── System layers ───────────────────────────────────────────────────────────
-
-export const SYSTEM_V2 = {
-  title: bi("No veo una pantalla. Veo un sistema.", "I don't see a screen. I see a system."),
-  intro: bi(
-    "Una interfaz es solo una de las capas. Pasa el cursor o toca cada capa para ver qué vive ahí.",
-    "An interface is only one of the layers. Hover or tap each layer to see what lives there.",
-  ),
-  layers: [
-    { code: "USER", name: bi("Usuario", "User"), text: bi("Quién usa el sistema y qué necesita conseguir.", "Who uses the system and what they need to achieve.") },
-    { code: "INTERFACE", name: bi("Interfaz", "Interface"), text: bi("Cómo interactúa la persona: formularios, tablas, flujos.", "How people interact: forms, tables, workflows.") },
-    { code: "API", name: bi("API", "API"), text: bi("Cómo viaja la información: contratos, validación y autenticación.", "How information travels: contracts, validation and authentication.") },
-    { code: "APPLICATION", name: bi("Aplicación", "Application"), text: bi("Los casos de uso: crear una cotización, registrar un pago.", "The use cases: create a quote, record a payment.") },
-    { code: "DOMAIN", name: bi("Dominio", "Domain"), text: bi("Las reglas reales del negocio viven aquí.", "The real business rules live here.") },
-    { code: "DATA", name: bi("Datos", "Data"), text: bi("Cómo se guarda, relaciona y recupera la información.", "How information is stored, related and retrieved.") },
-  ],
-  closing: [bi("No construyo pantallas aisladas.", "I don't build isolated screens."), bi("Construyo sistemas que resuelven problemas.", "I build systems that solve problems.")],
-};
 
 // ── Stack ───────────────────────────────────────────────────────────────────
 
 export const STACK_V2 = {
-  title: bi("Skills", "Skills"),
+  eyebrow: bi("SKILLS", "SKILLS"),
+  title: bi("Especialidades.", "Expertise."),
   intro: bi(
-    "Agrupadas por la parte del sistema en la que operan, de la interfaz a la infraestructura.",
-    "Grouped by the part of the system they operate in, from interface to infrastructure.",
+    "Cinco áreas en las que trabajo, de la interfaz a la automatización.",
+    "Five areas I work in, from the interface to automation.",
   ),
-  /** One group per operation, in the order a request travels (see SYSTEM_V2.layers). */
+  /**
+   * The five areas of the Expertise showcase (TechStack.tsx), every technology
+   * from the earlier per-layer Skills kept. `key` names the area in the
+   * developer file's skills.ts tab.
+   */
   groups: [
     {
-      code: "INTERFACE",
-      name: bi("Interfaz", "Interface"),
-      does: bi("Lo que la persona ve y usa: pantallas, formularios y flujos.", "What people see and use: screens, forms and workflows."),
+      key: "frontend",
+      code: "FRONTEND",
+      name: bi("Frontend", "Frontend"),
+      does: bi("Pantallas, formularios y flujos que la gente usa todos los días, pensados primero para móvil.", "Screens, forms and workflows people use every day, designed mobile first."),
       items: ["Angular", "React", "Astro", "TypeScript"],
     },
     {
-      code: "API · LOGIC",
-      name: bi("Lógica y APIs", "Logic & APIs"),
-      does: bi("Servicios, reglas de negocio y contratos entre sistemas.", "Services, business rules and contracts between systems."),
-      items: ["Java 21", "Spring Boot", "Quarkus", "Python", "FastAPI", "REST APIs"],
+      key: "backend",
+      code: "BACKEND",
+      name: bi("Backend y datos", "Backend & data"),
+      does: bi("Servicios, reglas de negocio y APIs; guardar, relacionar y recuperar la información.", "Services, business rules and APIs; storing, relating and retrieving information."),
+      items: ["Java 21", "Spring Boot", "Quarkus", "Python", "FastAPI", "REST APIs", "PostgreSQL", "MySQL", "MariaDB", "Redis"],
     },
     {
-      code: "DATA",
-      name: bi("Datos", "Data"),
-      does: bi("Guardar, relacionar y recuperar la información; caché.", "Storing, relating and retrieving information; caching."),
-      items: ["PostgreSQL", "MySQL", "MariaDB", "Redis"],
-    },
-    {
-      code: "INTEGRATION",
-      name: bi("Integración y ERP", "Integration & ERP"),
-      does: bi("Conectar el software con los procesos y sistemas de la empresa.", "Connecting software with the company's processes and systems."),
-      items: ["Odoo", "XML-RPC", "Integraciones ERP", "Automatización de procesos"],
-    },
-    {
-      code: "INFRA",
-      name: bi("Infraestructura y trabajo", "Infrastructure & workflow"),
-      does: bi("Ejecutar, desplegar y coordinar el desarrollo.", "Running, deploying and coordinating development."),
-      items: ["Docker", "AWS", "Git", "Jira"],
-    },
-    {
+      key: "architecture",
       code: "ARCHITECTURE",
       name: bi("Arquitectura", "Architecture"),
-      does: bi("Que cada responsabilidad viva en su lugar.", "Keeping each responsibility where it belongs."),
-      items: ["Arquitectura Hexagonal", "SOLID", "Diseño orientado a dominio"],
+      does: bi("Que cada responsabilidad viva en su lugar, y que el sistema se pueda desplegar y mantener.", "Keeping each responsibility where it belongs, and the system deployable and maintainable."),
+      items: ["Arquitectura Hexagonal", "SOLID", "Diseño orientado a dominio", "Docker", "AWS", "Git", "Jira"],
+    },
+    {
+      key: "integration",
+      code: "INTEGRATION · ERP",
+      name: bi("Integraciones y ERP", "Integrations & ERP"),
+      does: bi("Conectar el software con los procesos y sistemas de la empresa, empezando por Odoo.", "Connecting software with the company's processes and systems, starting with Odoo."),
+      items: ["Odoo", "XML-RPC", "Integraciones ERP"],
+    },
+    {
+      key: "automation",
+      code: "AUTOMATION · AI",
+      name: bi("Automatización e IA", "Automation & AI"),
+      does: bi("Que lo repetitivo ocurra solo: flujos automáticos y asistentes como la demo de Sofía.", "Letting the repetitive happen on its own: automated workflows and assistants like the Sofía demo."),
+      items: ["Automatización de procesos", "Asistentes con IA", "WhatsApp"],
     },
   ],
 };
@@ -341,9 +247,40 @@ export const STACK_V2 = {
 // ── Experience ──────────────────────────────────────────────────────────────
 
 export const EXPERIENCE_V2 = {
+  eyebrow: bi("EXPERIENCIA PROFESIONAL", "PROFESSIONAL EXPERIENCE"),
   title: bi("Experiencia", "Experience"),
-  intro: bi("Sistemas empresariales, backend e integraciones en producción.", "Business systems, backend and integrations in production."),
+  intro: bi(
+    "Empecé dando soporte a un ERP y hoy diseño y construyo las aplicaciones e integraciones que lo rodean.",
+    "I started supporting an ERP and today I design and build the applications and integrations around it.",
+  ),
   now: bi("Actual", "Current"),
+  did: bi("Qué hice", "What I did"),
+};
+
+/** The developer file next to the experience list (DeveloperFile.tsx). Real data only. */
+export const DEV_FILE = {
+  label: bi("Ficha del desarrollador escrita como código", "Developer profile written as code"),
+  comment: bi("perfil real, sin adornos", "the real profile, no embellishment"),
+  since: bi("primer rol profesional", "first professional role"),
+  focus: [bi("procesos de negocio", "business processes"), bi("backend", "backend"), bi("integraciones ERP", "ERP integrations")],
+  architecture: ["hexagonal", "SOLID", "DDD"],
+  studies: bi("Ing. en Informática · IPN UPIICSA · egreso dic. 2026", "Computer Engineering · IPN UPIICSA · Dec 2026"),
+  openTo: [bi("empleo", "jobs"), bi("proyectos", "projects")],
+  skillsComment: bi("tecnologías que uso, por área", "technologies I use, by area"),
+  termTab: bi("terminal · demo", "terminal · demo"),
+  termNote: bi("flujo ilustrativo: build → pruebas → ejecución local", "illustrative flow: build → tests → local run"),
+  termNotice: bi(
+    "Demostración visual: no se ejecuta ningún comando real.",
+    "Visual demonstration: no real command is run.",
+  ),
+  /** The illustrative terminal: command, then what that step is for (no timings or results). */
+  term: [
+    ["./mvnw test", bi("pruebas de dominio y casos de uso", "domain and use-case tests")],
+    ["./mvnw package", bi("servicio Quarkus empaquetado", "Quarkus service packaged")],
+    ["npm run build", bi("interfaz Angular compilada", "Angular interface built")],
+    ["docker compose up -d", bi("API, interfaz y PostgreSQL en contenedores", "API, interface and PostgreSQL in containers")],
+  ] as [string, Bi][],
+  cv: bi("CV", "Resume"),
 };
 
 // ── About ───────────────────────────────────────────────────────────────────
@@ -371,6 +308,7 @@ export const ABOUT_V2 = {
     { k: bi("Dirección", "Direction"), v: bi("Full Stack → arquitectura de soluciones", "Full Stack → solutions architecture") },
   ],
   photoAlt: bi("Foto de Mario Yael", "Photo of Mario Yael"),
+  cv: bi("Descargar CV", "Download resume"),
 };
 
 // ── Final CTA ───────────────────────────────────────────────────────────────
@@ -440,5 +378,20 @@ export const CONTACT_FORM = {
     text: bi("Gracias. Te respondo por correo en uno o dos días hábiles.", "Thanks. I'll reply by email within one or two business days."),
     again: bi("Enviar otro mensaje", "Send another message"),
   },
-  prefill: bi("Desde el configurador:", "From the configurator:"),
+  /** Interactive extras (ContactForm.tsx). */
+  progress: (n: number, total: number) => bi(`${n} de ${total} campos listos`, `${n} of ${total} fields ready`),
+  ready: bi("Todo listo para enviar", "All set to send"),
+  starters: {
+    label: bi("¿No sabes cómo empezar? Toca una idea:", "Not sure how to start? Tap an idea:"),
+    items: [
+      bi("Hoy lo hacemos en Excel y queremos ", "Today we do it in Excel and we want "),
+      bi("Perdemos tiempo cuando ", "We lose time when "),
+      bi("Necesitamos conectar nuestro sistema con ", "We need to connect our system with "),
+    ],
+    short: [bi("Hoy usamos Excel…", "We use Excel…"), bi("Perdemos tiempo…", "We lose time…"), bi("Conectar sistemas…", "Connect systems…")],
+  },
+  count: (n: number) => bi(n < 20 ? `${n}/20 · un poco más de contexto` : `${n} caracteres`, n < 20 ? `${n}/20 · a bit more context` : `${n} characters`),
+  draft: bi("Borrador guardado en este navegador", "Draft saved in this browser"),
+  shortcut: bi("o pulsa", "or press"),
+  successTo: bi("Te responderé a", "I'll reply to"),
 };

@@ -2,7 +2,7 @@
   "title": "Agenda",
   "slug": "agenda-wh",
   "order": 4,
-  "statusPrefix": "Demo",
+  "kind": "demo",
   "role": {
     "en": "Full Stack development",
     "es": "Desarrollo Full Stack"
@@ -37,56 +37,12 @@
     "Tailwind CSS",
     "WhatsApp"
   ],
-  "capabilities": [],
   "links": {
     "cta": {
       "en": "View demo",
       "es": "Ver demo"
     },
     "live": "https://agendawh.netlify.app"
-  },
-  "diagram": {
-    "flow": {
-      "direction": "responsive",
-      "label": {
-        "en": "Instagram, Google and the booking link bring customers to the agenda, which confirms and reminds each appointment over WhatsApp.",
-        "es": "Instagram, Google y el link de reservas llevan clientes a la agenda, que confirma y recuerda cada cita por WhatsApp."
-      },
-      "stages": [
-        [
-          {
-            "label": "INSTAGRAM"
-          },
-          {
-            "label": "GOOGLE"
-          },
-          {
-            "label": {
-              "en": "BOOKING LINK",
-              "es": "LINK DE RESERVAS"
-            }
-          }
-        ],
-        [
-          {
-            "label": {
-              "en": "AGENDA",
-              "es": "AGENDA"
-            },
-            "accent": true
-          }
-        ],
-        [
-          {
-            "label": "WHATSAPP",
-            "sub": {
-              "en": "confirmation · reminder",
-              "es": "confirmación · recordatorio"
-            }
-          }
-        ]
-      ]
-    }
   },
   "assets": "agenda-wh",
   "showcase": "laptop",

@@ -14,19 +14,19 @@ import QuickStats from "../../sections/QuickStats";
 import AudienceSelector from "../../sections/AudienceSelector";
 import FeaturedProjects from "../../sections/FeaturedProjects";
 import ServicesBento from "../../sections/ServicesBento";
-import SolutionMarquee from "../../sections/SolutionMarquee";
-import BeforeAfter from "../../sections/BeforeAfter";
-import ProjectConfigurator from "../../sections/ProjectConfigurator";
-import SystemArchitecture from "../../sections/SystemArchitecture";
 import TechStack from "../../sections/TechStack";
 import Experience from "../../sections/Experience";
 import About from "../../sections/About";
 import ContactCTA from "../../sections/ContactCTA";
 import ContactForm from "../../sections/ContactForm";
+import SpecialtyBand from "../../sections/SpecialtyBand";
+import { useMotionSystem } from "@/lib/motionSystem";
 import "../../../styles/space.css";
 import "../../../styles/v2.css";
+import "../../../styles/motion.css";
+import "../../../styles/process.css";
 
-const SECTION_IDS = ["hero", "audience", "work", "solutions", "build", "before-after", "configurator", "process", "system", "stack", "experience", "about", "cta", "contact"];
+const SECTION_IDS = ["hero", "audience", "work", "experience", "about", "solutions", "process", "stack", "cta", "contact"];
 
 /**
  * Spotlight cards (after React Bits' SpotlightCard): any `.spotlight` element
@@ -89,9 +89,9 @@ export default function SpaceApp({ projects }: { projects: Project[] }) {
   const active = useActiveSection();
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  useSpaceEngine(rootRef, canvasRef, pathRef);
+  useSpaceEngine(rootRef, canvasRef);
   useSpotlight(rootRef);
+  useMotionSystem(rootRef);
   useEffect(() => listenForTrackedClicks(), []);
 
   return (
@@ -111,15 +111,14 @@ export default function SpaceApp({ projects }: { projects: Project[] }) {
         <QuickStats lang={lang} projects={projects.length} />
         <AudienceSelector lang={lang} />
         <FeaturedProjects projects={projects} lang={lang} />
-        <ServicesBento lang={lang} />
-        <SolutionMarquee lang={lang} />
-        <BeforeAfter lang={lang} />
-        <ProjectConfigurator lang={lang} />
-        <Process lang={lang} pathRef={pathRef} />
-        <SystemArchitecture lang={lang} />
-        <TechStack lang={lang} />
+        <SpecialtyBand lang={lang} />
+        {/* The developer: experience (with the developer file) and about, read together. */}
         <Experience lang={lang} />
         <About lang={lang} />
+        {/* What I can build for a business, then how I work and the engineering behind it. */}
+        <ServicesBento lang={lang} />
+        <Process lang={lang} />
+        <TechStack lang={lang} />
         <ContactCTA lang={lang} />
         <ContactForm lang={lang} />
       </main>

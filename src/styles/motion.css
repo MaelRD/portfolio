@@ -1,0 +1,218 @@
+/* Motion system for the home page (docs/MOTION-DESIGN.md). Driven by
+   src/lib/motionSystem.ts: data-rv="armed" is only ever set by script, off
+   screen and with motion allowed, so every hidden state below is reversible
+   and server HTML is always visible. --p is only written with motion allowed;
+   every var(--p, …) fallback is the element's resting state. */
+
+.space {
+  --m-fast: 180ms;
+  --m-base: 520ms;
+  --m-slow: 820ms;
+  --m-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --m-ease-io: cubic-bezier(0.77, 0, 0.175, 1);
+  --m-dist: 24px;
+  --m-dist-s: 10px;
+  --m-stagger: 70ms;
+  --m-stagger-w: 38ms;
+}
+
+/* ── Split words: one mask per word (layout is the same in every state) ── */
+.sw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.sw__i { display: inline-block; }
+
+/* ── Reveals ───────────────────────────────────────────────────────────── */
+[data-reveal="up"][data-rv="armed"] { opacity: 0; transform: translate3d(0, var(--m-dist), 0); }
+[data-reveal="up"][data-rv="on"] { transition: opacity var(--m-base) var(--m-ease), transform var(--m-base) var(--m-ease); }
+
+[data-reveal="stagger"][data-rv="armed"] > * { opacity: 0; transform: translate3d(0, var(--m-dist-s), 0); }
+[data-reveal="stagger"][data-rv="on"] > * {
+  transition: opacity var(--m-base) var(--m-ease), transform var(--m-base) var(--m-ease);
+  transition-delay: calc(var(--i, 0) * var(--m-stagger));
+}
+
+/* Section headers: eyebrow, then the title word by word, then the intro. */
+[data-reveal="words"][data-rv="armed"] .sw__i { transform: translate3d(0, 110%, 0); }
+[data-reveal="words"][data-rv="armed"] :is(.sh__eyebrow, .lede) { opacity: 0; transform: translate3d(0, var(--m-dist-s), 0); }
+[data-reveal="words"][data-rv="on"] .sw__i { transition: transform var(--m-slow) var(--m-ease); transition-delay: calc(80ms + var(--w, 0) * var(--m-stagger-w)); }
+[data-reveal="words"][data-rv="on"] .sh__eyebrow { transition: opacity var(--m-base) var(--m-ease), transform var(--m-base) var(--m-ease); }
+[data-reveal="words"][data-rv="on"] .lede { transition: opacity var(--m-base) var(--m-ease) 320ms, transform var(--m-base) var(--m-ease) 320ms; }
+
+/* ── Hero: the one orchestrated entrance ───────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  /* The statement and the buttons choreograph their own parts instead of
+     rising as blocks; everything else keeps the original rise, re-timed so
+     the subtitle follows the statement. */
+  .hero__copy > .hero__headline, .hero__copy > .hero__ctas { animation: none; }
+  .hero__headline .sw__i { animation: word-rise var(--m-slow) var(--m-ease) both; animation-delay: calc(0.22s + var(--w) * var(--m-stagger-w)); }
+  .hero__headline .sw-hl .sw__i { animation-delay: calc(0.42s + var(--w) * var(--m-stagger-w)); }
+  .hero__headline .sw-hl { animation: hl-draw 0.7s var(--m-ease-io) 0.95s both; }
+  .hero__copy > .hero__desc { animation-delay: 0.55s; }
+  .hero__copy > .hero__stack { animation-delay: 0.62s; }
+  .hero__copy > .hero__status { animation-delay: 0.68s; }
+  .hero__ctas > * { animation: rise 0.8s var(--ease) both; }
+  .hero__ctas > :nth-child(1) { animation-delay: 0.74s; }
+  .hero__ctas > :nth-child(2) { animation-delay: 0.82s; }
+  .hero__copy > .hero__recruit { animation-delay: 0.9s; }
+  .hero__scroll { animation: fade 0.8s var(--ease) 1.3s both; }
+  .hero__scroll i::after { animation: scroll-cue 1.8s var(--m-ease-io) 1.6s 3 both; }
+}
+@keyframes word-rise { from { transform: translate3d(0, 110%, 0); } }
+@keyframes hl-draw { from { background-size: 0% 2px; } }
+@keyframes scroll-cue { 0% { transform: translateY(-100%); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(260%); opacity: 0; } }
+
+/* "real problems": underlined in the focus color, drawn after the words land. */
+.hero__headline .sw-hl {
+  background: linear-gradient(90deg, var(--cyan), var(--violet)) 0 100% / 100% 2px no-repeat;
+  padding-bottom: 2px;
+}
+
+/* A quiet cue that there's more below. Desktop only (phones have the dock). */
+.hero__scroll { position: absolute; left: 50%; bottom: clamp(20px, 4vh, 36px); z-index: 1; display: none; flex-direction: column; align-items: center; gap: 10px; transform: translateX(-50%); font-family: var(--label); font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); pointer-events: none; opacity: calc(1 - var(--p, 0) * 8); }
+.hero__scroll i { position: relative; width: 1px; height: 40px; overflow: hidden; background: var(--line-soft); }
+.hero__scroll i::after { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 40%; background: var(--cyan); opacity: 0; }
+@media (min-width: 900px) and (min-height: 700px) { .hero__scroll { display: flex; } }
+
+/* As the page scrolls on, the hero steps back instead of being cut off. */
+.launch[data-scrub] .hero__grid {
+  transform: translate3d(0, calc(var(--p, 0) * -64px), 0) scale(calc(1 - var(--p, 0) * 0.04));
+  opacity: calc(1 - var(--p, 0) * 0.9);
+}
+
+/* ── Specialty band (scroll-linked, never autoplays) ───────────────────── */
+.band { --band-shift: 40vw; position: relative; z-index: 1; overflow: hidden; display: flex; flex-direction: column; gap: clamp(10px, 1.6vw, 18px); padding: clamp(36px, 7vw, 88px) 0; }
+.band__row { display: flex; width: max-content; white-space: nowrap; transform: translate3d(calc(-33.333% + var(--dir) * (var(--p, 0.5) - 0.5) * var(--band-shift)), 0, 0); }
+.band__row span { display: inline-flex; align-items: center; }
+.band__row i { font-style: normal; }
+.band__row--big { font-family: var(--label); font-weight: 700; font-size: clamp(36px, 7vw, 112px); line-height: 1; letter-spacing: 0.02em; color: transparent; -webkit-text-stroke: 1px rgba(167, 139, 250, 0.5); }
+.band__row--big span:nth-child(3n + 1) { color: var(--ink); -webkit-text-stroke: 0; }
+.band__row--big i { margin: 0 0.32em; color: var(--violet); -webkit-text-stroke: 0; font-weight: 400; }
+
+/* ── Projects: screenshot wipes in, then the copy in order ─────────────── */
+.showcase[data-rv="armed"] :is(.bm__body, .laptop__screen) { clip-path: inset(0 0 100% 0); }
+.showcase[data-rv="armed"] :is(.bm__body, .laptop__screen) img { transform: scale(1.08); }
+.showcase[data-rv="armed"] :is(.phone, .pipe) { opacity: 0; transform: translate3d(0, var(--m-dist), 0); }
+.showcase[data-rv="on"] :is(.bm__body, .laptop__screen) { transition: clip-path var(--m-slow) var(--m-ease-io); }
+.showcase[data-rv="on"] :is(.bm__body, .laptop__screen) img { transition: transform 1.2s var(--m-ease); }
+.showcase[data-rv="on"] :is(.phone, .pipe) { transition: opacity var(--m-base) var(--m-ease) 0.45s, transform var(--m-base) var(--m-ease) 0.45s; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .showcase .bm__body img { transition: transform 0.7s var(--m-ease); }
+  .showcase:hover .bm__body img { transform: scale(1.03); }
+}
+
+/* ── Experience: the rail fills as you read ────────────────────────────── */
+.xp { position: relative; }
+.xp::before, .xp::after { content: ""; position: absolute; top: 0; bottom: 0; left: clamp(-28px, -2vw, -9px); width: 1px; }
+.xp::before { background: var(--line-soft); }
+.xp::after { background: linear-gradient(180deg, var(--violet), var(--cyan)); transform-origin: top; transform: scaleY(var(--p, 1)); }
+
+/* Milestones: each company gets a marker on the rail, each role a dot by
+   its dates; they light as they scroll in. Unlit only while armed. */
+.xp__org { position: relative; }
+.xp__org::before { content: ""; position: absolute; top: clamp(34px, 4.6vw, 52px); left: calc(clamp(-28px, -2vw, -9px) - 4px); width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--cyan); box-shadow: 0 0 10px rgba(125, 227, 255, 0.6); }
+.xp__period::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 4px rgba(125, 227, 255, 0.12); }
+.xp__org[data-rv="armed"]::before { border-color: var(--line-strong); box-shadow: none; }
+.xp__role[data-rv="armed"] .xp__period::before { background: var(--line-strong); box-shadow: none; }
+.xp__org[data-rv="on"]::before, .xp__role[data-rv="on"] .xp__period::before { transition: background 0.4s var(--m-ease), border-color 0.4s var(--m-ease), box-shadow 0.4s var(--m-ease); }
+@media (prefers-reduced-motion: no-preference) { .xp__role[data-rv="on"] .xp__period::before { animation: ping 0.9s var(--m-ease) 0.15s 1; } }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(125, 227, 255, 0.55); } 100% { box-shadow: 0 0 0 10px rgba(125, 227, 255, 0); } }
+
+/* Switching editor tabs: the chosen file types in once. */
+@media (prefers-reduced-motion: no-preference) {
+  .df__code[data-anim] .df__line { animation: line-in 0.32s var(--m-ease) both; animation-delay: calc(var(--k) * 45ms); }
+  .df__code[data-anim][data-term] .df__line { animation-delay: calc(var(--k) * 160ms); }
+}
+@keyframes line-in { from { opacity: 0; transform: translate3d(-6px, 0, 0); } }
+
+/* The caret at the end of the developer file blinks a few times, then rests. */
+.df__caret { display: inline-block; width: 0.55em; height: 1.15em; margin-left: 6px; vertical-align: text-bottom; background: var(--cyan); opacity: 0.75; }
+@media (prefers-reduced-motion: no-preference) { .df__caret { animation: caret 1.05s steps(1) 0.6s 8; } }
+@keyframes caret { 50% { opacity: 0; } }
+
+/* ── Capabilities ──────────────────────────────────────────────────────── */
+.service-option__icon { transition: transform var(--m-fast) var(--m-ease), color var(--m-fast), border-color var(--m-fast); }
+@media (hover: hover) and (pointer: fine) {
+  .service-option:hover .service-option__icon { transform: translate3d(0, -3px, 0) rotate(-4deg); color: var(--cyan); border-color: rgba(125, 227, 255, 0.4); }
+}
+
+/* ── Process: the trajectory draws itself, then the waypoints land ─────── */
+.trajectory[data-rv="armed"] svg { clip-path: inset(0 100% 0 0); }
+.trajectory[data-rv="armed"] :is(.waypoints li, .rocket, .trajectory__star) { opacity: 0; }
+/* Opacity only: a transform on the <li> would become the waypoints' containing block and move them. */
+.trajectory[data-rv="on"] svg { transition: clip-path 1.4s var(--m-ease-io); }
+.trajectory[data-rv="on"] :is(.waypoints li, .rocket, .trajectory__star) { transition: opacity 0.45s var(--m-ease); }
+.trajectory[data-rv="on"] .waypoints li:nth-child(1) { transition-delay: 0.2s; }
+.trajectory[data-rv="on"] .waypoints li:nth-child(2) { transition-delay: 0.4s; }
+.trajectory[data-rv="on"] .waypoints li:nth-child(3) { transition-delay: 0.6s; }
+.trajectory[data-rv="on"] .waypoints li:nth-child(4) { transition-delay: 0.8s; }
+.trajectory[data-rv="on"] .waypoints li:nth-child(5) { transition-delay: 1s; }
+.trajectory[data-rv="on"] .waypoints li:nth-child(6) { transition-delay: 1.2s; }
+.trajectory[data-rv="on"] :is(.rocket, .trajectory__star) { transition-delay: 1.3s; }
+
+/* ── Microinteractions ─────────────────────────────────────────────────── */
+.btn__arrow { display: inline-block; transition: transform var(--m-fast) var(--m-ease); }
+.btn[data-magnetic] { transform: translate3d(var(--mx, 0px), var(--my, 0px), 0); transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.35s var(--m-ease); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover .btn__arrow[data-dir="right"] { transform: translate3d(3px, 0, 0); }
+  .btn:hover .btn__arrow[data-dir="down"] { transform: translate3d(0, 2px, 0); }
+  .btn:hover .btn__arrow[data-dir="out"] { transform: translate3d(2px, -2px, 0); }
+  .service-option__link svg { transition: transform var(--m-fast) var(--m-ease); }
+  .service-option__link:hover svg { transform: translate3d(2px, -2px, 0); }
+}
+
+/* Text links: a faint resting underline, a bright one that grows on hover. */
+.hero__recruit a, .df__links a {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1px no-repeat, linear-gradient(var(--line), var(--line)) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 2px;
+  transition: color var(--m-fast), background-size 0.3s var(--m-ease);
+}
+.hero__recruit a:hover, .df__links a:hover { background-size: 100% 1px, 100% 1px; }
+
+/* Reduced motion: no transitions on anything the system touches. */
+@media (prefers-reduced-motion: reduce) {
+  .launch[data-scrub] .hero__grid, .band__row, .xp::after, .btn[data-magnetic] { transform: none; transition: none; }
+  .band__row { transform: translate3d(-33.333%, 0, 0); }
+  .launch[data-scrub] .hero__grid { opacity: 1; }
+}
+
+/* ── Process: four stages + scroll storytelling (Process.tsx, useStory) ─── */
+.stages { position: relative; margin-bottom: 8px; }
+.stages ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; }
+@media (min-width: 640px) { .stages ol { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.stage { width: 100%; display: flex; align-items: baseline; gap: 10px; min-height: 44px; padding: 10px 0; background: none; border: 0; cursor: pointer; text-align: left; font-family: var(--label); font-size: 11.5px; letter-spacing: 0.14em; color: var(--dim); transition: color var(--m-fast); }
+.stage[data-done] { color: var(--soft); }
+.stage[aria-current="step"] { color: var(--ink); }
+/* The current stage: a lit dot instead of a number (the planets already carry the numbers). */
+.stage[aria-current="step"]::before { content: ""; flex: none; align-self: center; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+@media (hover: hover) and (pointer: fine) { .stage:hover { color: var(--ink); } }
+.stages__bar { position: relative; display: block; height: 2px; border-radius: 2px; background: var(--line-soft); overflow: hidden; }
+.stages__bar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--violet), var(--cyan)); transform-origin: left; transform: scaleX(var(--sel-p, 0)); transition: transform var(--m-base) var(--m-ease); }
+
+/* Story mode (desktop with room and motion allowed, set by script): the block
+   pins under the nav and the page scrolls through one stretch per phase. */
+.story[data-on] { height: calc(var(--pin-h, 640px) + 240vh); }
+.story__pin { top: 88px; }
+.story[data-on] .story__pin { position: sticky; }
+/* In story mode the bar follows the scroll itself, not just the phase. */
+.story[data-on] .stages__bar::after { transform: scaleX(var(--story-p, 0)); transition: none; }
+
+/* ── Projects: a little differential depth (wide screens, motion allowed) ─ */
+@media (min-width: 960px) and (prefers-reduced-motion: no-preference) {
+  .showcase[data-scrub] .showcase__visual { transform: translate3d(0, calc((0.5 - var(--p, 0.5)) * 56px), 0); }
+}
+
+/* ── Architecture: conceptual monitor (SystemArchitecture.tsx) ─────────── */
+
+/* The wire under the three nodes, and the packet that runs along it. */
+
+/* Full-width carrier, so translateX(33.33%) is one node; the dot is its ::after. */
+
+@media (prefers-reduced-motion: no-preference) {
+  
+}
+@keyframes packet {
+  0% { opacity: 0; transform: translateX(0); }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(calc(var(--at) * 33.333%)); }
+}

@@ -14,9 +14,12 @@
   --line: rgba(167, 139, 250, 0.22);
   --line-soft: rgba(167, 139, 250, 0.14);
   --panel: rgba(10, 5, 32, 0.84);
-  --display: 'Geist', system-ui, sans-serif;
-  --mono: 'Geist Mono', ui-monospace, monospace;
-  --sans: 'Geist', system-ui, sans-serif;
+  /* Space type (2026-10-09): Exo 2 for titles and text, Orbitron for short
+     uppercase labels, Space Mono for code and data. */
+  --display: 'Exo 2', system-ui, sans-serif;
+  --sans: 'Exo 2', system-ui, sans-serif;
+  --label: 'Orbitron', 'Exo 2', sans-serif;
+  --mono: 'Space Mono', ui-monospace, monospace;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   position: relative;
@@ -258,7 +261,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .head { display: flex; flex-direction: column; gap: 14px; }
 .h2 { font-weight: 700; font-size: clamp(38px, 5.4vw, 68px); line-height: 1; letter-spacing: -0.025em; text-wrap: balance; }
 .lede { color: var(--dim); font-size: 17px; line-height: 1.55; max-width: 560px; text-wrap: pretty; }
-.label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--dim); }
+.label { font-family: var(--label); font-size: 10px; letter-spacing: 0.14em; color: var(--dim); }
 .label--11 { font-size: 11px; }
 
 /* Solid, not backdrop-blurred: the sky behind repaints every frame, which would
@@ -286,9 +289,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .btn--line:hover { border-color: var(--ink); }
 }
 
-.chip { font-family: var(--mono); font-size: 12px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(167, 139, 250, 0.3); color: var(--ink); }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
-
 /* Spotlight cards (React Bits SpotlightCard): a soft light under the pointer.
    The position comes from useSpotlight in SpaceApp; the pseudo-element takes
    the card's radius instead of clipping it, so parts that sit outside a card
@@ -313,26 +313,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .spotlight:hover::before, .spotlight:focus-within::before { opacity: 0.6; }
 }
 
-/* Selectable rows (projects, layers, stack areas) share one pattern. */
-.pick {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 10px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  text-align: left;
-  border: 1px solid var(--line-soft);
-  background: rgba(10, 5, 32, 0.4);
-  transition: background 0.25s, border-color 0.25s;
-}
-.pick[aria-pressed="true"], .pick[aria-selected="true"] { border-color: rgba(125, 227, 255, 0.55); background: rgba(125, 227, 255, 0.08); }
-@media (hover: hover) and (pointer: fine) {
-  .pick:hover { border-color: rgba(167, 139, 250, 0.4); }
-  .pick[aria-pressed="true"]:hover { border-color: rgba(125, 227, 255, 0.7); }
-}
-
 /* Content swapped by a selection fades in, so the change is noticed. */
 .swap { animation: swap-in 0.35s var(--ease) both; }
 @keyframes swap-in { from { opacity: 0; transform: translateY(6px); } }
@@ -354,7 +334,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   font-weight: 800;
   font-size: clamp(56px, 9vw, 124px);
   line-height: 0.88;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
   isolation: isolate;
   margin: 0.04em 0 0.02em;
 }
@@ -403,9 +383,13 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 @keyframes ring-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .hero__role { display: flex; align-items: center; gap: 14px; }
 .hero__role::before { content: ""; width: 48px; height: 1px; background: var(--violet); }
-.hero__role span { font-family: var(--mono); font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--violet); }
+.hero__role span { font-family: var(--label); font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--violet); }
 .hero__headline { font-size: clamp(20px, 2.2vw, 26px); line-height: 1.35; max-width: 560px; text-wrap: pretty; }
 .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+/* The recruiter's path: a quiet line under the buttons, not a third button. */
+.hero__recruit { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 14.5px; color: var(--dim); }
+.hero__recruit a { color: var(--soft); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; transition: color 0.2s, text-decoration-color 0.2s; }
+.hero__recruit a:hover { color: var(--cyan); text-decoration-color: currentColor; }
 .hero__visual { display: flex; flex-direction: column; gap: 20px; align-items: center; }
 
 /* Entrance: the one orchestrated moment on the page. */
@@ -461,56 +445,22 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 
 .dot-live { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); flex-shrink: 0; }
 
-/* ── Work ────────────────────────────────────────────────────────────────── */
-.pulse { position: absolute; left: -3px; top: 0; width: 7px; height: 22px; border-radius: 4px; background: linear-gradient(180deg, transparent, var(--cyan)); box-shadow: 0 0 12px var(--cyan); }
-/* Screenshot of a deployed project, above its diagram. */
-/* Architecture diagram: columns of nodes, Magic UI animated beams between them. */
-
 /* ── Process ─────────────────────────────────────────────────────────────── */
 .trajectory { position: relative; width: 100%; aspect-ratio: 1200 / 280; min-height: 240px; margin-bottom: 28px; }
 .trajectory svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.probe { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); width: 14px; height: 14px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 5px rgba(125, 227, 255, 0.18), 0 0 22px var(--cyan); pointer-events: none; }
 /* Narrow screens: six names don't fit along the path; numbers stay, the phase panel names it. */
 
 .phase { padding: clamp(24px, 4vw, 40px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 32px; }
+/* Stage and deliverables: added inside the phase panel, the trajectory is untouched. */
+.phase__stage { font-family: var(--label); font-size: 11.5px; letter-spacing: 0.16em; color: var(--cyan); margin-bottom: 10px !important; }
+.phase__deliv { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--line-soft); }
+.phase__deliv ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.phase__deliv li { display: flex; align-items: baseline; gap: 10px; color: var(--ink); font-size: 15px; line-height: 1.45; }
+.phase__deliv li::before { content: "✓"; font-family: var(--mono); font-size: 12px; color: var(--green); }
+.phase__side-label { margin-bottom: 12px !important; }
 .tags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; }
 .tags li { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); font-size: 15px; }
 .tags li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 8px var(--violet); flex-shrink: 0; }
-
-/* ── System ──────────────────────────────────────────────────────────────── */
-.system { align-items: center; }
-.shell {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 1px solid rgba(167, 139, 250, 0.35);
-  cursor: pointer;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.shell[data-on] { border-color: var(--cyan); box-shadow: 0 0 30px rgba(125, 227, 255, 0.35), inset 0 0 30px rgba(125, 227, 255, 0.15); }
-
-/* ── About ───────────────────────────────────────────────────────────────── */
-/* React Bits profile card in place of the dossier. Its rainbow sheen is
-   retuned to the site's light: violet, cyan and pink, like the nebula. */
-/* The bar sits over a white shirt: a dark glass keeps its text readable. */
-/* Keep the photo in its own colors (the stock card blends it by luminosity,
-   which washes a bright photo out) and soften the holo sheen around it. */
-
-/* ── Stack ───────────────────────────────────────────────────────────────── */
-.chart { display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 24px; }
-@media (max-width: 860px) { .chart { grid-template-columns: minmax(0, 1fr); } }
-/* Each skill is a tiny planet in its own hue (--h, set per skill): lit from
-   the top left, shaded on the far side. */
-
-/* ── Experience ──────────────────────────────────────────────────────────── */
-.org { display: flex; flex-direction: column; gap: 18px; }
-.log { position: relative; display: flex; flex-direction: column; gap: 18px; padding: 0 0 0 40px; margin: 0; list-style: none; }
-.entry { --accent: var(--violet); position: relative; border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
-.entry[data-current] { --accent: var(--green); border-color: rgba(110, 243, 165, 0.4); }
-.entry h4 { font-weight: 700; font-size: 21px; line-height: 1.2; }
-@media (max-width: 480px) { .log { padding-left: 30px; } .entry { padding: 18px; } }
 
 /* ── Corner text loop ─────────────────────────────────────────────────────── */
 /* A square frame pinned to the hero's top-right corner. The loop's SVG is
@@ -541,14 +491,12 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 /* ── Contact ─────────────────────────────────────────────────────────────── */
 .btn--signal { padding: 16px 28px; font-size: 16px; box-shadow: 0 0 40px rgba(167, 139, 250, 0.45); }
 
-
 /* ═════════════════════════════════════════════════════════════════════════
    New sections (portfolio brief, 2026-09). Everything above this line is the
    original design, unchanged; what follows only styles parts that did not
    exist before: intent selector, solutions, featured case study, the
    start-a-project page and the /work case-study pages.
    ═════════════════════════════════════════════════════════════════════════ */
-
 
 /* Tokens added with the diagram system. */
 .space {
@@ -565,8 +513,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .btn[disabled] { opacity: 0.6; cursor: progress; }
 .space .btn--ghost { padding-left: 6px; padding-right: 6px; color: var(--soft) !important; text-decoration: underline; text-decoration-color: rgba(167, 139, 250, 0.45); text-underline-offset: 5px; }
 @media (hover: hover) and (pointer: fine) { .space .btn--ghost:hover { color: var(--ink) !important; text-decoration-color: var(--cyan); } }
-.pills { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.pills li { font-family: var(--mono); font-size: 12px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); }
+
 .stretch::after { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
 .stretch:focus-visible { outline: none; }
 :has(> .stretch:focus-visible) { outline: 2px solid var(--cyan); outline-offset: 3px; }
@@ -574,116 +521,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 /* Hero: the added description and stack line under the existing headline. */
 .hero__desc { color: var(--soft); font-size: 16px; line-height: 1.6; max-width: 560px; text-wrap: pretty; }
 .hero__stack { font-family: var(--mono); font-size: 12px; line-height: 1.7; letter-spacing: 0.06em; color: var(--dim); }
-
-/* System readout: the example line under the responsibility. */
-
-/* Pages other than home: the sky footer sits in the flow, not on a planet. */
-
-
-/* ── Diagrams: data flow ─────────────────────────────────────────────────── */
-/* Stages joined by connections; a multi-node stage is framed as a group.
-   Vertical by default; horizontal when asked, or ("responsive") when the
-   diagram's own container is wide enough. */
-.df { margin: 0; width: 100%; container-type: inline-size; }
-.df__track { display: flex; flex-direction: column; align-items: center; }
-.df__stage { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 100%; }
-.df__stage--group { padding: 10px; border: 1px dashed var(--line); border-radius: 12px; }
-.df__group-label { flex-basis: 100%; text-align: center; font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--dim); }
-.df__node {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  min-width: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--node-bg);
-  text-align: center;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.df__label { font-family: var(--mono); font-size: 11.5px; line-height: 1.3; letter-spacing: 0.1em; color: var(--ink); }
-.df__sub { font-size: 12px; line-height: 1.3; color: var(--dim); }
-.df__node[data-accent] { border-color: rgba(125, 227, 255, 0.6); box-shadow: 0 0 0 3px rgba(125, 227, 255, 0.07), 0 0 22px rgba(125, 227, 255, 0.16); }
-.df__node[data-accent] .df__label { color: #fff; }
-.df__track { position: relative; }
-/* Spacer between stages; the wires (SVG) are drawn across it. */
-.df__link { flex: none; width: 1px; height: 30px; }
-.df__stage { z-index: 1; }
-.df__wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.df__line { fill: none; stroke: var(--line-strong); stroke-width: 1.2; transition: stroke 0.2s ease; }
-.df__head { fill: var(--line-strong); transition: fill 0.2s ease; }
-.df__pulse { fill: none; stroke: var(--cyan); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 0.1 1.2; stroke-dashoffset: 0.1; opacity: 0; }
-/* Pointing at a node lights its wires. */
-.df__node { transition: border-color 0.2s ease, box-shadow 0.3s; }
-.df__node[data-hot] { border-color: rgba(125, 227, 255, 0.7); }
-.df__wire[data-hot] .df__line { stroke: rgba(125, 227, 255, 0.85); }
-.df__wire[data-hot] .df__head { fill: rgba(125, 227, 255, 0.85); }
-.df__caption { margin-top: 14px; text-align: center; font-size: 13px; color: var(--dim); }
-.df--sm .df__node { padding: 5px 8px; border-radius: 6px; }
-.df--sm .df__label { font-size: 10px; letter-spacing: 0.08em; }
-.df--sm .df__link { height: 20px; }
-/* Hover connections: the card's diagram lights its links. */
-@media (hover: hover) and (pointer: fine) {
-  .solution:hover .df__line, .case-sec__visual:hover .df__line { stroke: rgba(167, 139, 250, 0.6); }
-}
-
-.df[data-dir="horizontal"] .df__track { flex-direction: row; justify-content: center; }
-.df[data-dir="horizontal"] .df__stage { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
-.df[data-dir="horizontal"] .df__link { width: auto; height: 1px; flex: 1 1 40px; min-width: 26px; max-width: 72px; }
-.df[data-dir="horizontal"].df--sm .df__link { flex-basis: 24px; min-width: 18px; }
-@container (min-width: 420px) {
-.df[data-dir="responsive"][data-len="2"] .df__track, .df[data-dir="responsive"][data-len="3"] .df__track { flex-direction: row; justify-content: center; }
-.df[data-dir="responsive"][data-len="2"] .df__stage, .df[data-dir="responsive"][data-len="3"] .df__stage { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
-.df[data-dir="responsive"][data-len="2"] .df__link, .df[data-dir="responsive"][data-len="3"] .df__link { width: auto; height: 1px; flex: 1 1 40px; min-width: 26px; max-width: 72px; }
-.df[data-dir="responsive"][data-len="2"].df--sm .df__link, .df[data-dir="responsive"][data-len="3"].df--sm .df__link { flex-basis: 24px; min-width: 18px; }
-}
-@container (min-width: 600px) {
-.df[data-dir="responsive"] .df__track { flex-direction: row; justify-content: center; }
-.df[data-dir="responsive"] .df__stage { flex-direction: column; flex-wrap: nowrap; align-items: stretch; }
-.df[data-dir="responsive"] .df__link { width: auto; height: 1px; flex: 1 1 40px; min-width: 26px; max-width: 72px; }
-.df[data-dir="responsive"].df--sm .df__link { flex-basis: 24px; min-width: 18px; }
-}
-/* Entrance: stages and links draw in sequence once the diagram is in view. */
-.df[data-state="armed"] .df__stage { opacity: 0; transform: translateY(4px); }
-.df[data-state="armed"] .df__line { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.df[data-state="armed"] .df__head { opacity: 0; }
-/* In view: stages appear in order, each wire draws after its source, then one
-   pulse travels it. 140ms per stage keeps even a five-stage flow under 2s. */
-.df[data-state="on"] .df__stage { transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out); transition-delay: calc(var(--i) * 140ms); }
-.df[data-state="on"] .df__line { stroke-dasharray: 1; transition: stroke-dashoffset 0.45s var(--ease-out), stroke 0.2s ease; transition-delay: calc(var(--d) * 140ms + 100ms), 0s; }
-.df[data-state="on"] .df__head { transition: opacity 0.2s ease-out calc(var(--d) * 140ms + 480ms), fill 0.2s ease; }
-/* Every 3.5s a pulse travels the wires again, stage by stage (the first 1.5s
-   of each cycle; the rest is rest). Paused while off screen. */
-.df[data-state="on"] .df__pulse { animation: df-pulse 3.5s linear calc(var(--d) * 140ms + 560ms) infinite both; animation-play-state: paused; }
-.df[data-state="on"][data-visible] .df__pulse { animation-play-state: running; }
-@keyframes df-pulse {
-  0% { stroke-dashoffset: 0.1; opacity: 0; animation-timing-function: var(--ease-in-out); }
-  3%, 37% { opacity: 1; }
-  43% { stroke-dashoffset: -1.1; opacity: 0; }
-  100% { stroke-dashoffset: -1.1; opacity: 0; }
-}
-
-/* ── Intent selector ─────────────────────────────────────────────────────── */
-.intent { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: clamp(24px, 3vw, 36px); }
-@media (hover: hover) and (pointer: fine) {
-  .intent:hover { border-color: rgba(125, 227, 255, 0.45); }
-}
-
-/* ── Solutions ───────────────────────────────────────────────────────────── */
-.solutions { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-@media (min-width: 720px) { .solutions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1080px) { .solutions { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.solutions > li { display: flex; }
-.solution { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 24px; }
-@media (hover: hover) and (pointer: fine) { .solution:hover { border-color: rgba(167, 139, 250, 0.45); } }
-
-/* ── Before / after ──────────────────────────────────────────────────────── */
-/* Before: hollow markers, slightly out of line — scattered. After: aligned and solid. */
-
-.pull-quote { margin: 0; padding: 6px 0 6px 24px; border-left: 2px solid var(--cyan); max-width: 820px; }
-.pull-quote blockquote { margin: 0; }
-.pull-quote p { font-family: var(--display); font-weight: 600; font-size: clamp(20px, 2.2vw, 28px); line-height: 1.3; text-wrap: pretty; }
 
 /* ── Start a project ─────────────────────────────────────────────────────── */
 .start { min-height: 100vh; padding-top: 136px; }
@@ -703,7 +540,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .pform__bar li[data-done] { background: var(--violet); }
 .pform__bar li[data-current] { background: var(--cyan); }
 .pform__step { animation: swap-in 0.35s var(--ease) both; }
-@keyframes swap-in { from { opacity: 0; transform: translateY(6px); } }
 .fstep { min-width: 0; margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 14px; }
 .fstep__legend { padding: 0; }
 .fstep__title { font-weight: 700; font-size: clamp(26px, 3vw, 36px); line-height: 1.1; letter-spacing: -0.02em; }
@@ -752,50 +588,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .pform-done__signal { position: relative; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(125, 227, 255, 0.7); background: radial-gradient(circle, var(--cyan) 0 5px, transparent 6px); box-shadow: 0 0 0 8px rgba(125, 227, 255, 0.08), 0 0 0 18px rgba(125, 227, 255, 0.04); }
 
 /* ── Case study ──────────────────────────────────────────────────────────── */
-.case { padding: 128px 24px 104px; }
-.case-head { display: flex; flex-direction: column; gap: 18px; max-width: 920px; padding-bottom: 48px; border-bottom: 1px solid var(--line-soft); }
-.case-head__title { font-weight: 800; font-size: clamp(46px, 7.6vw, 100px); line-height: 0.95; letter-spacing: -0.03em; }
-.case-head__subtitle { color: var(--soft); font-size: clamp(19px, 2vw, 24px); line-height: 1.4; max-width: 40ch; text-wrap: pretty; }
-.case-head__notice { align-self: flex-start; padding: 12px 16px; border: 1px dashed rgba(255, 192, 122, 0.5); border-radius: 10px; color: var(--amber); font-size: 14.5px; line-height: 1.5; }
-.case-head__meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 18px 28px; margin: 10px 0 0; }
-.case-head__meta > div { display: flex; flex-direction: column; gap: 8px; }
-.case-head__meta > div[data-wide] { grid-column: 1 / -1; }
-.case-head__meta dd { margin: 0; font-size: 15.5px; }
-.case__body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; padding-top: 56px; }
-.case-toc { display: none; }
-@media (min-width: 1080px) {
-  .case__body { grid-template-columns: 220px minmax(0, 1fr); gap: 64px; }
-  .case-toc { display: block; position: sticky; top: 108px; align-self: start; }
-}
-.case-toc ol { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; }
-.case-toc a { display: flex; gap: 10px; padding: 6px 0 6px 12px; border-left: 1px solid var(--line-soft); font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; color: var(--dim) !important; transition: color 0.2s, border-color 0.2s; }
-.case-toc a[aria-current="true"] { color: var(--ink) !important; border-left-color: var(--cyan); }
-@media (hover: hover) and (pointer: fine) { .case-toc a:hover { color: var(--ink) !important; } }
-.case__sections { display: flex; flex-direction: column; gap: 80px; min-width: 0; max-width: 820px; }
-.case-sec { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 96px; }
-.case-sec__title { font-weight: 700; font-size: clamp(28px, 3.4vw, 42px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }
-.case-sec__p { color: var(--soft); font-size: 17px; line-height: 1.7; max-width: 64ch; text-wrap: pretty; }
-.case-sec__visual { padding: 28px 20px; border: 1px solid var(--line-soft); border-radius: 14px; background: var(--grid-bg), rgba(3, 0, 20, 0.5); }
-.check-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.check-list li { display: flex; gap: 12px; padding: 13px 16px; border: 1px solid var(--line-soft); border-radius: 10px; background: rgba(10, 5, 32, 0.55); color: var(--soft); font-size: 16px; line-height: 1.55; }
-.check-list li::before { content: ""; flex-shrink: 0; width: 7px; height: 7px; margin-top: 0.62em; border-radius: 50%; background: var(--cyan); }
-.decisions { margin: 0; display: flex; flex-direction: column; gap: 12px; }
-.decision { padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
-.decision dt { margin-bottom: 6px; font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.3; }
-.decision dd { margin: 0; color: var(--soft); font-size: 16px; line-height: 1.6; }
-.stack-groups { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-.stack-groups > div { display: flex; flex-direction: column; gap: 12px; padding: 18px; border: 1px solid var(--line-soft); border-radius: 12px; }
-.stack-groups dd { margin: 0; }
-.case__end { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 96px; }
-@media (min-width: 860px) { .case__end { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.case-next { display: flex; flex-direction: column; gap: 8px; padding: 26px; color: var(--ink) !important; }
-@media (hover: hover) and (pointer: fine) { .case-next:hover { border-color: rgba(125, 227, 255, 0.45); } }
-.case-next__name { font-family: var(--display); font-weight: 700; font-size: 28px; }
-.case-next__sub { color: var(--soft); font-size: 15px; line-height: 1.5; }
-.case-start { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding: 26px; }
-.case-start__title { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.2; }
-@media (max-width: 560px) { .case { padding: 104px 16px 80px; } }
-
 
 /* Added text inside original sections. */
 
@@ -844,25 +636,10 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .orrery svg ellipse { transform-box: view-box; transform-origin: 50% 50%; animation: orbit-in 0.7s var(--ease-out) backwards; animation-delay: calc(0.3s + var(--k) * 90ms); }
   .orrery .sat { animation: sat-in 0.35s var(--ease-out) backwards; animation-delay: calc(0.75s + var(--k) * 90ms); }
 
-  /* Constellations: stars light up one after another when an area is chosen. */
-
-  /* Before / after: once the transition arrow has drawn, the new state's
-     items arrive in order. */
 }
-/* System readout: the layer's text swaps as the pointer scans the list —
-   frequent, so a short opacity change only. */
 @keyframes orbit-in { from { opacity: 0; transform: scale(0.94); } }
 @keyframes sat-in { from { opacity: 0; } }
 @keyframes star-in { from { opacity: 0; transform: translateY(4px); } }
-@keyframes readout-swap { from { opacity: 0; } }
-
-/* ── Hero orrery: readable labels ───────────────────────────────────────── */
-/* Labels ride their satellite's orbit on a layer above the planet, opening
-   toward the outside of the orbit (the engine sets data-side, and flips a
-   label inward if it would run off the screen), so none is ever hidden
-   behind the planet. */
-/* --ny: the engine slides a label down when it would overlap a neighbour's. */
-
 
 /* ═════════════════════════════════════════════════════════════════════════
    Portfolio brief, 2026-10: new sections and the mobile-first pass. Same
@@ -872,7 +649,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 
 /* ── Fluid rhythm ────────────────────────────────────────────────────────── */
 .sec { padding: clamp(64px, 9vw, 104px) clamp(16px, 4vw, 24px); }
-.sec--tight { padding-top: clamp(40px, 6vw, 72px); padding-bottom: clamp(40px, 6vw, 72px); }
+
 .stack-40 { gap: clamp(28px, 4vw, 40px); }
 .stack-48 { gap: clamp(32px, 5vw, 48px); }
 .split { gap: clamp(32px, 5vw, 48px); }
@@ -898,10 +675,10 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .hero__visual .orrery { max-width: 360px; }
   .hero__grid { gap: 24px; }
   .corner-loop { opacity: 0.55; }
-  .intent, .solution { padding: 20px; }
+  
   .phase { padding: 20px; gap: 20px; }
   .tags { grid-template-columns: minmax(0, 1fr); }
-  .pull-quote { padding-left: 16px; }
+  
   .trajectory { min-height: 200px; margin-bottom: 8px; }
 }
 /* Very small phones (320–374px): trim decoration before trimming content. */
@@ -916,11 +693,11 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .zmenu { width: 44px !important; height: 44px !important; }
   .zlogo { width: 44px; height: 44px; }
   .zcta { padding: 12px 18px; }
-  .pick { min-height: 48px; }
+  
   .btn { min-height: 48px; }
   .option { min-height: 52px; }
   .back-link { min-height: 44px; }
-  .sky-footer__links a { display: inline-flex; align-items: center; min-height: 44px; }
+  
 }
 
 /* ── Navigation sheet ────────────────────────────────────────────────────── */
@@ -929,40 +706,13 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .zsheet { max-height: calc(100svh - 96px); overflow-y: auto; }
 }
 
-/* ── Problems ────────────────────────────────────────────────────────────── */
-/* An editorial index, not a card grid: the heading holds its place on wide
-   screens while the scenarios read down a ruled list. Each row's star lights
-   up under the pointer, the same glow the sky uses. */
-
-/* ── Featured case study ─────────────────────────────────────────────────── */
-/* Three states fit side by side only on wide screens; below that they stack. */
-
-/* ── Mid-page call to action ─────────────────────────────────────────────── */
-
-/* ── System ──────────────────────────────────────────────────────────────── */
-.system__closing { display: flex; flex-direction: column; gap: 4px; margin-top: clamp(32px, 5vw, 56px) !important; padding-left: 20px; border-left: 2px solid var(--amber); font-family: var(--display); font-weight: 600; font-size: clamp(19px, 2vw, 24px); line-height: 1.35; }
-.system__closing span:first-child { color: var(--soft); }
-
-/* ── Experience ──────────────────────────────────────────────────────────── */
-/* Wide screens: the company holds its place beside its roles, and the section
-   shares the page's main column instead of sitting indented from it. */
-@media (min-width: 1000px) {
-  .org { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 48px; align-items: start; }
-}
-@media (max-width: 560px) { .entry h4 { font-size: 18px; } }
-
-/* ── About ───────────────────────────────────────────────────────────────── */
-
-/* ── Contact: two paths ──────────────────────────────────────────────────── */
-.paths { list-style: none; margin: 8px 0 0; padding: 0; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 14px; text-align: left; }
-.path { display: flex; flex-direction: column; gap: 12px; padding: clamp(20px, 3vw, 32px); }
-.path h3 { font-weight: 700; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.15; }
-.path p { color: var(--soft); font-size: 16px; line-height: 1.6; text-wrap: pretty; }
-.path .btn--signal { padding: 14px 24px; }
-
 /* ── Footer ──────────────────────────────────────────────────────────────── */
-/* Four link columns above a contained planetary horizon. */
+/* A contact strip, the brand beside four link columns (accordions on phones),
+   a bottom line, then the planetary horizon. Orbitron for the wordmark,
+   the closing question and the column titles; Exo 2 for the rest. */
 .sky-footer {
+  --f-tech: var(--sans);
+  --f-brand: var(--label);
   position: relative;
   z-index: 1;
   overflow: clip;
@@ -970,24 +720,61 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   background:
     radial-gradient(ellipse at 50% 100%, rgba(124, 58, 237, 0.18), transparent 70%),
     linear-gradient(180deg, rgba(3, 0, 20, 0.2), rgba(3, 0, 20, 0.45));
-  padding: 72px max(24px, calc((100% - 1280px) / 2)) 24px;
+  padding: clamp(40px, 7vw, 72px) max(clamp(16px, 4vw, 24px), calc((100% - 1280px) / 2)) 24px;
   color: var(--dim);
-  font-family: var(--sans);
+  font-family: var(--f-tech);
 }
-.sky-footer__grid { display: grid; grid-template-columns: minmax(260px, 2.4fr) repeat(4, minmax(0, 1fr)); gap: 32px; }
-.sky-footer__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
-.space .sky-footer__logo { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font-family: var(--display); font-size: 20px; font-weight: 700; }
-.sky-footer__brand p, .sky-footer__brand small { font-size: 13px; line-height: 1.7; }
-.sky-footer__status { display: flex; align-items: center; gap: 8px; }
+
+/* 1. Contact strip */
+.sky-footer__cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; padding-bottom: clamp(28px, 5vw, 44px); margin-bottom: clamp(28px, 5vw, 44px); border-bottom: 1px solid var(--line-soft); }
+.sky-footer__question { font-family: var(--f-brand); font-size: clamp(22px, 3.2vw, 34px); line-height: 1.15; color: var(--ink); letter-spacing: 0.01em; }
+.sky-footer__sub { margin-top: 8px !important; font-size: 14px; color: var(--dim); }
+.sky-footer__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.fbtn { position: relative; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: rgba(10, 5, 32, 0.6); color: var(--ink) !important; font-family: var(--f-tech); font-size: 14.5px; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease); }
+.fbtn svg { flex: none; color: var(--cyan); transition: transform 0.25s var(--ease); }
+.fbtn:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .fbtn:hover { border-color: rgba(125, 227, 255, 0.55); background: rgba(125, 227, 255, 0.07); }
+  .fbtn--top:hover svg { transform: translateY(-3px); }
+}
+.fbtn--copy[data-state="ok"] { border-color: rgba(110, 243, 165, 0.6); }
+.fbtn--copy[data-state="ok"] svg { color: var(--green); }
+/* The confirmation floats above the button instead of shifting the row. */
+.fbtn__hint { position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%); padding: 4px 10px; border-radius: 8px; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 600; white-space: nowrap; pointer-events: none; }
+.fbtn__hint:empty, .fbtn--copy[data-state="idle"] .fbtn__hint { padding: 0; background: none; }
+@media (prefers-reduced-motion: no-preference) { .fbtn--copy:not([data-state="idle"]) .fbtn__hint { animation: hint-pop 0.25s var(--ease) both; } }
+@keyframes hint-pop { from { opacity: 0; transform: translate(-50%, 4px); } }
+.fbtn--top { width: 48px; padding: 0; justify-content: center; }
+
+/* 2. Brand + columns */
+.sky-footer__grid { display: grid; grid-template-columns: minmax(260px, 2.2fr) repeat(4, minmax(0, 1fr)); gap: 32px; }
+.sky-footer__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.space .sky-footer__logo { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font-family: var(--f-brand); font-size: 22px; font-weight: 400; letter-spacing: 0.02em; }
+.sky-footer__brand p { font-size: 13.5px; line-height: 1.6; }
+.sky-footer__status { display: flex; align-items: center; gap: 8px; color: var(--soft); }
 .sky-footer__status .dot-live { flex: 0 0 6px; width: 6px; height: 6px; box-shadow: none; }
-.space .sky-footer__column h2 { margin: 0 0 16px; font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink); }
+.sky-footer__time { display: flex; flex-direction: column; gap: 2px; margin-top: 4px !important; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line-soft); background: rgba(10, 5, 32, 0.45); }
+.sky-footer__time span { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.sky-footer__time time { font-size: 20px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.sky-footer__time time { white-space: nowrap; }
+.sky-footer__column summary { display: flex; align-items: center; justify-content: space-between; list-style: none; cursor: default; }
+.sky-footer__column summary::-webkit-details-marker { display: none; }
+.space .sky-footer__column h2 { margin: 0 0 14px; font-family: var(--f-brand); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+.sky-footer__chev { display: none; }
 .sky-footer__column ul { list-style: none; padding: 0; margin: 0; }
-.space .sky-footer__column a { display: inline-flex; align-items: center; min-height: 40px; color: var(--dim); font-size: 14px; line-height: 1.5; transition: color 160ms ease; }
-.space .sky-footer a:hover { color: var(--cyan); }
+.space .sky-footer__column a { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; color: var(--dim); font-size: 14.5px; line-height: 1.4; transition: color 160ms ease, transform 0.2s var(--ease); }
+.sky-footer__ext { font-size: 11px; opacity: 0.6; }
+@media (hover: hover) and (pointer: fine) {
+  .space .sky-footer__column a:hover { color: var(--cyan); transform: translateX(3px); }
+}
+
+/* 3. Bottom line */
+.sky-footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; margin-top: clamp(28px, 5vw, 48px); padding-top: 18px; border-top: 1px solid var(--line-soft); font-size: 12.5px; letter-spacing: 0.04em; }
+
 .sky-footer__horizon {
   position: relative;
-  height: clamp(140px, 18vw, 240px);
-  margin-top: 48px;
+  height: clamp(110px, 18vw, 240px);
+  margin-top: clamp(24px, 5vw, 48px);
   overflow: clip;
   pointer-events: none;
 }
@@ -1003,13 +790,31 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 }
 @media (max-width: 1100px) {
   .sky-footer__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .sky-footer__brand { grid-column: 1 / -1; margin-bottom: 16px; }
+  .sky-footer__brand { grid-column: 1 / -1; margin-bottom: 8px; }
 }
+/* Phones: actions full width, brand on top, the columns as accordions. */
 @media (max-width: 640px) {
-  .sky-footer { padding-top: 40px; }
-  .sky-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
+  .sky-footer__cta { flex-direction: column; align-items: stretch; }
+  .sky-footer__actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  .sky-footer__actions .fbtn--copy { grid-column: 1 / -1; justify-content: center; }
+  .fbtn__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .sky-footer__actions > a.fbtn { justify-content: center; }
+  .sky-footer__grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .sky-footer__brand { margin-bottom: 20px; }
+  .sky-footer__time { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; align-self: stretch; }
+  .sky-footer__time time { font-size: 18px; }
+  .sky-footer__column { border-top: 1px solid var(--line-soft); }
+  .sky-footer__column:last-child { border-bottom: 1px solid var(--line-soft); }
+  .sky-footer__column summary { min-height: 56px; cursor: pointer; }
+  .space .sky-footer__column h2 { margin: 0; font-size: 13px; }
+  .sky-footer__chev { display: block; width: 10px; height: 10px; margin-right: 4px; border-right: 1.5px solid var(--dim); border-bottom: 1.5px solid var(--dim); transform: rotate(45deg) translateY(-3px); transition: transform 0.25s var(--ease); }
+  .sky-footer__column[open] .sky-footer__chev { transform: rotate(-135deg) translateY(-2px); border-color: var(--cyan); }
+  .sky-footer__column ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; padding-bottom: 14px; }
   .space .sky-footer__column a { min-height: 44px; }
-  .sky-footer__horizon { margin-top: 32px; }
+  .sky-footer__bottom { flex-direction: column; }
+}
+@media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .sky-footer__column[open] ul { animation: swap-in 0.3s var(--ease) both; }
 }
 
 /* ── Start a project ─────────────────────────────────────────────────────── */
@@ -1046,7 +851,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   .pform__progress { margin-left: -20px !important; margin-right: -20px !important; padding-left: 20px !important; padding-right: 20px !important; }
 }
 .start__guide ol { list-style: decimal; }
-
 
 /* ═════════════════════════════════════════════════════════════════════════
    V2, 2026-10: the same system, carried into the commercial sections. Every
@@ -1112,16 +916,12 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   flex-direction: column;
   align-items: center;
 }
-.waypoint__dot { width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--violet); box-shadow: 0 0 10px rgba(167, 139, 250, 0.5); transition: width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s, box-shadow 0.3s, border-color 0.3s; }
-.waypoint[data-done] .waypoint__dot { background: var(--violet); }
-.waypoint[aria-pressed="true"] .waypoint__dot { width: 26px; height: 26px; background: var(--cyan); border-color: var(--ink); box-shadow: 0 0 0 8px rgba(125, 227, 255, 0.15), 0 0 30px var(--cyan); }
 .waypoint__label { position: absolute; top: calc(100% + 2px); display: flex; flex-direction: column; align-items: center; gap: 2px; white-space: nowrap; }
-.waypoint__n { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+.waypoint__n { font-family: var(--label); font-size: 11px; color: var(--dim); }
 .waypoint__name { font-family: var(--display); font-weight: 700; font-size: clamp(12px, 1.4vw, 16px); color: var(--dim); transition: color 0.3s; }
 .waypoint[aria-pressed="true"] .waypoint__n { color: var(--cyan); }
 .waypoint[aria-pressed="true"] .waypoint__name { color: var(--ink); }
 @media (hover: hover) and (pointer: fine) { .waypoint:hover .waypoint__name { color: var(--ink); } }
-@media (max-width: 640px) { .waypoint__name { display: none; } }
 .phase__main { display: flex; flex-direction: column; gap: 14px; }
 .phase__title { display: flex; align-items: baseline; gap: 16px; }
 .phase__n { font-family: var(--display); font-weight: 800; font-size: 72px; line-height: 0.9; color: rgba(167, 139, 250, 0.35); }
@@ -1134,9 +934,8 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .phase__desc { font-size: clamp(16px, 1.6vw, 18px); max-width: 62ch; }
 @media (pointer: coarse) {
   .waypoint { padding: 12px; }
-  .waypoint__dot { width: 20px; height: 20px; } }
+   }
 
 /* ── Process: trajectory line and star (restored) ─────────────────────── */
 
 .trajectory__star { position: absolute; right: 0; top: 0; transform: translate(10%, -60%); width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle, #fff, var(--amber) 35%, rgba(255, 192, 122, 0) 70%); }
-.trajectory__done { fill: none; stroke: var(--cyan); stroke-width: 2.5; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(125, 227, 255, 0.6)); transition: stroke-dasharray 0.6s var(--ease-in-out); }

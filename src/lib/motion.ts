@@ -97,3 +97,13 @@ export function useOnScreen<T extends Element>(ref: RefObject<T>) {
   }, [ref]);
   return on;
 }
+
+/**
+ * Scrolls the page to `top`, through Lenis when it's running (so it doesn't
+ * fight the smooth scroll), natively otherwise; instant under reduced motion.
+ */
+export function scrollPageTo(top: number) {
+  const lenis = (window as unknown as { __lenis?: { scrollTo: (t: number, o?: { duration?: number; immediate?: boolean }) => void } }).__lenis;
+  if (lenis) lenis.scrollTo(top, { duration: 0.9 });
+  else window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+}

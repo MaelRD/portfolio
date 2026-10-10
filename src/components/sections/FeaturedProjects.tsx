@@ -3,7 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import { tx, type Lang } from "@/data/content";
 import { HEADS } from "@/data/space";
 import { WORK_TEXT as T } from "@/data/v2";
-import { caseStudyPath, type Project } from "@/lib/projects";
+import type { Project } from "@/lib/projects";
 import ProjectMock from "../react/space/ProjectMock";
 import { BrowserMockup, CTAButton, DeviceMockup, ProjectImage, SectionHeader, TechChip, TiltCard } from "../kit";
 
@@ -18,9 +18,6 @@ import { BrowserMockup, CTAButton, DeviceMockup, ProjectImage, SectionHeader, Te
 
 const host = (url?: string) => (url ? new URL(url).host : undefined);
 
-function href(p: Project) {
-  return p.caseStudy ? caseStudyPath(p.slug) : (p.links.live ?? caseStudyPath(p.slug));
-}
 
 /** Wide screens only: on phones the scroll-linked 3D is left out. */
 function useWide(min = 768) {
@@ -94,7 +91,9 @@ function Visual({ p, lang }: { p: Project; lang: Lang }) {
     case "pipeline":
       return (
         <div className="showcase__stack">
-          <Window p={p} lang={lang} />
+          <TiltCard className="showcase__tilt" max={6}>
+            <Window p={p} lang={lang} />
+          </TiltCard>
           {p.pipeline && (
             <ol className="pipe" aria-label={p.pipeline.map((s) => tx(s, lang)).join(" → ")}>
               {p.pipeline.map((s, i) => (
@@ -107,21 +106,28 @@ function Visual({ p, lang }: { p: Project; lang: Lang }) {
         </div>
       );
     default:
-      return <Window p={p} lang={lang} />;
+      return (
+        <TiltCard className="showcase__tilt" max={6}>
+          <Window p={p} lang={lang} />
+        </TiltCard>
+      );
   }
 }
 
 function ProjectShowcase({ p, lang, flip }: { p: Project; lang: Lang; flip: boolean }) {
-  const external = !p.caseStudy && !!p.links.live;
   const titleId = `project-${p.slug}`;
   return (
-    <article className="showcase" data-flip={flip ? "" : undefined} data-kind={p.showcase} aria-labelledby={titleId}>
+    <article className="showcase" data-flip={flip ? "" : undefined} data-kind={p.showcase} aria-labelledby={titleId} data-reveal="project" data-scrub>
       <div className="showcase__visual">
         {!p.images.length && <p className="showcase__note">{T.schematic[lang]}</p>}
         <Visual p={p} lang={lang} />
       </div>
-      <div className="showcase__copy">
-        <p className="showcase__kicker">{p.category[lang]}</p>
+      <div className="showcase__copy" data-reveal="stagger">
+        <p className="showcase__kicker">
+          {p.category[lang]}
+          {/* A demo already says so in its status ("LIVE DEMO"); other kinds are named here. */}
+          {p.kind !== "demo" && <span className="showcase__kind"> · {T.kinds[p.kind][lang]}</span>}
+        </p>
         <h3 className="showcase__title" id={titleId}>
           {p.title}
         </h3>
@@ -135,6 +141,12 @@ function ProjectShowcase({ p, lang, flip }: { p: Project; lang: Lang; flip: bool
             <dt>{T.solution[lang]}</dt>
             <dd>{p.solution[lang]}</dd>
           </div>
+          {p.role && (
+            <div>
+              <dt>{T.role[lang]}</dt>
+              <dd>{p.role[lang]}</dd>
+            </div>
+          )}
         </dl>
         <ul className="showcase__stack-list" aria-label="Stack">
           {p.stack.map((s) => (
@@ -146,19 +158,21 @@ function ProjectShowcase({ p, lang, flip }: { p: Project; lang: Lang; flip: bool
         <div className="showcase__foot">
           <p className="showcase__status">
             <span className="showcase__dot" aria-hidden="true" />
-            {p.statusPrefix ? `${tx(p.statusPrefix, lang)} · ` : ""}
             {p.status[lang]}
           </p>
-          <CTAButton
-            href={href(p)}
-            variant="line"
-            arrow="↗"
-            data-track="View Project"
-            data-track-label={p.slug}
-            {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          >
-            {p.links.cta[lang]}
-          </CTAButton>
+          {p.links.live && (
+            <CTAButton
+              href={p.links.live}
+              variant="line"
+              arrow="↗"
+              data-track="View Project"
+              data-track-label={p.slug}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {p.links.cta[lang]}
+            </CTAButton>
+          )}
         </div>
       </div>
     </article>

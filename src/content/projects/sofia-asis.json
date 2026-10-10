@@ -2,7 +2,7 @@
   "title": "Sofía · Recepcionista IA",
   "slug": "sofia-asis",
   "order": 3,
-  "statusPrefix": "Demo",
+  "kind": "demo",
   "role": {
     "en": "Full Stack development",
     "es": "Desarrollo Full Stack"
@@ -37,61 +37,12 @@
     "Tailwind CSS",
     "WhatsApp"
   ],
-  "capabilities": [],
   "links": {
     "cta": {
       "en": "View demo",
       "es": "Ver demo"
     },
     "live": "https://sofiaasis.netlify.app"
-  },
-  "diagram": {
-    "flow": {
-      "direction": "responsive",
-      "label": {
-        "en": "Customer messages on WhatsApp reach Sofía, who answers and books the appointment in the agenda or hands off to a person.",
-        "es": "Los mensajes de clientes por WhatsApp llegan a Sofía, que responde y registra la cita en la agenda o pasa la conversación a una persona."
-      },
-      "stages": [
-        [
-          {
-            "label": "WHATSAPP",
-            "sub": {
-              "en": "customer",
-              "es": "cliente"
-            }
-          }
-        ],
-        [
-          {
-            "label": "SOFÍA",
-            "sub": {
-              "en": "AI receptionist",
-              "es": "recepcionista IA"
-            },
-            "accent": true
-          }
-        ],
-        [
-          {
-            "label": {
-              "en": "AGENDA",
-              "es": "AGENDA"
-            }
-          },
-          {
-            "label": {
-              "en": "PERSON",
-              "es": "PERSONA"
-            },
-            "sub": {
-              "en": "handoff",
-              "es": "transferencia"
-            }
-          }
-        ]
-      ]
-    }
   },
   "assets": "sofia-asis",
   "showcase": "laptop",

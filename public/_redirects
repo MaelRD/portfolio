@@ -1,3 +1,7 @@
-# Case studies moved from /projects/* to /work/*.
-/projects/gbs-builder     /work/gbs-builder     301
-/projects/layout-builder  /work/layout-builder  301
+# Case studies moved from /projects/* to /work/*; GBS Builder and Layout
+# Builder were later retired as project pages (2026-10), so their old links
+# land on the section that still covers them.
+/projects/gbs-builder     /#experience  301
+/projects/layout-builder  /#work        301
+/work/gbs-builder         /#experience  301
+/work/layout-builder      /#work        301

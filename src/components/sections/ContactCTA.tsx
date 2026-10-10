@@ -1,7 +1,7 @@
 import type { Lang } from "@/data/content";
 import { CV_FILENAME, CV_PATH } from "@/data/content";
 import { FINAL_CTA as T } from "@/data/v2";
-import { CTAButton } from "../kit";
+import { CTAButton, TiltCard } from "../kit";
 
 // The closing question, under a restrained Lamp Effect (after Aceternity):
 // one thin line of light with a soft cone falling from it, in the page's
@@ -19,14 +19,14 @@ export default function ContactCTA({ lang }: { lang: Lang }) {
           {T.title[lang]}
         </h2>
         <div className="paths2">
-          <div className="path2">
+          <TiltCard className="path2" max={8}>
             <p className="path2__kicker">{T.project.kicker[lang]}</p>
             <p className="path2__text">{T.project.text[lang]}</p>
-            <CTAButton href="#contact" moving data-track="Contact" data-track-label="final-cta">
+            <CTAButton href="#contact" moving magnetic data-track="Contact" data-track-label="final-cta">
               {T.project.cta[lang]}
             </CTAButton>
-          </div>
-          <div className="path2">
+          </TiltCard>
+          <TiltCard className="path2" max={8}>
             <p className="path2__kicker">{T.hiring.kicker[lang]}</p>
             <p className="path2__text">{T.hiring.text[lang]}</p>
             <div className="path2__actions">
@@ -37,7 +37,7 @@ export default function ContactCTA({ lang }: { lang: Lang }) {
                 {T.hiring.cv[lang]}
               </CTAButton>
             </div>
-          </div>
+          </TiltCard>
         </div>
       </div>
     </section>

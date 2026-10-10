@@ -7,12 +7,12 @@ import { LOOP_TEXT, type Lang } from "../../../data/space";
 // Pauses under the pointer; holds still for reduced motion (the component).
 
 // The loop fits a whole number of phrases along its path and stretches or
-// squeezes letter spacing to close the gap. The phrase measures ~721 units in
-// Geist 800 at 44px in Spanish and ~683 in English (separator included), so a
-// straight path of 2106 holds three of either with the adjustment under 3%.
+// squeezes letter spacing to close the gap. The phrase measures ~669 units in
+// Exo 2 800 at 44px in Spanish and ~642 in English (separator included), so a
+// straight path of 1966 holds three of either with the adjustment near 2%.
 // Centered on the loop's 1200 × 520 viewBox (y = 260); the frame hides the
 // overhang. Changing LOOP_TEXT or the display font means re-measuring this path.
-const PATH = "M -453 260 L 1653 260";
+const PATH = "M -383 260 L 1583 260";
 
 export default function CornerLoop({ lang }: { lang: Lang }) {
   return (

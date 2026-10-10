@@ -1,0 +1,89 @@
+/* Process as a space route (SpaceRoute.tsx): planets per phase, a rocket
+   that flies to the active one, the flown stretch lit behind it. Tokens from
+   space.css / motion.css; no colors outside the palette. */
+
+/* ── The route ─────────────────────────────────────────────────────────── */
+.route { isolation: isolate; }
+/* A faint nebula under the route, for depth; nothing animates here. */
+.route::before { content: ""; position: absolute; inset: -14% -4% -6%; z-index: -1; pointer-events: none; background: radial-gradient(55% 70% at 50% 60%, rgba(124, 58, 237, 0.14), transparent 70%), radial-gradient(30% 50% at 85% 30%, rgba(34, 211, 238, 0.07), transparent 70%); }
+.route > svg path { fill: none; stroke-linecap: round; }
+.route__haze { stroke: rgba(167, 139, 250, 0.1); stroke-width: 14; }
+.route__base { stroke: rgba(167, 139, 250, 0.5); stroke-width: 1.5; stroke-dasharray: 3 7; }
+.route__flown { stroke: url(#route-flown); stroke-width: 2.5; stroke-dasharray: 0 99999; filter: drop-shadow(0 0 6px rgba(125, 227, 255, 0.55)); }
+.route__trail { stroke: #fff; stroke-width: 3.5; stroke-dasharray: 0 99999; opacity: 0; filter: blur(1.5px) drop-shadow(0 0 6px var(--cyan)); transition: opacity 0.5s var(--m-ease); }
+.route:has(.rocket[data-moving]) .route__trail { opacity: 0.7; transition-duration: 0.15s; }
+
+/* ── Planets ───────────────────────────────────────────────────────────── */
+.route .waypoint { padding: 12px; z-index: 2; }
+.waypoints li:nth-child(1) { --pc: #C9C4EA; }
+.waypoints li:nth-child(2) { --pc: #A78BFA; }
+.waypoints li:nth-child(3) { --pc: #7DE3FF; }
+.waypoints li:nth-child(4) { --pc: #FFC07A; }
+.waypoints li:nth-child(5) { --pc: #F9A8D4; }
+.waypoints li:nth-child(6) { --pc: #6EF3A5; }
+
+.rp {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  /* Lit from the upper left, shaded toward the night. */
+  background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--pc) 55%, #fff) 0, var(--pc) 38%, color-mix(in srgb, var(--pc) 30%, #030014) 100%);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--pc) 55%, transparent), 0 0 12px color-mix(in srgb, var(--pc) 35%, transparent);
+  opacity: 0.45;
+  filter: saturate(0.6);
+  transition: transform 0.45s var(--m-ease), opacity 0.3s, filter 0.3s, box-shadow 0.4s;
+}
+/* The ring: only the active planet wears it. */
+.rp::after { content: ""; position: absolute; inset: -5px -11px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--pc) 70%, transparent); transform: rotate(-20deg) scaleY(0.34); opacity: 0; transition: opacity 0.4s var(--m-ease); }
+/* The pulse on arrival. */
+.rp::before { content: ""; position: absolute; inset: -1px; border-radius: 50%; border: 1px solid var(--pc); opacity: 0; }
+
+.waypoint[data-state="done"] .rp { opacity: 0.95; filter: none; }
+.waypoint[data-state="active"] .rp {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.4);
+  box-shadow: 0 0 0 1.5px var(--pc), 0 0 0 7px color-mix(in srgb, var(--pc) 14%, transparent), 0 0 26px color-mix(in srgb, var(--pc) 60%, transparent);
+}
+.waypoint[data-state="active"] .rp::after { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .waypoint[data-state="active"] .rp::before { animation: planet-pulse 1.2s var(--m-ease) 0.35s 1; }
+}
+@keyframes planet-pulse { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 0; transform: scale(2.4); } }
+@media (hover: hover) and (pointer: fine) {
+  .waypoint:not([data-state="active"]):hover .rp { opacity: 1; filter: none; transform: scale(1.15); }
+}
+
+/* Labels: number (with a check once done), name; the active one in full ink. */
+.route .waypoint__label { top: calc(100% - 2px); transition: transform 0.45s var(--m-ease); }
+/* The active planet is scaled up: its label steps down to stay clear of it. */
+.route .waypoint[data-state="active"] .waypoint__label { transform: translateY(6px); }
+.route .waypoint__name { color: var(--dim); }
+.waypoint[data-state="done"] .waypoint__name { color: var(--soft); }
+.waypoint__check { color: var(--green); }
+.route .waypoint[aria-pressed="true"] .waypoint__name { color: var(--ink); }
+/* Phones: six names don't fit along the route; numbers stay, the active one is named. */
+@media (max-width: 640px) {
+  .route .waypoint__name { display: none; }
+  .route .waypoint[aria-pressed="true"] .waypoint__name { display: block; }
+}
+
+/* ── Rocket ────────────────────────────────────────────────────────────── */
+.rocket { position: absolute; left: 0; top: 0; z-index: 3; width: 44px; height: 20px; pointer-events: none; transform: translate(-50%, -50%) rotate(var(--heading, -20deg)); filter: drop-shadow(0 0 6px rgba(125, 227, 255, 0.4)); }
+.rocket svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.rocket__flame { transform-box: view-box; transform-origin: 12px 10px; transform: scaleX(0.55); opacity: 0.6; transition: transform 0.35s var(--m-ease), opacity 0.35s; }
+.rocket[data-moving] .rocket__flame { transform: scaleX(1.15); opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .rocket[data-moving] .rocket__flame { animation: flame 0.16s steps(2) infinite alternate; }
+}
+@keyframes flame { to { transform: scaleX(0.95); } }
+@media (max-width: 640px) { .rocket { width: 34px; height: 16px; } }
+
+/* ── Panel, tied to the active planet ──────────────────────────────────── */
+/* A short beam on the panel's top edge, under the active planet. */
+.phase::after { content: ""; position: absolute; top: -1px; left: clamp(40px, var(--px, 8%), calc(100% - 40px)); width: 72px; height: 2px; transform: translateX(-50%); border-radius: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); box-shadow: 0 0 12px rgba(125, 227, 255, 0.6); transition: left 0.8s var(--m-ease-io); }
+
+/* Phones: room under the route for the active planet's name. */
+@media (max-width: 640px) { .route { margin-bottom: 44px; } }

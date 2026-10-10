@@ -4,8 +4,9 @@ import Name from "./Name";
 import CornerLoop from "./Loop";
 import { Planet, SURFACES } from "./ui";
 import BackgroundBeams from "../../aceternity/BackgroundBeams";
-import { CTAButton } from "../../kit";
+import { CTAButton, SplitWords } from "../../kit";
 import { HERO_CTA } from "../../../data/v2";
+import { CV_FILENAME, CV_PATH } from "../../../data/content";
 
 /**
  * The orrery leans a few degrees toward the pointer, as if lit from where the
@@ -48,7 +49,7 @@ function useTilt() {
 export default function Hero({ lang }: { lang: Lang }) {
   const tiltRef = useTilt();
   return (
-    <section id="hero" className="launch" aria-labelledby="hero-title">
+    <section id="hero" className="launch" aria-labelledby="hero-title" data-scrub="exit">
       <BackgroundBeams />
       <CornerLoop lang={lang} />
       <div className="hero__grid">
@@ -57,7 +58,9 @@ export default function Hero({ lang }: { lang: Lang }) {
           <p className="hero__role">
             <span>{HERO.eyebrow[lang]}</span>
           </p>
-          <p className="hero__headline">{HERO.statement[lang]}</p>
+          <p className="hero__headline">
+            <SplitWords text={HERO.statement[lang]} highlight={HERO.highlight[lang]} />
+          </p>
           <p className="hero__desc">{HERO.description[lang]}</p>
           <p className="hero__stack">
             <span className="sr-only">{HERO.stackLabel[lang]}: </span>
@@ -68,13 +71,20 @@ export default function Hero({ lang }: { lang: Lang }) {
             {HERO.status[lang]}
           </p>
           <div className="hero__ctas">
-            <CTAButton href="#contact" moving data-track="Contact" data-track-label="hero">
-              {HERO_CTA.talk[lang]}
-            </CTAButton>
-            <CTAButton href="#work" variant="line" arrow="↓">
+            <CTAButton href="#work" moving magnetic arrow="↓" data-track="View Work" data-track-label="hero">
               {HERO_CTA.work[lang]}
             </CTAButton>
+            <CTAButton href="#contact" variant="line" data-track="Contact" data-track-label="hero">
+              {HERO_CTA.talk[lang]}
+            </CTAButton>
           </div>
+          <p className="hero__recruit">
+            {HERO_CTA.recruiter[lang]} <a href="#experience">{HERO_CTA.experience[lang]}</a>
+            <span aria-hidden="true">·</span>
+            <a href={CV_PATH} download={CV_FILENAME} data-track="Download Resume" data-track-label="hero">
+              {HERO_CTA.cv[lang]}
+            </a>
+          </p>
         </div>
 
         <div className="hero__visual">
@@ -134,6 +144,10 @@ export default function Hero({ lang }: { lang: Lang }) {
           </figure>
         </div>
       </div>
+      <span className="hero__scroll" aria-hidden="true">
+        <span>{HERO.scroll[lang]}</span>
+        <i />
+      </span>
     </section>
   );
 }

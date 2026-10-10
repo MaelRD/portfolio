@@ -1,6 +1,6 @@
-import type { Lang } from "@/data/content";
+import { CONTACT, CV_FILENAME, CV_PATH, type Lang } from "@/data/content";
 import { ABOUT_V2 as T } from "@/data/v2";
-import { SectionHeader } from "../kit";
+import { CTAButton, SectionHeader } from "../kit";
 import CometCard from "../aceternity/CometCard";
 
 // About, kept human and quiet: a photo, a few lines and three facts. The
@@ -35,6 +35,14 @@ export default function About({ lang }: { lang: Lang }) {
               </div>
             ))}
           </dl>
+          <div className="about2__links">
+            <CTAButton href={CONTACT.github} variant="line" arrow="↗" target="_blank" rel="noopener noreferrer" data-track="GitHub" data-track-label="about">
+              GitHub
+            </CTAButton>
+            <CTAButton href={CV_PATH} variant="line" arrow="↓" download={CV_FILENAME} data-track="Download Resume" data-track-label="about">
+              {T.cv[lang]}
+            </CTAButton>
+          </div>
         </div>
       </div>
     </section>

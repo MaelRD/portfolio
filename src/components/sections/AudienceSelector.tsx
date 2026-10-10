@@ -4,7 +4,8 @@ import { SectionHeader, TiltCard } from "../kit";
 
 // "What are you looking for?" and "Sound familiar?" in one place: two large
 // doors, one for recruiters and one for businesses. Each card leans a few
-// degrees toward the pointer (TiltCard); the whole card is the link, through
+// degrees toward the pointer and catches a light (TiltCard, the About photo's
+// Comet Card); the whole card is the link, through
 // its call to action stretched over it.
 
 export default function AudienceSelector({ lang }: { lang: Lang }) {

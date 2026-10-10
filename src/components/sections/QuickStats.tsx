@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import type { Lang } from "@/data/content";
 import { CAREER_START, STATS_TEXT as T } from "@/data/v2";
 
-// A ruled row of four facts on the sky (no cards): years of experience,
-// projects, stack and place. The numbers count up once when the row comes
+// A ruled row of three facts on the sky (no cards): years of experience,
+// projects and place (the stack is in the hero, right above). The numbers count up once when the row comes
 // into view; the final value is what's rendered on the server and for
 // reduced motion, so nothing depends on the animation.
 
@@ -69,10 +69,6 @@ export default function QuickStats({ lang, projects }: { lang: Lang; projects: n
           <dd className="stat__value">
             <CountUp to={projects} lang={lang} />
           </dd>
-        </div>
-        <div className="stat">
-          <dt className="stat__label">{T.stackSub[lang]}</dt>
-          <dd className="stat__value stat__value--text">{T.stack[lang]}</dd>
         </div>
         <div className="stat">
           <dt className="stat__label">{T.placeSub[lang]}</dt>

@@ -1,76 +1,106 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type RefObject } from "react";
-import { HEADS, STEP_TEXT, STEPS, type Lang } from "../../../data/space";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type RefObject } from "react";
+import { scrollPageTo, useScrollFrame } from "@/lib/motion";
+import { HEADS, MACRO, STEP_TEXT, STEPS, type Lang } from "../../../data/space";
 import { Head } from "./ui";
+import SpaceRoute, { PTS } from "./SpaceRoute";
 
-// Waypoints in the 1200×280 trajectory box.
-const PTS: [number, number][] = [
-  [90, 230],
-  [300, 160],
-  [510, 195],
-  [720, 110],
-  [930, 140],
-  [1130, 50],
-];
-
-/** Catmull-Rom through the waypoints, as cubic Béziers. */
-function trajectory(pts: [number, number][]) {
-  let d = `M${pts[0][0]} ${pts[0][1]}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[i - 1] || pts[i];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[i + 2] || p2;
-    d += ` C${p1[0] + (p2[0] - p0[0]) / 6} ${p1[1] + (p2[1] - p0[1]) / 6},${p2[0] - (p3[0] - p1[0]) / 6} ${p2[1] - (p3[1] - p1[1]) / 6},${p2[0]} ${p2[1]}`;
-  }
-  return d;
-}
-const PATH_D = trajectory(PTS);
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** The four stages, in order, each with the first phase it starts at. */
+const STAGES = (Object.keys(MACRO) as (keyof typeof MACRO)[]).map((key) => {
+  const phases = STEPS.flatMap((s, i) => (s.macro === key ? [i] : []));
+  return { key, first: phases[0], last: phases[phases.length - 1] };
+});
+
 /**
- * Where each waypoint falls along the curve, as a fraction of its length, so
- * the travelled part of the trajectory can end exactly on the chosen phase.
- * The curve moves left to right, so x rises with length: a binary search on x.
+ * Scroll storytelling, desktop only: the trajectory and its panel stay pinned
+ * while the page scrolls through one stretch per phase, and the phase follows
+ * the scroll. It switches itself on only with room for it (wide and tall
+ * enough for the whole pinned block) and with motion allowed; otherwise the
+ * section is the original click-through trajectory in normal flow. Choosing a
+ * phase in story mode scrolls to that phase's stretch, so scroll and selection
+ * never disagree.
  */
-function useWaypointFractions(pathRef: RefObject<SVGPathElement>) {
-  const [fr, setFr] = useState(() => PTS.map((_, i) => i / (PTS.length - 1)));
+function useStory(storyRef: RefObject<HTMLDivElement>, pinRef: RefObject<HTMLDivElement>, sel: number, setSel: (i: number) => void) {
+  const [on, setOn] = useState(false);
+  const live = useRef(false);
+  live.current = on;
+
   useEffect(() => {
-    const path = pathRef.current;
-    if (!path) return;
+    const story = storyRef.current;
+    const pin = pinRef.current;
+    if (!story || !pin) return;
+    let mq: MediaQueryList | null = null;
     try {
-      const total = path.getTotalLength();
-      setFr(
-        PTS.map(([x]) => {
-          let lo = 0;
-          let hi = total;
-          for (let k = 0; k < 24; k++) {
-            const mid = (lo + hi) / 2;
-            if (path.getPointAtLength(mid).x < x) lo = mid;
-            else hi = mid;
-          }
-          return lo / total;
-        }),
-      );
+      mq = window.matchMedia("(min-width: 1024px) and (prefers-reduced-motion: no-preference)");
     } catch {
-      /* keep the even spacing */
+      return;
     }
-  }, [pathRef]);
-  return fr;
+    const check = () => {
+      const top = parseFloat(getComputedStyle(pin).top) || 0;
+      const h = pin.offsetHeight;
+      story.style.setProperty("--pin-h", `${h}px`);
+      setOn(!!mq?.matches && h + top + 24 <= window.innerHeight);
+    };
+    check();
+    mq.addEventListener("change", check);
+    window.addEventListener("resize", check);
+    const ro = "ResizeObserver" in window ? new ResizeObserver(check) : null;
+    ro?.observe(pin);
+    return () => {
+      mq?.removeEventListener("change", check);
+      window.removeEventListener("resize", check);
+      ro?.disconnect();
+    };
+  }, [storyRef, pinRef]);
+
+  const sel_ = useRef(sel);
+  sel_.current = sel;
+  useScrollFrame(storyRef, (rect) => {
+    const story = storyRef.current;
+    const pin = pinRef.current;
+    if (!live.current || !story || !pin) return;
+    const top = parseFloat(getComputedStyle(pin).top) || 0;
+    const travel = Math.max(1, story.offsetHeight - pin.offsetHeight);
+    const p = Math.min(1, Math.max(0, (top - rect.top) / travel));
+    story.style.setProperty("--story-p", p.toFixed(4));
+    const i = Math.min(STEPS.length - 1, Math.floor(p * STEPS.length));
+    if (i !== sel_.current) setSel(i);
+  });
+
+  const goTo = useCallback(
+    (i: number) => {
+      const story = storyRef.current;
+      const pin = pinRef.current;
+      if (!live.current || !story || !pin) return setSel(i);
+      const top = parseFloat(getComputedStyle(pin).top) || 0;
+      const travel = Math.max(1, story.offsetHeight - pin.offsetHeight);
+      const storyTop = story.getBoundingClientRect().top + window.scrollY;
+      setSel(i);
+      scrollPageTo(storyTop - top + ((i + 0.5) / STEPS.length) * travel);
+    },
+    [storyRef, pinRef, setSel],
+  );
+
+  return [on, goTo] as const;
 }
 
-export default function Process({ lang, pathRef }: { lang: Lang; pathRef: RefObject<SVGPathElement> }) {
+export default function Process({ lang }: { lang: Lang }) {
   const [sel, setSel] = useState(0);
   const step = STEPS[sel];
-  const fractions = useWaypointFractions(pathRef);
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
+  const storyRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
+  const [story, goTo] = useStory(storyRef, pinRef, sel, setSel);
+  const stage = STAGES.findIndex((st) => sel >= st.first && sel <= st.last);
 
   // Arrow keys move along the trajectory, like a set of tabs.
   const onKey = (e: KeyboardEvent, i: number) => {
     const next = e.key === "ArrowRight" || e.key === "ArrowDown" ? i + 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? i - 1 : e.key === "Home" ? 0 : e.key === "End" ? STEPS.length - 1 : null;
     if (next === null || next < 0 || next >= STEPS.length) return;
     e.preventDefault();
-    setSel(next);
-    buttons.current[next]?.focus();
+    goTo(next);
+    buttons.current[next]?.focus({ preventScroll: true });
   };
 
   return (
@@ -78,58 +108,54 @@ export default function Process({ lang, pathRef }: { lang: Lang; pathRef: RefObj
       <div className="wrap stack-40">
         <Head head={HEADS.process} lang={lang} id="process-title" />
 
-        <div className="trajectory" role="group" aria-label={STEP_TEXT.pathLabel[lang]}>
-          <svg viewBox="0 0 1200 280" preserveAspectRatio="none" aria-hidden="true">
-            <path d={PATH_D} fill="none" stroke="rgba(167,139,250,.25)" strokeWidth="10" vectorEffect="non-scaling-stroke" strokeLinecap="round" />
-            <path ref={pathRef} d={PATH_D} fill="none" stroke="rgba(125,227,255,.7)" strokeWidth="1.5" strokeDasharray="4 6" vectorEffect="non-scaling-stroke" />
-            {/* The stretch already travelled, up to the chosen phase. */}
-            <path className="trajectory__done" d={PATH_D} pathLength={1} style={{ strokeDasharray: `${fractions[sel]} 1` }} vectorEffect="non-scaling-stroke" />
-          </svg>
-          <span className="probe" data-probe aria-hidden="true" />
-          <span className="trajectory__star" aria-hidden="true" />
-          <ol className="waypoints">
-            {STEPS.map((s, i) => (
-              <li key={s.name.en}>
-                <button
-                  ref={(el) => {
-                    buttons.current[i] = el;
-                  }}
-                  type="button"
-                  className="waypoint"
-                  style={{ left: `${PTS[i][0] / 12}%`, top: `${PTS[i][1] / 2.8}%` }}
-                  aria-pressed={i === sel}
-                  aria-controls="phase"
-                  data-done={i < sel ? "" : undefined}
-                  onClick={() => setSel(i)}
-                  onKeyDown={(e) => onKey(e, i)}
-                >
-                  <span className="waypoint__dot" />
-                  <span className="waypoint__label">
-                    <span className="waypoint__n">{pad(i + 1)}</span>
-                    <span className="waypoint__name">{s.name[lang]}</span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div id="phase" className="spotlight panel phase">
-          <div className="phase__main swap" key={`m${sel}`}>
-            <div className="phase__title">
-              <span className="phase__n" aria-hidden="true">
-                {pad(sel + 1)}
-              </span>
-              <h3 className="phase__name">{step.name[lang]}</h3>
+        <div ref={storyRef} className="story" data-on={story ? "" : undefined}>
+          <div ref={pinRef} className="story__pin">
+            <div className="stages" style={{ ["--sel-p" as string]: (sel + 1) / STEPS.length } as CSSProperties}>
+              <ol aria-label={STEP_TEXT.stages[lang]}>
+                {STAGES.map((st, k) => (
+                  <li key={st.key}>
+                    <button type="button" className="stage" aria-current={k === stage ? "step" : undefined} data-done={k < stage ? "" : undefined} onClick={() => goTo(st.first)}>
+                      {MACRO[st.key][lang]}
+                    </button>
+                  </li>
+                ))}
+              </ol>
+              <span className="stages__bar" aria-hidden="true" />
             </div>
-            <p className="phase__desc">{step.desc[lang]}</p>
-          </div>
-          <div className="phase__side swap" key={`s${sel}`}>
-            <ul className="tags">
-              {step.tags.map((t) => (
-                <li key={t.en}>{t[lang]}</li>
-              ))}
-            </ul>
+
+            <SpaceRoute lang={lang} sel={sel} onSelect={goTo} onKey={onKey} buttons={buttons} />
+
+            <div id="phase" data-reveal="up" className="spotlight panel phase" style={{ ["--px" as string]: `${PTS[sel][0] / 12}%` } as CSSProperties}>
+              <div className="phase__main swap" key={`m${sel}`}>
+                <p className="phase__stage">
+                  <span className="sr-only">{STEP_TEXT.stage[lang]}: </span>
+                  {MACRO[step.macro][lang]}
+                </p>
+                <div className="phase__title">
+                  <span className="phase__n" aria-hidden="true">
+                    {pad(sel + 1)}
+                  </span>
+                  <h3 className="phase__name">{step.name[lang]}</h3>
+                </div>
+                <p className="phase__desc">{step.desc[lang]}</p>
+                <div className="phase__deliv">
+                  <p className="label label--11">{STEP_TEXT.deliverables[lang]}</p>
+                  <ul>
+                    {step.deliverables.map((d) => (
+                      <li key={d.en}>{d[lang]}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="phase__side swap" key={`s${sel}`}>
+                <p className="label label--11 phase__side-label">{STEP_TEXT.topics[lang]}</p>
+                <ul className="tags">
+                  {step.tags.map((t) => (
+                    <li key={t.en}>{t[lang]}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -16,9 +16,10 @@ import {
   siRedis,
   siSpringboot,
   siTypescript,
+  siWhatsapp,
   type SimpleIcon,
 } from "simple-icons";
-import { ArrowLeftRight, Boxes, Cloud, Database, FileCode2, Hexagon, KeyRound, Layers, Network, Plug, Search, Webhook, Workflow, type LucideIcon } from "lucide-react";
+import { ArrowLeftRight, Bot, Boxes, Cloud, Database, FileCode2, Hexagon, KeyRound, Layers, Network, Plug, Search, Webhook, Workflow, type LucideIcon } from "lucide-react";
 
 // One icon per skill in CAPABILITIES (src/data/space.ts), keyed by its label.
 // Tools use their brand mark (Simple Icons); practices and concepts use a
@@ -63,7 +64,12 @@ const ICONS: Record<string, SkillIcon> = {
   "XML-RPC": { line: Network },
   "Integraciones ERP": { line: Plug },
   "Automatización de procesos": { line: Workflow },
+  "Asistentes con IA": { line: Bot },
+  WhatsApp: { brand: siWhatsapp },
 };
+
+/** Whether a skill has a mark (brand or line icon). */
+export const hasGlyph = (name: string) => name in ICONS;
 
 /** A brand color that still reads on the night sky; near-black marks fall back to the ink color. */
 function readable(hex: string) {

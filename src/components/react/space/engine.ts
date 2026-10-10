@@ -2,12 +2,12 @@ import { useEffect, useRef, type RefObject } from "react";
 
 // One requestAnimationFrame loop drives every ambient motion on the page:
 // the starfield canvas, orbiting labels, drifting nebulae, rotating planet
-// surfaces, data pulses and the probe on the process trajectory. Elements opt
+// surfaces and data pulses. Elements opt
 // in with data attributes, so sections stay plain markup:
 //
 //   data-orbit="rx" data-ry data-tilt data-speed data-phase [data-depth]
 //   data-surface="px per second"   data-pulse="cycles per ms"
-//   data-drift="index"   data-blink   data-spin="deg per second"   data-probe
+//   data-drift="index"   data-blink   data-spin="deg per second"
 //
 // Under prefers-reduced-motion the scene renders one still frame (and again on
 // resize); nothing moves on its own.
@@ -116,7 +116,7 @@ function reducedMotion() {
   }
 }
 
-export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefObject<HTMLCanvasElement>, pathRef: RefObject<SVGPathElement>) {
+export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefObject<HTMLCanvasElement>) {
   // Re-query tagged elements after every render: the selection UI swaps nodes.
   const dirty = useRef(true);
   useEffect(() => {
@@ -137,7 +137,6 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
     let my = 0;
     let shoot: { x: number; y: number; vx: number; vy: number; life: number } | null = null;
     let nextShoot = performance.now() + 2500;
-    let plen = 0;
     let band: ReturnType<typeof paintMilkyWay> = null;
     let maxScroll = 1;
     let measuredAt = 0;
@@ -151,7 +150,6 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
     const fit = new Map<HTMLElement, { w: number; lw: number; lh: number; sl: number; sr: number }>();
     let blinks: HTMLElement[] = [];
     let spins: HTMLElement[] = [];
-    let probe: HTMLElement | null = null;
 
     const cache = () => {
       const q = (s: string) => Array.from(root.querySelectorAll<HTMLElement>(s));
@@ -167,8 +165,6 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
         fit.set(el, { w: box.width, lw: el.offsetWidth, lh: el.offsetHeight, sl: box.left - 8, sr: window.innerWidth - box.right - 8 });
       }
       spins = q("[data-spin]");
-      probe = root.querySelector<HTMLElement>("[data-probe]");
-      plen = 0;
       dirty.current = false;
     };
 
@@ -336,22 +332,6 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
       const blink = still ? 1 : 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(tt * 0.004));
       for (const el of blinks) el.style.opacity = String(blink);
       for (const el of spins) el.style.transform = `rotate(${((tt * +el.dataset.spin!) / 1000) % 360}deg)`;
-
-      const path = pathRef.current;
-      if (path && probe) {
-        if (!plen) {
-          try {
-            plen = path.getTotalLength();
-          } catch {
-            plen = 0;
-          }
-        }
-        if (plen) {
-          const pt = path.getPointAtLength(((tt * 0.00005) % 1) * plen);
-          probe.style.left = `${pt.x / 12}%`;
-          probe.style.top = `${pt.y / 2.8}%`;
-        }
-      }
     };
 
     setupStars();
@@ -412,5 +392,5 @@ export function useSpaceEngine(rootRef: RefObject<HTMLElement>, canvasRef: RefOb
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pointermove", onMove);
     };
-  }, [rootRef, canvasRef, pathRef]);
+  }, [rootRef, canvasRef]);
 }

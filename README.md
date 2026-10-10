@@ -1,43 +1,28 @@
-# Astro Starter Kit: Minimal
+# MaelDev · Portafolio de Mario Yael
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Sitio personal de Mario Yael Gordillo García, desarrollador de software Full Stack: https://maeldev.netlify.app
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Stack
 
-## 🚀 Project Structure
+- Astro 4 (estático) + una isla React 18 (`src/components/react/space/SpaceApp.tsx`)
+- CSS propio con tokens en `.space` (`src/styles/space.css`, `src/styles/v2.css`); Tailwind 3 instalado
+- `motion`, `lenis` y CSS para movimiento; todo respeta `prefers-reduced-motion`
+- Netlify (hosting, `public/_redirects`, Netlify Forms `contact`)
 
-Inside of your Astro project, you'll see the following folders and files:
+## Comandos
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+| Comando | Acción |
+| :-- | :-- |
+| `npm install` | Instala dependencias |
+| `npm run dev` | Servidor local en `localhost:4321` |
+| `npm run build` | Build de producción en `./dist/` |
+| `npm run preview` | Sirve el build localmente |
+| `npm run images` | Genera AVIF/WebP de `assets/projects/<proyecto>/` en `public/projects/` |
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Dónde está cada cosa
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Textos (ES/EN): `src/data/space.ts`, `src/data/v2.ts`, `src/data/content.ts`
+- Proyectos: `src/content/projects/*.json` (esquema en `src/content/config.ts`)
+- Secciones: `src/components/sections/`; piezas compartidas en `src/components/kit/`
+- Contrato de diseño: `.impeccable.md`
+- Auditoría, plan y cambios del rediseño: `docs/`

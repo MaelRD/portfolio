@@ -1,6 +1,7 @@
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { SkillGlyph } from "@/lib/skillIcons";
 import { picture } from "@/lib/projectImages";
+import CometCard from "../aceternity/CometCard";
 
 // Small building blocks shared by the home page sections. Styles live in
 // src/styles/v2.css under the same class names.
@@ -67,13 +68,42 @@ export function DeviceMockup({ children, className = "" }: { children: ReactNode
   );
 }
 
-/** Section heading: optional mono label, display title, short intro. */
+/**
+ * Text split into words, each in its own mask, for the word-by-word reveal
+ * (data-reveal="words" on an ancestor; see src/styles/motion.css). The real
+ * spaces stay between the masks, so the sentence is still one piece of text
+ * for screen readers, search engines and copy-paste. `highlight` marks the
+ * trailing words that get their own, later beat (the hero's "real problems").
+ */
+export function SplitWords({ text, highlight, offset = 0 }: { text: string; highlight?: string; offset?: number }) {
+  const hl = highlight && text.endsWith(highlight) ? highlight : "";
+  const lead = hl ? text.slice(0, -hl.length).trimEnd() : text;
+  const words = (t: string, from: number) =>
+    t.split(/\s+/).filter(Boolean).map((w, i) => (
+      <Fragment key={`${from + i}-${w}`}>
+        <span className="sw">
+          <span className="sw__i" style={{ ["--w" as string]: from + i + offset } as CSSProperties}>
+            {w}
+          </span>
+        </span>{" "}
+      </Fragment>
+    ));
+  const leadWords = lead.split(/\s+/).filter(Boolean).length;
+  return (
+    <>
+      {words(lead, 0)}
+      {hl && <span className="sw-hl">{words(hl, leadWords)}</span>}
+    </>
+  );
+}
+
+/** Section heading: optional mono label, display title (revealed word by word), short intro. */
 export function SectionHeader({ id, eyebrow, title, intro, align = "start" }: { id: string; eyebrow?: string; title: string; intro?: string; align?: "start" | "center" }) {
   return (
-    <header className={`sh sh--${align}`}>
+    <header className={`sh sh--${align}`} data-reveal="words">
       {eyebrow && <p className="sh__eyebrow">{eyebrow}</p>}
       <h2 className="h2" id={id}>
-        {title}
+        <SplitWords text={title} />
       </h2>
       {intro && <p className="lede">{intro}</p>}
     </header>
@@ -99,6 +129,7 @@ export function CTAButton({
   children,
   variant = "solid",
   moving = false,
+  magnetic = false,
   arrow = "→",
   className = "",
   ...rest
@@ -107,65 +138,50 @@ export function CTAButton({
   children: ReactNode;
   variant?: "solid" | "line";
   moving?: boolean;
+  /** Leans a few px toward the pointer (mouse only; motion system). */
+  magnetic?: boolean;
   arrow?: string | null;
   className?: string;
 } & Record<`data-${string}`, string> & { target?: string; rel?: string; download?: string }) {
+  const dir = arrow === "↓" ? "down" : arrow === "↗" ? "out" : "right";
   return (
-    <a href={href} className={`btn btn--${variant}${moving ? " btn--moving" : ""} ${className}`} {...rest}>
+    <a href={href} className={`btn btn--${variant}${moving ? " btn--moving" : ""} ${className}`} data-magnetic={magnetic ? "" : undefined} {...rest}>
       {moving && <span className="btn__orbit" aria-hidden="true" />}
       <span className="btn__label">{children}</span>
-      {arrow && <span aria-hidden="true">{arrow}</span>}
+      {arrow && (
+        <span className="btn__arrow" data-dir={dir} aria-hidden="true">
+          {arrow}
+        </span>
+      )}
     </a>
   );
 }
 
 /**
- * Aceternity's 3D Card Effect, reduced: the card leans at most `max` degrees
- * toward the pointer. Fine pointers only, still under reduced motion; on
- * touch screens it is a plain card (pressed state comes from CSS).
+ * A card with the About photo's Comet Card effect (turns and drifts toward
+ * the pointer, lifts, catches a light). `className` goes on the card itself;
+ * `max` is the strongest turn in degrees, and the drift and lift scale with
+ * it so larger cards move less. Fine pointers only, still under reduced motion.
  */
-export function TiltCard({ children, className = "", max = 4, style }: { children: ReactNode; className?: string; max?: number; style?: CSSProperties }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    let ok = false;
-    try {
-      ok = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches;
-    } catch {
-      /* matchMedia unavailable */
-    }
-    if (!el || !ok) return;
-    let raf = 0;
-    const onMove = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        el.setAttribute("data-tilting", "");
-        el.style.setProperty("--rx", `${(-y * max).toFixed(2)}deg`);
-        el.style.setProperty("--ry", `${(x * max).toFixed(2)}deg`);
-      });
-    };
-    const onLeave = () => {
-      cancelAnimationFrame(raf);
-      el.style.setProperty("--rx", "0deg");
-      el.style.setProperty("--ry", "0deg");
-      // Back to no transform once it has settled, so the content renders crisp at rest.
-      window.setTimeout(() => el.style.getPropertyValue("--rx") === "0deg" && el.removeAttribute("data-tilting"), 520);
-    };
-    el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
-    return () => {
-      cancelAnimationFrame(raf);
-      el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
-    };
-  }, [max]);
+export function TiltCard({
+  children,
+  className = "",
+  wrapClassName = "",
+  max = 10,
+  as,
+  style,
+}: {
+  children: ReactNode;
+  className?: string;
+  wrapClassName?: string;
+  max?: number;
+  as?: "div" | "li";
+  style?: CSSProperties;
+}) {
   return (
-    <div ref={ref} className={`tilt ${className}`} style={style}>
+    <CometCard as={as} className={wrapClassName} cardClassName={className} rotateDepth={max} translateDepth={max} lift={1 + max / 280} style={style}>
       {children}
-    </div>
+    </CometCard>
   );
 }
 

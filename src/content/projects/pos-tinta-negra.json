@@ -2,7 +2,7 @@
   "title": "POS Tinta Negra",
   "slug": "pos-tinta-negra",
   "order": 2,
-  "statusPrefix": "Demo",
+  "kind": "demo",
   "role": {
     "en": "Full Stack development",
     "es": "Desarrollo Full Stack"
@@ -31,14 +31,10 @@
     "en": "The POS handles sales with tickets, cash sessions by register, inventory with low-stock alerts, customers, suppliers and reports, with roles that limit what each user can do.",
     "es": "El POS maneja ventas con ticket, sesiones de caja por registradora, inventario con alertas de bajo stock, clientes, proveedores y reportes, con roles que limitan lo que cada usuario puede hacer."
   },
-  "cover": "/projects/pos-tinta-negra.jpg",
   "stack": [
     "Angular",
     "Angular Material",
     "TypeScript"
-  ],
-  "capabilities": [
-    "custom-business-software"
   ],
   "links": {
     "cta": {
@@ -46,55 +42,6 @@
       "es": "Ver demo"
     },
     "live": "https://pos-tinta-negra-demo.netlify.app"
-  },
-  "diagram": {
-    "flow": {
-      "direction": "responsive",
-      "label": {
-        "en": "Sales, cash register and inventory feed the POS, which produces tickets and reports.",
-        "es": "Ventas, caja e inventario alimentan el POS, que genera tickets y reportes."
-      },
-      "stages": [
-        [
-          {
-            "label": {
-              "en": "SALES",
-              "es": "VENTAS"
-            }
-          },
-          {
-            "label": {
-              "en": "CASH REGISTER",
-              "es": "CAJA"
-            }
-          },
-          {
-            "label": {
-              "en": "INVENTORY",
-              "es": "INVENTARIO"
-            }
-          }
-        ],
-        [
-          {
-            "label": "POS",
-            "accent": true
-          }
-        ],
-        [
-          {
-            "label": {
-              "en": "TICKETS · REPORTS",
-              "es": "TICKETS · REPORTES"
-            },
-            "sub": {
-              "en": "sales · stock · profit",
-              "es": "ventas · stock · utilidad"
-            }
-          }
-        ]
-      ]
-    }
   },
   "assets": "tinta-negra",
   "showcase": "tilt",

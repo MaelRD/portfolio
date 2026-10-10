@@ -9,10 +9,10 @@ export type { Bi, Lang, Text };
 
 export const NAV = [
   { id: "work", label: bi("Proyectos", "Work") },
-  { id: "solutions", label: bi("Soluciones", "Solutions") },
-  { id: "process", label: bi("Proceso", "Process") },
   { id: "experience", label: bi("Experiencia", "Experience") },
   { id: "about", label: bi("Sobre mí", "About") },
+  { id: "solutions", label: bi("Soluciones", "Solutions") },
+  { id: "process", label: bi("Proceso", "Process") },
   { id: "contact", label: bi("Contacto", "Contact") },
 ]
 
@@ -40,9 +40,12 @@ export const HERO = {
   last: "Yael",
   eyebrow: bi("DESARROLLADOR DE SOFTWARE EN MÉXICO", "SOFTWARE DEVELOPER IN MEXICO"),
   statement: bi("Diseño software alrededor de problemas reales.", "I design software around real problems."),
+  /** The closing words of the statement, revealed on their own beat. */
+  highlight: bi("problemas reales.", "real problems."),
+  scroll: bi("Desliza", "Scroll"),
   description: bi(
-    "Analizo procesos, modelo sus reglas y los convierto en aplicaciones, integraciones y automatizaciones que reducen trabajo manual, centralizan información y mejoran la operación.",
-    "I analyze processes, model their rules and turn them into applications, integrations and automation that reduce manual work, centralize information and improve operations.",
+    "Construyo aplicaciones, integraciones y automatizaciones que convierten operaciones complejas en herramientas claras y útiles.",
+    "I build applications, integrations and automation that turn complex operations into clear, useful tools.",
   ),
   ctaWork: bi("Ver mi trabajo", "View my work"),
   ctaTalk: bi("Hablemos", "Let's talk"),
@@ -66,32 +69,13 @@ export const HERO = {
 // ── Section headers ─────────────────────────────────────────────────────────
 
 export interface SectionHead {
-  n?: string;
   eyebrow: Bi;
   title: Bi;
   intro?: Bi;
 }
 
 export const HEADS = {
-  intent: {
-    eyebrow: bi("DOS FORMAS DE EXPLORAR", "TWO WAYS TO EXPLORE"),
-    title: bi("¿Qué estás buscando?", "What are you looking for?"),
-    intro: bi(
-      "Dos caminos. El mismo enfoque: entender el problema antes de construir.",
-      "Two paths. The same approach: understand the problem before building.",
-    ),
-  },
-  problems: {
-    n: "01",
-    eyebrow: bi("PROBLEMAS", "PROBLEMS"),
-    title: bi("¿Te suena familiar?", "Sound familiar?"),
-    intro: bi(
-      "No todo problema necesita una aplicación nueva. Primero hay que identificar qué parte del proceso realmente vale la pena mejorar.",
-      "Not every problem needs a new application. First we need to find which part of the process is actually worth improving.",
-    ),
-  },
   work: {
-    n: "03",
     eyebrow: bi("PROYECTOS", "WORK"),
     title: bi("Problemas que he convertido en software.", "Problems I've turned into software."),
     intro: bi(
@@ -99,158 +83,105 @@ export const HEADS = {
       "I don't build projects just to use a technology. I'm interested in understanding the rules behind the problem and deciding what belongs in the system.",
     ),
   },
-  solutions: {
-    n: "02",
-    eyebrow: bi("SOLUCIONES", "SOLUTIONS"),
-    title: bi("¿Qué quieres mejorar?", "What do you want to improve?"),
-    intro: bi(
-      "No necesitas llegar sabiendo qué tecnología necesitas. Podemos partir del proceso actual, detectar dónde se pierde tiempo o información y decidir qué tipo de solución tiene sentido construir.",
-      "You don't need to arrive knowing which technology you need. We can start from the current process, find where time or information gets lost and decide what kind of solution makes sense to build.",
-    ),
-  },
-  automation: {
-    n: "04",
-    eyebrow: bi("AUTOMATIZACIÓN", "AUTOMATION"),
-    title: bi("Automatiza el trabajo que no deberías hacer manualmente.", "Automate the work you shouldn't be doing by hand."),
-    intro: bi(
-      "Un formulario, una cita o un pedido pueden disparar el resto del proceso: registrar, avisar, sincronizar y dar seguimiento sin que alguien lo tenga que recordar.",
-      "A form, an appointment or an order can trigger the rest of the process: record, notify, sync and follow up without anyone having to remember.",
-    ),
-  },
-  integrations: {
-    n: "05",
-    eyebrow: bi("INTEGRACIONES", "INTEGRATIONS"),
-    title: bi("Tus herramientas, conectadas a un solo sistema.", "Your tools, connected to one system."),
-    intro: bi(
-      "No hace falta reemplazar lo que ya funciona. El sistema se vuelve el centro y cada herramienta recibe o entrega la información que le corresponde.",
-      "There's no need to replace what already works. The system becomes the hub and each tool sends or receives the information it owns.",
-    ),
-  },
   process: {
-    n: "06",
     eyebrow: bi("PROCESO", "PROCESS"),
     title: bi("Construir viene después de entender.", "Building comes after understanding."),
     intro: bi(
-      "Una buena solución no empieza con código. Empieza entendiendo por qué existe el proceso y qué necesita realmente el usuario.",
-      "A good solution doesn't start with code. It starts by understanding why the process exists and what the user actually needs.",
-    ),
-  },
-  caseStudy: {
-    n: "07",
-    eyebrow: bi("CASO DE ESTUDIO", "CASE STUDY"),
-    title: bi("De lógica en Excel a una aplicación conectada.", "From spreadsheet logic to a connected application."),
-  },
-  system: {
-    n: "08",
-    eyebrow: bi("PENSAMIENTO SISTÉMICO", "SYSTEM THINKING"),
-    title: bi("No veo una pantalla. Veo un sistema.", "I don't see a screen. I see a system."),
-    intro: bi(
-      "Una interfaz es solamente una de las capas. Cuando diseño software intento entender cómo cada pieza afecta al resto del sistema.",
-      "An interface is only one of the layers. When I design software I try to understand how each piece affects the rest of the system.",
-    ),
-  },
-  capabilities: {
-    n: "09",
-    eyebrow: bi("CAPACIDADES", "CAPABILITIES"),
-    title: bi("Skills", "Skills"),
-  },
-  experience: {
-    n: "10",
-    eyebrow: bi("EXPERIENCIA", "EXPERIENCE"),
-    title: bi("Experiencia profesional", "Professional experience"),
-  },
-  about: {
-    n: "11",
-    eyebrow: bi("SOBRE MÍ", "ABOUT"),
-    title: bi("Me gusta entender cómo funcionan las cosas.", "I like understanding how things work."),
-  },
-  contact: {
-    n: "12",
-    eyebrow: bi("CONTACTO", "CONTACT"),
-    title: bi("¿Qué quieres construir?", "What do you want to build?"),
-    intro: bi(
-      "Estoy disponible tanto para oportunidades profesionales como para colaborar con empresas que necesiten desarrollar o mejorar sus sistemas.",
-      "I'm available both for professional opportunities and for working with companies that need to build or improve their systems.",
+      "Una buena solución no empieza con código: cada fase deja algo tangible que revisar.",
+      "A good solution doesn't start with code: every phase leaves something tangible to review.",
     ),
   },
 } satisfies Record<string, SectionHead>;
-
-// ── Selected work ───────────────────────────────────────────────────────────
-
-export const PROJECT_TEXT = {
-  status: bi("ESTADO", "STATUS"),
-  problem: bi("PROBLEMA", "PROBLEM"),
-  solution: bi("SOLUCIÓN", "SOLUTION"),
-  arch: bi("ARQUITECTURA · FLUJO DE DATOS", "ARCHITECTURE · DATA FLOW"),
-  preview: bi("VISTA PREVIA", "PREVIEW"),
-  schematic: bi("INTERFAZ · ESQUEMA", "INTERFACE · SCHEMATIC"),
-  select: bi("Elige un proyecto", "Choose a project"),
-};
 
 // ── Process ─────────────────────────────────────────────────────────────────
 
 const words = (...w: [string, string][]) => w.map(([es, en]) => bi(es, en));
 
-export const STEPS: { name: Bi; code: Bi; desc: Bi; tags: Bi[] }[] = [
+/** The four stages the six phases group into (shown in the phase panel). */
+export const MACRO = {
+  discover: bi("DESCUBRIR", "DISCOVER"),
+  design: bi("DISEÑAR", "DESIGN"),
+  build: bi("CONSTRUIR", "BUILD"),
+  launch: bi("LANZAR Y EVOLUCIONAR", "LAUNCH & EVOLVE"),
+};
+
+export const STEPS: { name: Bi; code: Bi; macro: keyof typeof MACRO; desc: Bi; tags: Bi[]; deliverables: Bi[] }[] = [
   {
     name: bi("Entender", "Understand"),
     code: bi("RECONOCIMIENTO", "RECONNAISSANCE"),
+    macro: "discover",
     desc: bi(
       "Analizo cómo funciona actualmente el proceso, quién participa, qué herramientas utiliza y dónde aparecen los principales problemas.",
       "I analyze how the process works today, who takes part, which tools it uses and where the main problems appear.",
     ),
     tags: words(["Usuarios", "Users"], ["Problemas", "Pain points"], ["Restricciones", "Constraints"], ["Objetivos", "Goals"]),
+    deliverables: words(["Mapa del proceso actual", "Map of the current process"], ["Problemas priorizados", "Prioritized problems"], ["Alcance inicial", "Initial scope"]),
   },
   {
     name: bi("Modelar", "Model"),
     code: bi("CARTOGRAFÍA", "CARTOGRAPHY"),
+    macro: "discover",
     desc: bi(
       "Transformo el proceso en reglas, datos, actores, estados y relaciones que podamos entender antes de desarrollar.",
       "I turn the process into rules, data, actors, states and relationships we can understand before building.",
     ),
     tags: words(["Reglas de negocio", "Business rules"], ["Datos", "Data"], ["Relaciones", "Relationships"], ["Estados", "States"]),
+    deliverables: words(["Reglas de negocio por escrito", "Business rules in writing"], ["Modelo de datos", "Data model"], ["Actores y estados", "Actors and states"]),
   },
   {
     name: bi("Diseñar", "Design"),
     code: bi("PLAN DE VUELO", "FLIGHT PLAN"),
+    macro: "design",
     desc: bi(
       "Defino cómo debería funcionar la solución y cómo interactuarán sus diferentes partes.",
       "I define how the solution should work and how its different parts will interact.",
     ),
     tags: words(["Flujos", "User flows"], ["Interfaces", "Interfaces"], ["Arquitectura", "Architecture"], ["Contratos", "Contracts"]),
+    deliverables: words(["Flujos y pantallas clave", "Key flows and screens"], ["Arquitectura propuesta", "Proposed architecture"], ["Plan por entregas", "Delivery plan"]),
   },
   {
     name: bi("Construir", "Build"),
     code: bi("LANZAMIENTO", "LAUNCH"),
+    macro: "build",
     desc: bi(
       "Convierto el modelo en software utilizando las tecnologías que mejor se adapten al problema.",
       "I turn the model into software using the technologies that best fit the problem.",
     ),
     tags: words(["Frontend", "Frontend"], ["Backend", "Backend"], ["APIs", "APIs"], ["Integraciones", "Integrations"]),
+    deliverables: words(["Entregas incrementales", "Incremental releases"], ["Código en repositorio", "Code in a repository"], ["Revisiones periódicas", "Regular reviews"]),
   },
   {
     name: bi("Validar", "Validate"),
     code: bi("PRUEBAS DE VUELO", "FLIGHT TESTS"),
+    macro: "build",
     desc: bi(
       "Probamos el sistema con escenarios reales para verificar que resuelva correctamente el proceso.",
       "We test the system against real scenarios to verify it handles the process correctly.",
     ),
     tags: words(["Escenarios", "Scenarios"], ["Casos límite", "Edge cases"], ["Feedback", "Feedback"], ["Pruebas", "Testing"]),
+    deliverables: words(["Escenarios de prueba", "Test scenarios"], ["Correcciones", "Fixes"], ["Versión lista para producción", "Production-ready version"]),
   },
   {
     name: bi("Mejorar", "Improve"),
     code: bi("CORRECCIÓN DE RUMBO", "COURSE CORRECTION"),
+    macro: "launch",
     desc: bi(
-      "Analizamos nuevos cuellos de botella, oportunidades de automatización y mejoras conforme evoluciona la operación.",
-      "We look at new bottlenecks, automation opportunities and improvements as the operation evolves.",
+      "Ponemos el sistema en producción y, según lo acordado, atendemos ajustes, nuevos cuellos de botella y oportunidades de automatización conforme evoluciona la operación.",
+      "We put the system into production and, as agreed, handle adjustments, new bottlenecks and automation opportunities as the operation evolves.",
     ),
     tags: words(["Refactorización", "Refactoring"], ["Automatización", "Automation"], ["Métricas", "Metrics"], ["Evolución", "Evolution"]),
+    deliverables: words(["Puesta en producción", "Go-live"], ["Guía de uso", "Usage guide"], ["Mejoras según lo acordado", "Improvements as agreed"]),
   },
 ];
 
 export const STEP_TEXT = {
   phase: bi("FASE", "PHASE"),
-  pathLabel: bi("Trayectoria del proceso en seis fases. Elige una fase para ver su detalle.", "The process as a six-phase trajectory. Choose a phase to see its details."),
+  stage: bi("ETAPA", "STAGE"),
+  topics: bi("Qué revisamos", "What we look at"),
+  deliverables: bi("Entregables", "Deliverables"),
+  stages: bi("Etapas del proceso", "Process stages"),
+  pathLabel: bi("Ruta del proceso: seis fases, un planeta por fase. Elige una para ver su detalle.", "The process route: six phases, one planet each. Choose one to see its details."),
+  done: bi("completada", "completed"),
 };
 
 // ── Experience ──────────────────────────────────────────────────────────────
@@ -374,6 +305,15 @@ export const FOOTER = {
   email: bi("Email", "Email"),
   cv: bi("CV", "Resume"),
   copyright: "© 2026 Mario Yael Gordillo García",
+  cta: bi("¿Construimos algo juntos?", "Shall we build something together?"),
+  ctaSub: bi("Respondo por correo en uno o dos días hábiles.", "I reply by email within one or two business days."),
+  copy: bi("Copiar correo", "Copy email"),
+  copied: bi("Correo copiado", "Email copied"),
+  copyFail: bi("No se pudo copiar", "Couldn't copy"),
+  time: bi("Hora local · Ciudad de México", "Local time · Mexico City"),
+  top: bi("Volver arriba", "Back to top"),
+  built: bi("Hecho con Astro y React", "Built with Astro and React"),
+  available: bi("Disponible para nuevos proyectos", "Available for new projects"),
 };
 
 // ── Text loop ───────────────────────────────────────────────────────────────

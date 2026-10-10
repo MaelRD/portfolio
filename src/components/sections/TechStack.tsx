@@ -1,18 +1,24 @@
 import { useRef, type CSSProperties } from "react";
 import type { Lang } from "@/data/content";
 import { STACK_V2 as T } from "@/data/v2";
-import { SkillGlyph } from "@/lib/skillIcons";
-import { SectionHeader, useVisible } from "../kit";
+import { hasGlyph, SkillGlyph } from "@/lib/skillIcons";
+import { SectionHeader, TechChip, TiltCard, useVisible } from "../kit";
 
-// Skills grouped by operation (interface → logic → data → integration →
-// infrastructure, plus architecture across all), one card per group after
-// Aceternity's Cards Demo 3: the group's tools sit in a row of glass circles,
-// largest in the middle, rising one after another while a thin light sweeps
-// across. Then the group's name, what it does, and its tools by name.
+// Expertise showcase: five areas (frontend, backend & data, architecture,
+// integrations & ERP, automation & AI) as editorial rows that alternate
+// sides: a large name with its number, what the area is for and its
+// technologies as chips; on the other side the area's tools in a row of glass
+// circles, largest in the middle, rising one after another while a thin light
+// sweeps across (after Aceternity's Cards Demo 3, kept from the earlier
+// Skills cards).
 //
-// Motion is CSS only and runs while the grid is on screen; reduced motion
-// keeps everything still. The sparkles have fixed positions (no random
-// values at render, so server and browser agree).
+// Motion is CSS only and runs while the list is on screen; reduced motion
+// keeps everything still. Rows enter as they scroll in (motion system). The
+// sparkles have fixed positions (no random values at render, so server and
+// browser agree).
+
+/** Glass circles per row: the area's first tools that have a mark. */
+const ORBS = 5;
 
 /** Circle size by distance from the middle of the row. */
 const SIZES = [60, 44, 34];
@@ -46,23 +52,38 @@ function Skeleton({ items }: { items: string[] }) {
 }
 
 export default function TechStack({ lang }: { lang: Lang }) {
-  const gridRef = useRef<HTMLUListElement>(null);
-  useVisible(gridRef, "80px");
+  const listRef = useRef<HTMLOListElement>(null);
+  useVisible(listRef, "80px");
   return (
     <section id="stack" className="sec" aria-labelledby="stack-title">
+      {/* The retired system-layers section's anchor lands on the expertise it led into. */}
+      <span id="system" className="anchor-alias" aria-hidden="true" />
       <div className="wrap stack-40">
-        <SectionHeader id="stack-title" title={T.title[lang]} intro={T.intro[lang]} />
-        <ul ref={gridRef} className="skc-grid">
-          {T.groups.map((g) => (
-            <li key={g.code} className="skc">
-              <Skeleton items={g.items} />
-              <p className="skc__code">{g.code}</p>
-              <h3 className="skc__name">{g.name[lang]}</h3>
-              <p className="skc__does">{g.does[lang]}</p>
-              <p className="skc__tools">{g.items.join(" · ")}</p>
+        <SectionHeader id="stack-title" eyebrow={T.eyebrow[lang]} title={T.title[lang]} intro={T.intro[lang]} />
+        <ol ref={listRef} className="xpt-list">
+          {T.groups.map((g, i) => (
+            <li key={g.key} className="xpt" data-flip={i % 2 ? "" : undefined} data-reveal="up">
+              <div className="xpt__copy">
+                <p className="xpt__code">
+                  <span aria-hidden="true">{String(i + 1).padStart(2, "0")} · </span>
+                  {g.code}
+                </p>
+                <h3 className="xpt__name">{g.name[lang]}</h3>
+                <p className="xpt__does">{g.does[lang]}</p>
+                <ul className="xpt__tools">
+                  {g.items.map((it) => (
+                    <li key={it}>
+                      <TechChip name={it} size="sm" />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <TiltCard className="xpt__visual spotlight">
+                <Skeleton items={g.items.filter(hasGlyph).slice(0, ORBS)} />
+              </TiltCard>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   );
