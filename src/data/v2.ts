@@ -4,17 +4,6 @@
 
 import { bi, type Bi } from "./content";
 
-// ── Navigation ──────────────────────────────────────────────────────────────
-
-/** The thumb dock on phones: the five places a visitor jumps to. */
-export const DOCK = [
-  { id: "hero", icon: "home", label: bi("Inicio", "Home") },
-  { id: "work", icon: "work", label: bi("Proyectos", "Work") },
-  { id: "experience", icon: "experience", label: bi("Experiencia", "Experience") },
-  { id: "solutions", icon: "solutions", label: bi("Soluciones", "Solutions") },
-  { id: "contact", icon: "contact", label: bi("Contacto", "Contact") },
-] as const;
-
 export const HERO_CTA = {
   work: bi("Ver proyectos", "View projects"),
   talk: bi("Hablemos de tu proyecto", "Let's talk about your project"),

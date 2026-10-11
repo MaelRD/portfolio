@@ -14,12 +14,12 @@
   --line: rgba(167, 139, 250, 0.22);
   --line-soft: rgba(167, 139, 250, 0.14);
   --panel: rgba(10, 5, 32, 0.84);
-  /* Space type (2026-10-09): Exo 2 for titles and text, Orbitron for short
-     uppercase labels, Space Mono for code and data. */
-  --display: 'Exo 2', system-ui, sans-serif;
-  --sans: 'Exo 2', system-ui, sans-serif;
-  --label: 'Orbitron', 'Exo 2', sans-serif;
-  --mono: 'Space Mono', ui-monospace, monospace;
+  /* Space type (2026-10-10): Space Grotesk for titles and text, JetBrains Mono
+     for short uppercase labels and for code and data. */
+  --display: 'Space Grotesk', system-ui, sans-serif;
+  --sans: 'Space Grotesk', system-ui, sans-serif;
+  --label: 'JetBrains Mono', ui-monospace, monospace;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   position: relative;
@@ -708,11 +708,11 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
 /* A contact strip, the brand beside four link columns (accordions on phones),
-   a bottom line, then the planetary horizon. Orbitron for the wordmark,
-   the closing question and the column titles; Exo 2 for the rest. */
+   a bottom line, then the planetary horizon. Space Grotesk throughout; the
+   column titles take the mono label face. */
 .sky-footer {
   --f-tech: var(--sans);
-  --f-brand: var(--label);
+  --f-brand: var(--display);
   position: relative;
   z-index: 1;
   overflow: clip;
@@ -759,7 +759,7 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 .sky-footer__time time { white-space: nowrap; }
 .sky-footer__column summary { display: flex; align-items: center; justify-content: space-between; list-style: none; cursor: default; }
 .sky-footer__column summary::-webkit-details-marker { display: none; }
-.space .sky-footer__column h2 { margin: 0 0 14px; font-family: var(--f-brand); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+.space .sky-footer__column h2 { margin: 0 0 14px; font-family: var(--label); font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
 .sky-footer__chev { display: none; }
 .sky-footer__column ul { list-style: none; padding: 0; margin: 0; }
 .space .sky-footer__column a { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; color: var(--dim); font-size: 14.5px; line-height: 1.4; transition: color 160ms ease, transform 0.2s var(--ease); }

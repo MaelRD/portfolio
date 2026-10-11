@@ -19,10 +19,10 @@ export default {
       },
       fontFamily: {
         // The families loaded in Layout.astro.
-        sans: ['"Exo 2"', 'system-ui', 'sans-serif'],
-        heading: ['"Exo 2"', 'system-ui', 'sans-serif'],
-        label: ['Orbitron', '"Exo 2"', 'sans-serif'],
-        mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        heading: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        label: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       transitionTimingFunction: {
         smooth: 'cubic-bezier(0.4,0,0.2,1)',

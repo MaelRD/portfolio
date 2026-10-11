@@ -9,7 +9,6 @@ import SpaceNav from "./SpaceNav";
 import Hero from "./Hero";
 import Process from "./Process";
 import Footer from "./Footer";
-import FloatingDock from "../../sections/FloatingDock";
 import QuickStats from "../../sections/QuickStats";
 import AudienceSelector from "../../sections/AudienceSelector";
 import FeaturedProjects from "../../sections/FeaturedProjects";
@@ -124,7 +123,6 @@ export default function SpaceApp({ projects }: { projects: Project[] }) {
       </main>
 
       <Footer lang={lang} />
-      <FloatingDock lang={lang} active={active} label={UI_TEXT.nav[lang]} />
     </div>
   );
 }

@@ -66,7 +66,7 @@
   padding-bottom: 2px;
 }
 
-/* A quiet cue that there's more below. Desktop only (phones have the dock). */
+/* A quiet cue that there's more below. Desktop only. */
 .hero__scroll { position: absolute; left: 50%; bottom: clamp(20px, 4vh, 36px); z-index: 1; display: none; flex-direction: column; align-items: center; gap: 10px; transform: translateX(-50%); font-family: var(--label); font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); pointer-events: none; opacity: calc(1 - var(--p, 0) * 8); }
 .hero__scroll i { position: relative; width: 1px; height: 40px; overflow: hidden; background: var(--line-soft); }
 .hero__scroll i::after { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 40%; background: var(--cyan); opacity: 0; }

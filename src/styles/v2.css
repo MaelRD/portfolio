@@ -3,7 +3,7 @@
    borders, the night palette, one accent at a time, motion only where it
    says something. Mobile first: base rules are the phone layout. */
 
-/* ── Type: Exo 2 at display sizes, slightly tightened ─────────────────── */
+/* ── Type: Space Grotesk at display sizes, slightly tightened ─────────────────── */
 .space .h2, .showcase__title, .lampsec__title { letter-spacing: -0.02em; }
 .space .name { letter-spacing: -0.025em; }
 .door__title, .xp__head h3, .about2__lead, .phase__name { letter-spacing: -0.025em; }
@@ -49,18 +49,9 @@
 .tchip--sm { font-size: 11.5px; padding: 4px 9px; gap: 6px; }
 .tchip .skill__glyph { color: var(--brand, var(--soft)); }
 
-/* ── Navigation: thumb dock on phones ────────────────────────────────────── */
-.dock { display: none; }
+/* ── Navigation: phones get only the top pill ───────────────────────────── */
 @media (max-width: 759px) {
-  .dock { display: block; position: fixed; z-index: 60; left: 50%; bottom: calc(10px + env(safe-area-inset-bottom)); translate: -50% 0; width: min(calc(100% - 20px), 420px); }
-  .dock ul { list-style: none; margin: 0; padding: 6px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; border-radius: 22px; border: 1px solid var(--line); background: rgba(12, 6, 36, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5); }
-  .dock a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 52px; border-radius: 16px; color: var(--dim) !important; font-size: 10.5px; line-height: 1.1; text-align: center; transition: color 0.2s, background 0.2s; }
-  .dock a[aria-current="true"] { color: var(--ink) !important; background: rgba(167, 139, 250, 0.16); }
-  .dock a[aria-current="true"] svg { color: var(--cyan); }
-  .dock a:active { background: rgba(167, 139, 250, 0.22); }
-  /* Room for the dock under the last content. */
-  .space .sky-footer:not(.sky-footer--page) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
-  /* The top pill keeps the logo, the CTA and the menu (language, CV). */
+  /* The pill keeps the logo, the CTA and the menu (sections, language, CV). */
   .zlinks { display: none !important; }
 }
 
@@ -396,8 +387,8 @@
 .form2 .field [aria-invalid="true"] { border-color: var(--pink); }
 
 /* ── Contact: interactive form (ContactForm.tsx) ───────────────────────── */
-/* The section title in Orbitron; labels, chips and buttons in Exo 2. */
-.contact2 { --f-tech: var(--sans); --f-brand: var(--label); }
+/* Title, labels, chips and buttons in Space Grotesk. */
+.contact2 { --f-tech: var(--sans); --f-brand: var(--display); }
 .contact2 .h2 { font-family: var(--f-brand); font-weight: 400; letter-spacing: 0; font-size: clamp(34px, 5vw, 56px); line-height: 1.05; }
 .contact2__intro .h2 { max-width: 11ch; }
 .contact2__availability, .contact2__next h3, .form2__heading h3, .field label, .field legend, .form2__optional summary, .form2__submit, .form2__progress p, .starter, .need span, .field__meta { font-family: var(--f-tech); }
