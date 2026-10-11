@@ -49,12 +49,6 @@
 .tchip--sm { font-size: 11.5px; padding: 4px 9px; gap: 6px; }
 .tchip .skill__glyph { color: var(--brand, var(--soft)); }
 
-/* ── Navigation: phones get only the top pill ───────────────────────────── */
-@media (max-width: 759px) {
-  /* The pill keeps the logo, the CTA and the menu (sections, language, CV). */
-  .zlinks { display: none !important; }
-}
-
 /* ── Hero: faint beams ───────────────────────────────────────────────────── */
 .launch { overflow: hidden; }
 .beams-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; mask-image: radial-gradient(70% 70% at 60% 45%, #000, transparent 85%); -webkit-mask-image: radial-gradient(70% 70% at 60% 45%, #000, transparent 85%); }

@@ -98,12 +98,13 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   transform: rotate(-18deg);
 }
 
-/* ── Nav: floating glass pills ──────────────────────────────────────────── */
+/* ── Nav: floating glass pill ───────────────────────────────────────────── */
 .znav {
   /* Frosted glass: a faint light sheen over a thin dark tint (keeps text
-     readable over the bright Milky Way), blurred and saturated sky behind. */
+     readable over the bright Milky Way), blurred and saturated sky behind.
+     Once the page scrolls the tint thickens so text over content stays legible. */
   --glass: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05)), rgba(12, 6, 36, 0.32);
-  --glass-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04)), rgba(12, 6, 36, 0.62);
+  --glass-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03)), rgba(12, 6, 36, 0.78);
   --glass-blur: blur(18px) saturate(170%);
   --glass-edge: rgba(255, 255, 255, 0.18);
   --glass-ink: #F4F1FF;
@@ -112,15 +113,18 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   left: 0;
   right: 0;
   z-index: 50;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  /* Side pills sit inside a centered column, not against the window edges. */
-  padding: 0 max(24px, calc((100vw - 1320px) / 2));
+  gap: 10px;
+  padding: 0 16px;
   pointer-events: none;
+  transition: translate 0.4s var(--ease), opacity 0.3s var(--ease);
 }
 .znav > * { pointer-events: auto; }
+/* Scrolling down tucks the pill above the window; scrolling up brings it back.
+   Keyboard focus inside it always brings it back too. */
+.znav[data-hidden]:not(:focus-within) { translate: 0 calc(-100% - 32px); opacity: 0; }
 .zpill, .zlang, .zsheet {
   background: var(--glass);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -136,7 +140,8 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .zpill, .zlang, .zsheet { background: rgba(16, 9, 44, 0.9); }
 }
-.zpill { position: relative; display: flex; align-items: center; border-radius: 999px; }
+.zpill { position: relative; display: flex; align-items: center; border-radius: 999px; transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease); }
+.znav[data-scrolled] .zpill, .znav[data-scrolled] .zsheet { background: var(--glass-strong); }
 /* A soft specular streak along the top edge of each pill. */
 .zpill::before {
   content: "";
@@ -147,107 +152,131 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
   pointer-events: none;
   z-index: -1; /* under the text; the pill's backdrop-filter keeps it inside the pill */
 }
-.znav__side { display: flex; align-items: center; gap: 10px; transition: opacity 0.35s var(--ease), translate 0.35s var(--ease); }
-.znav__side--left { justify-self: start; }
-.znav__side--right { justify-self: end; }
-/* Scrolled: the side pills step away; the menu stays. */
-.znav[data-scrolled] .znav__side { opacity: 0; translate: 0 -10px; pointer-events: none; visibility: hidden; transition: opacity 0.25s var(--ease), translate 0.25s var(--ease), visibility 0s 0.25s; }
 
-.znav__menu { gap: 4px; padding: 5px; }
+.znav__menu { gap: 4px; padding: 5px; max-width: 100%; }
 .zlogo {
   position: relative;
   display: grid;
   place-items: center;
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(139, 108, 255, 0.35), rgba(3, 0, 20, 0.55) 70%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   margin-right: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
+@media (hover: hover) and (pointer: fine) { .zlogo:hover { border-color: rgba(125, 227, 255, 0.5); box-shadow: 0 0 14px rgba(125, 227, 255, 0.25); } }
+
 .zlinks { position: relative; display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }
 .zlinks a {
   position: relative;
   display: block;
   padding: 8px 10px;
+  border-radius: 999px;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: rgba(244, 241, 255, 0.78) !important;
-  transition: color 0.2s;
+  white-space: nowrap;
+  color: rgba(244, 241, 255, 0.72) !important;
+  transition: color 0.2s, background 0.2s;
 }
 .zlinks a[aria-current="true"] { color: var(--glass-ink) !important; }
-/* Hover and current section: a short underline slides in under the word. */
-.zlinks a::after {
+@media (hover: hover) and (pointer: fine) {
+  .zlinks a:hover { color: var(--glass-ink) !important; background: rgba(255, 255, 255, 0.07); }
+}
+/* The current section: one cyan line that glides from link to link
+   (position and width measured in SpaceNav). */
+.zlinks::after {
   content: "";
   position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 4px;
+  left: 0;
+  bottom: 3px;
+  width: var(--ind-w, 0);
   height: 2px;
   border-radius: 2px;
-  background: rgba(244, 241, 255, 0.4);
-  transform: scaleX(0);
-  transition: transform 0.25s var(--ease), background 0.25s;
+  background: var(--cyan);
+  box-shadow: 0 0 8px rgba(125, 227, 255, 0.6);
+  transform: translateX(var(--ind-x, 0));
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.45s var(--ease), width 0.45s var(--ease), opacity 0.25s;
 }
-.zlinks a[aria-current="true"]::after { transform: scaleX(1); background: var(--cyan); box-shadow: 0 0 8px rgba(125, 227, 255, 0.6); }
-@media (hover: hover) and (pointer: fine) {
-  .zlinks a:hover { color: var(--glass-ink) !important; }
-  .zlinks a:hover::after { transform: scaleX(1); }
-}
+.zlinks[data-ind]::after { opacity: 1; }
+
+/* Language inside the pill: a compact, recessed toggle. */
+.znav__menu > .zlang { margin-left: 6px; padding: 3px; background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.znav__menu > .zlang button { padding: 5px 9px; font-size: 12px; }
+.zlang { display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; }
+.zlang button { border: 0; background: none; padding: 6px 10px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: rgba(244, 241, 255, 0.6); transition: background 0.2s, color 0.2s; }
+.zlang button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.92); color: #0B0620; }
+@media (hover: hover) and (pointer: fine) { .zlang button[aria-pressed="false"]:hover { color: var(--glass-ink); } }
+
 /* The one solid thing in the bar: the call to action. */
 .zcta {
   position: relative;
-  margin-left: 10px;
+  flex-shrink: 0;
+  margin-left: 8px;
   padding: 10px 18px;
   border-radius: 999px;
   background: linear-gradient(180deg, #FFFFFF, #E4DEFA);
   color: #0B0620 !important;
   font-size: 15px;
   font-weight: 600;
+  white-space: nowrap;
   box-shadow: inset 0 1px 0 #fff, 0 4px 14px rgba(139, 108, 255, 0.35);
   transition: background 0.2s, box-shadow 0.2s, transform 0.15s var(--ease);
 }
 .zcta:active { transform: translateY(1px); }
 @media (hover: hover) and (pointer: fine) { .zcta:hover { background: linear-gradient(180deg, #FFFFFF, var(--cyan)); box-shadow: inset 0 1px 0 #fff, 0 4px 18px rgba(125, 227, 255, 0.45); } }
 
-.zlang { display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; }
-.zlang button { border: 0; background: none; padding: 6px 10px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 600; color: rgba(244, 241, 255, 0.6); transition: background 0.2s, color 0.2s; }
-.zlang button[aria-pressed="true"] { background: rgba(255, 255, 255, 0.92); color: #0B0620; }
+/* Menu toggle: two bars that cross into an X. */
+.zmenu { display: none; position: relative; place-items: center; flex-shrink: 0; width: 40px; height: 40px; margin-left: 4px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 50%; background: rgba(255, 255, 255, 0.06); color: var(--glass-ink); cursor: pointer; transition: background 0.2s; }
+.zmenu[aria-expanded="true"] { background: rgba(255, 255, 255, 0.14); }
+.zmenu__bars { position: relative; width: 16px; height: 10px; }
+.zmenu__bars span { position: absolute; left: 0; width: 100%; height: 1.75px; border-radius: 2px; background: currentColor; transition: transform 0.3s var(--ease), top 0.3s var(--ease); }
+.zmenu__bars span:first-child { top: 0; }
+.zmenu__bars span:last-child { top: calc(100% - 1.75px); }
+.zmenu[aria-expanded="true"] .zmenu__bars span { top: calc(50% - 0.875px); }
+.zmenu[aria-expanded="true"] .zmenu__bars span:first-child { transform: rotate(45deg); }
+.zmenu[aria-expanded="true"] .zmenu__bars span:last-child { transform: rotate(-45deg); }
 
-.zmenu { display: none; }
 .zsheet { display: none; }
 .znav a:focus-visible, .znav button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 
-/* Below 1320px the side pills would crowd the menu: they fold into a sheet
-   opened from the menu pill (language, email, CV; plus the links on phones). */
-@media (max-width: 1319px) {
-  .znav { grid-template-columns: 1fr; justify-items: center; }
-  .znav__side { display: none; }
-  .zmenu { position: relative; display: grid; place-items: center; width: 40px; height: 40px; margin-left: 4px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 50%; background: rgba(255, 255, 255, 0.06); color: var(--glass-ink); cursor: pointer; }
+/* Below 900px the links and language fold into a sheet under the pill. */
+@media (max-width: 899px) {
+  .zlinks, .znav__menu > .zlang { display: none; }
+  .zcta { margin-left: auto; }
+  .zmenu { display: grid; }
   .zsheet:not([hidden]) {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    width: min(100%, 360px);
-    padding: 14px;
+    gap: 12px;
+    width: min(100%, 400px);
+    padding: 10px;
     border-radius: 24px;
     background: var(--glass-strong);
-    animation: sheet-in 0.25s var(--ease) both;
+    transform-origin: top center;
+    animation: sheet-in 0.28s var(--ease) both;
   }
-  .zsheet ul { display: none; }
-  .zsheet__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .zsheet .zlang { box-shadow: none; }
-  .zsheet__cv { font-size: 14px; font-weight: 600; color: var(--glass-ink) !important; text-decoration: underline; text-underline-offset: 3px; }
-}
-@media (max-width: 760px) {
-  .znav { padding: 0 16px; }
-  .zlinks { display: none; }
   .zsheet ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-  .zsheet ul a { display: block; padding: 10px 12px; border-radius: 12px; font-size: 16px; font-weight: 600; color: var(--glass-ink) !important; }
-  .zsheet ul a[aria-current="true"] { background: rgba(125, 227, 255, 0.14); }
+  .zsheet ul a { display: flex; align-items: center; min-height: 44px; padding: 10px 14px; border-radius: 14px; font-size: 16px; font-weight: 600; color: var(--glass-ink) !important; transition: background 0.2s; }
+  .zsheet ul a:active { background: rgba(255, 255, 255, 0.08); }
+  .zsheet ul a[aria-current="true"] { background: rgba(125, 227, 255, 0.14); box-shadow: inset 0 0 0 1px rgba(125, 227, 255, 0.25); }
+  .zsheet__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 4px 2px 4px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+  .zsheet .zlang { box-shadow: none; }
+  .zsheet__cv { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--glass-ink) !important; text-decoration: underline; text-underline-offset: 3px; }
 }
-@keyframes sheet-in { from { opacity: 0; transform: translateY(-6px); } }
+@media (prefers-reduced-motion: no-preference) and (max-width: 899px) {
+  .zsheet:not([hidden]) li { animation: sheet-item 0.32s var(--ease) both; animation-delay: calc(40ms + var(--i, 0) * 30ms); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .znav, .zsheet:not([hidden]) { transition: none; animation: none; }
+}
+@keyframes sheet-in { from { opacity: 0; transform: translateY(-6px) scale(0.98); } }
+@keyframes sheet-item { from { opacity: 0; transform: translateY(-4px); } }
 
 /* ── Layout ──────────────────────────────────────────────────────────────── */
 .space main { position: relative; z-index: 1; }
@@ -590,36 +619,6 @@ html:has(.space) { scrollbar-width: thin; scrollbar-color: rgba(167, 139, 250, 0
 /* ── Case study ──────────────────────────────────────────────────────────── */
 
 /* Added text inside original sections. */
-
-/* The menu pill now holds more items: keep each on one line, and fold the side
-   pills into the sheet from a wider breakpoint (same behaviour as below 1320px). */
-.zlinks a, .zcta { white-space: nowrap; }
-@media (min-width: 1320px) and (max-width: 1499px) {
-  .znav { grid-template-columns: 1fr; justify-items: center; }
-  .znav__side { display: none; }
-  .zmenu { position: relative; display: grid; place-items: center; width: 40px; height: 40px; margin-left: 4px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 50%; background: rgba(255, 255, 255, 0.06); color: var(--glass-ink); cursor: pointer; }
-  .zsheet:not([hidden]) {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    width: min(100%, 360px);
-    padding: 14px;
-    border-radius: 24px;
-    background: var(--glass-strong);
-    animation: sheet-in 0.25s var(--ease) both;
-  }
-  .zsheet ul { display: none; }
-  .zsheet__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .zsheet .zlang { box-shadow: none; }
-  .zsheet__cv { font-size: 14px; font-weight: 600; color: var(--glass-ink) !important; text-decoration: underline; text-underline-offset: 3px; }
-}
-@media (min-width: 761px) and (max-width: 880px) {
-  .znav { padding: 0 16px; }
-  .zlinks { display: none; }
-  .zsheet ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-  .zsheet ul a { display: block; padding: 10px 12px; border-radius: 12px; font-size: 16px; font-weight: 600; color: var(--glass-ink) !important; }
-  .zsheet ul a[aria-current="true"] { background: rgba(125, 227, 255, 0.14); }
-}
 
 /* ── Motion refinements on original diagrams (look unchanged) ───────────── */
 /* Project architecture: nodes arrive column by column when a project is
